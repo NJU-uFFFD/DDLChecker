@@ -41,7 +41,7 @@
     "@tarojs/plugin-platform-weapp": "^3.4.6",
     "@tarojs/runtime": "3.4.6",
     "@tarojs/taro": "3.4.6",
-    "taro-ui": "^3.1.0-beta.2",
+    "taro-ui-vue3": "^1.0.0-alpha.21",
     "vue": "^3.0.0"
   },
   "devDependencies": {
