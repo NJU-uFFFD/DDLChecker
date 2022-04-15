@@ -2,7 +2,7 @@
 
 ### 目录
 ```
- - app.py 程序入口
+ - main.py 程序入口
  - crawler
    - auth 登录认证
    - fetch 爬虫获取数据
