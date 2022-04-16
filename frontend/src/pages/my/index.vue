@@ -1,6 +1,6 @@
 <template>
-  <view class="index">
-    <text>我是首页！</text>
+  <view class="my">
+    <text>我是个人页！</text>
   </view>
 </template>
 
