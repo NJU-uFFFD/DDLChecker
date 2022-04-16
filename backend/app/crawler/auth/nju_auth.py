@@ -64,12 +64,12 @@ class NjuAuth:
         self.pwd_salt = re.search(
             r'<input type="hidden" id="pwdDefaultEncryptSalt" value="(.*)"', r.text).group(1)
 
-    def login(self, username, password):
+    def login(self, username: str, password: str) -> None:
         """
         登录南大统一身份认证
+        登录成功不返回内容, 登录失败抛出异常
         :param username: 南大统一身份认证用户名
         :param password: 南大统一身份认证密码
-        :return: 是否登录成功
         """
         self.__new_session()
 
@@ -88,4 +88,11 @@ class NjuAuth:
         }
         r = self.session.post("https://authserver.nju.edu.cn/authserver/login", data=data,
                               allow_redirects=False)
-        return r.status_code == 302
+
+        if r.status_code == 200:
+            raise LoginException("用户名或密码错误？")
+        elif r.status_code == 302:
+            # 登录成功
+            return
+        else:
+            raise LoginException("未知错误，请稍后再试：" + str(r.status_code))
