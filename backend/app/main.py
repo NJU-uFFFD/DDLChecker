@@ -1,10 +1,12 @@
 from flask import Flask
 
-app = Flask(__name__)
+# 所有的 @app.route 分类写到 routes 文件夹下的模块中
+from routes import *
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World! Have a test!'
+WX_APPID = ""
+
+
+app = Flask(__name__)
 
 if __name__ == '__main__':
     app.run()
