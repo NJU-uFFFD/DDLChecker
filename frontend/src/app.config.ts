@@ -9,7 +9,7 @@ export default defineAppConfig({
     navigationBarBackgroundColor: '#f9f9f9',
     navigationBarTitleText: 'WeChat',
     navigationBarTextStyle: 'black',
-    enablePullDownRefresh: true,
+    // enablePullDownRefresh: true,
   },
   tabBar: {
     custom: false,
