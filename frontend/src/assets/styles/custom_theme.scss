@@ -77,24 +77,23 @@ $button-plain-background-color: $white !default;
 
 // cell
 
-$cell-color: $title-color2 !default;
-$cell-title-font: 40px !default;
-$cell-title-desc-font: 32px !default;
-$cell-desc-font: 30px !default;
-$cell-desc-color: $disable-color !default;
-$cell-border-radius: 30px !default;
-$cell-padding: 32px 44px !default;
-$cell-line-height: 50px !default;
-$cell-after-right: 24px !default;
-$cell-after-border-bottom: 10px solid #f5f6f7 !default;
-$cell-default-icon-margin: 0px 0px 0 0px;
+$cell-color: rgba(0, 0, 0, 0.85) !default;
+$cell-title-font: $font-size-2 !default;
+$cell-title-desc-font: $font-size-1 !default;
+$cell-desc-font: $font-size-2 !default;
+$cell-desc-color: rgba(0, 0, 0, 0.25) !default;
+$cell-border-radius: 0px !default;
+$cell-padding: 14px 16px !default;
+$cell-line-height: 22px !default;
+$cell-after-right: 0 !default;
+$cell-after-border-bottom: 2px solid rgba(0, 0, 0, 0.1) !default;
 
 // cell-group
 
 $cell-group-title-padding: 0 10px !default;
-$cell-group-title-color: #909ca4 !default;
-$cell-group-title-font-size: 40 !default;
-$cell-group-title-line-height: 30px !default;
+$cell-group-title-color: rgba(69, 90, 100, 0.6) !default;
+$cell-group-title-font-size: $font-size-2 !default;
+$cell-group-title-line-height: 20px !default;
 $cell-group-desc-padding: 0 10px !default;
 $cell-group-desc-color: #909ca4 !default;
 $cell-group-desc-font-size: $font-size-1 !default;
