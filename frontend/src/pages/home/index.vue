@@ -1,6 +1,6 @@
 <template>
   <view class="index">
-    <ddl_list_menu></ddl_list_menu>
+    <ddl_list_menu/>
     <view v-for="item in ddl_list">
       <ddl_card :ddl_item="item"/>
     </view>
@@ -41,7 +41,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .index {
   background: #f9f9f9;
 }

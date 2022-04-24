@@ -4,8 +4,9 @@
     class="ddl-card"
     :title=ddl_item.title
     :sub-title=ddl_item.ddl_time
-    desc="查看详情">
-    <template v-slot:icon>
+    desc="查看详情"
+    @click="testClick">
+    <template v-slot:icon class="t-icon">
       <img
         class="site-icon"
         :src=ddl_item.from
@@ -39,7 +40,6 @@ export default {
 </script>
 
 <style>
-
 .ddl-card {
   margin-top: 12px;
   margin-bottom: 10px;
@@ -58,5 +58,4 @@ export default {
   margin-left: 10px;
   margin-right: 20px;
 }
-
 </style>
