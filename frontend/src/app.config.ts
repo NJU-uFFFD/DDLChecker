@@ -11,7 +11,7 @@ export default defineAppConfig({
     navigationBarTextStyle: 'black'
   },
   tabBar: {
-    custom: true,
+    custom: false,
     color: '#000000',
     selectedColor: '#6190E8',
     backgroundColor: '#ffffff',
