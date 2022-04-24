@@ -1,6 +1,6 @@
 export default defineAppConfig({
   pages: [
-    'pages/ddl_list/index',
+    'pages/home/index',
     'pages/history/index',
     'pages/profile/index'
   ],
@@ -18,7 +18,7 @@ export default defineAppConfig({
     backgroundColor: '#ffffff',
     list: [
       {
-        pagePath: 'pages/ddl_list/index',
+        pagePath: 'pages/home/index',
         selectedIconPath: './assets/images/list-selected.png',
         iconPath: './assets/images/list.png',
         text: '首页'
