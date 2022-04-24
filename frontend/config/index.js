@@ -1,18 +1,30 @@
+const path = require('path');
 const config = {
   projectName: 'frontend',
   date: '2022-4-15',
-  designWidth: 750,
   deviceRatio: {
     640: 2.34 / 2,
     750: 1,
-    828: 1.81 / 2
+    828: 1.81 / 2,
+    375: 2,
   },
+  plugins: ['@tarojs/plugin-html'],
+  sass: {
+    resource: [
+      path.resolve(__dirname, '..', 'src/assets/styles/custom_theme.scss')
+    ],
+    // 默认京东 APP 10.0主题 > @import "@nutui/nutui-taro/dist/styles/variables.scss";
+    // 京东科技主题 > @import "@nutui/nutui-taro/dist/styles/variables-jdt.scss";
+    data: `@import "@nutui/nutui-taro/dist/styles/variables.scss";`
+  },
+  designWidth: 750,
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: [],
   defineConstants: {},
   copy: {
-    patterns: [],
+    patterns: [
+      {from: 'src/assets/images/', to: 'dist/assets/images/'},
+    ],
     options: {}
   },
   framework: 'vue3',

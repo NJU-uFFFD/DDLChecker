@@ -1,12 +1,11 @@
 <template>
-  <view class="cate">
-    <text>我是喜欢页！</text>
+  <view class="my">
+    <text>我是个人页！</text>
   </view>
 </template>
 
 <script>
 import {ref} from 'vue'
-import './index.scss'
 
 export default {
   setup() {
