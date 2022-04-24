@@ -35,12 +35,10 @@ export default {
 </script>
 
 <style>
-.ddl-card {
-}
 
 .site-icon {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 
 </style>

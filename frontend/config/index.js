@@ -2,6 +2,7 @@ const path = require('path');
 const config = {
   projectName: 'frontend',
   date: '2022-4-15',
+  designWidth: 375,
   deviceRatio: {
     640: 2.34 / 2,
     750: 1,
@@ -17,7 +18,6 @@ const config = {
     // 京东科技主题 > @import "@nutui/nutui-taro/dist/styles/variables-jdt.scss";
     data: `@import "@nutui/nutui-taro/dist/styles/variables.scss";`
   },
-  designWidth: 750,
   sourceRoot: 'src',
   outputRoot: 'dist',
   defineConstants: {},
