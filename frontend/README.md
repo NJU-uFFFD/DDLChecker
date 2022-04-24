@@ -13,7 +13,7 @@
     - history 历史
     - profile 我的
   - components 组件
-  	- card 卡片
+    - card 卡片
   - assets 资源
     - images 图片
     - styles 自定义风格
