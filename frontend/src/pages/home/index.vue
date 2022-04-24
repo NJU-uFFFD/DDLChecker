@@ -1,11 +1,8 @@
 <template>
   <view class="index">
-    <ddl_card></ddl_card>
-    <ddl_card></ddl_card>
-    <ddl_card></ddl_card>
-    <ddl_card></ddl_card>
-    <ddl_card></ddl_card>
-    <ddl_card></ddl_card>
+    <view v-for="item in list">
+      <ddl_card></ddl_card>
+    </view>
   </view>
 </template>
 
@@ -20,8 +17,10 @@ export default {
   },
   setup() {
     const msg = ref('Hello world')
+    const list = ref([1, 2, 3, 4, 5, 6, 7, 8])
     return {
-      msg
+      msg,
+      list
     }
   }
 }
