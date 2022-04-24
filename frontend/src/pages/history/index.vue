@@ -1,12 +1,11 @@
 <template>
-  <view class="index">
-    <text>我是首页！</text>
+  <view class="cate">
+    <text>我是历史页！</text>
   </view>
 </template>
 
 <script>
 import {ref} from 'vue'
-import './index.scss'
 
 export default {
   setup() {

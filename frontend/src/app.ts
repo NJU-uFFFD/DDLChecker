@@ -1,12 +1,12 @@
 import {createApp} from 'vue'
-import store from './store'
+import {Cell, Icon, CellGroup} from "@nutui/nutui-taro";
 import './app.scss'
 
 const App = createApp({
-  onShow(options) {
+  onShow() {
   },
 })
 
-App.use(store)
+App.use(Cell).use(CellGroup).use(Icon)
 
 export default App
