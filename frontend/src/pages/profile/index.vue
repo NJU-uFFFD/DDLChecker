@@ -2,14 +2,21 @@
   <view class="profile">
 
     <!-- 显示用户头像 -->
-    <span class="avatar">
-      <nut-avatar
-        size="large"
-        :icon="avatar_url"/>
-      {{ nickname }}
-    </span>
+    <nut-cell
+      class="profile-card"
+      :title=nickname
+      :sub-title="我是测试者">
+      <template v-slot:icon>
+        <nut-avatar
+          class="avatar"
+          size="large"
+          :icon="avatar_url"/>
+      </template>
+    </nut-cell>
+    <view v-for="item in [1,1,1,1,1,1]">
+      <account_card/>
+    </view>
 
-    <account_card></account_card>
   </view>
 </template>
 
@@ -31,11 +38,19 @@ export default {
 </script>
 
 <style>
+.profile-card {
+  margin-top: 20px;
+  align-items: center;
+  border-radius: 0;
+  box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
+}
 
 .avatar {
-  position: relative;
-  left: 1em;
-  top: 1em;
+  margin-right: 20px;
+}
+
+.profile {
+  background: #f9f9f9;
 }
 
 </style>
