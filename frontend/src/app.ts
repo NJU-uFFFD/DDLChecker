@@ -1,5 +1,5 @@
 import {createApp} from 'vue'
-import {Button, Cell, CellGroup, Icon,} from "@nutui/nutui-taro";
+import {Button, Cell, CellGroup, Icon, Menu, MenuItem} from "@nutui/nutui-taro";
 import './app.scss'
 
 const App = createApp({
@@ -7,6 +7,6 @@ const App = createApp({
   },
 })
 
-App.use(Button).use(Cell).use(CellGroup).use(Icon)
+App.use(Button).use(Cell).use(CellGroup).use(Icon).use(Menu).use(MenuItem)
 
 export default App
