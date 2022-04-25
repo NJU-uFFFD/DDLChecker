@@ -1,26 +1,31 @@
 <template>
-  <nut-cell-group title="DDL">
-    <nut-cell
-      class="ddl-card"
-      title="第一个ddl"
-      sub-title="ddl时间"
-      desc="查看详情">
-      <template v-slot:icon>
-        <img
-          class="site-icon"
-          src="/assets/images/mooc.png"
-        />
-      </template>
-    </nut-cell>
-  </nut-cell-group>
+  <!--  <nut-cell-group title="DDL">-->
+  <nut-cell
+    class="ddl-card"
+    :title=ddl_item.title
+    :sub-title=ddl_item.ddl_time
+    desc="查看详情"
+    @click="testClick">
+    <template v-slot:icon>
+      <img
+        class="site-icon"
+        :src=ddl_item.from
+      />
+    </template>
+  </nut-cell>
+  <!--  </nut-cell-group>-->
 </template>
 
-<script>
+<script lang="ts">
 import {ref} from 'vue';
 import {Toast} from '@nutui/nutui-taro';
+import {DDL_List} from "../../types/DDL_List";
 
 export default {
   name: "ddl_card",
+  props: {
+    ddl_item: Object as () => DDL_List
+  },
   setup() {
     const switchChecked = ref(true);
     const testClick = (event) => {
@@ -28,7 +33,7 @@ export default {
     };
     return {
       testClick,
-      switchChecked
+      switchChecked,
     };
   }
 }
@@ -36,9 +41,23 @@ export default {
 
 <style>
 
+.ddl-card {
+  margin-top: 12px;
+  margin-bottom: 10px;
+  align-items: center;
+  margin-left: 10px;
+  width: 95%;
+  height: 100px;
+  border-radius: 50px;
+  box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
+}
+
 .site-icon {
   width: 30px;
   height: 30px;
+  margin-top: 2px;
+  margin-left: 10px;
+  margin-right: 20px;
 }
 
 </style>

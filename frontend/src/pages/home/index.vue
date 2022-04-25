@@ -1,5 +1,5 @@
 <template>
-  <view class="index">
+  <view class="home">
     <ddl_list_menu/>
     <view v-for="item in ddl_list">
       <ddl_card :ddl_item="item"/>
@@ -14,7 +14,7 @@ import ddl_list_menu from "../../components/menu/ddl_list_menu.vue";
 import {DDL_List} from "../../types/DDL_List";
 
 export default {
-  name: 'ddl_list',
+  name: 'home',
   components: {
     ddl_card,
     ddl_list_menu
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style scoped>
-.index {
+.home {
   background: #f9f9f9;
 }
 </style>
