@@ -1,52 +1,64 @@
 <template>
   <view class="profile">
-
-    <!-- 显示用户头像 -->
-    <nut-cell
-      class="profile-card"
-      :title=nickname
-      :sub-title="我是测试者">
-      <template v-slot:icon>
-        <nut-avatar
-          class="avatar"
-          size="large"
-          :icon="avatar_url"/>
-      </template>
-    </nut-cell>
-    <view v-for="item in [1,1,1,1,1,1]">
-      <account_card/>
+    <profile_card
+      :nickname=nickname
+      :avatar_url=avatar_url>
+    </profile_card>
+    <nut-cell-group
+      class="account-group"
+      title="账号管理"/>
+    <view v-for="item in account_list">
+      <account_card :account_item="item"/>
     </view>
-
   </view>
 </template>
 
-<script>
-import {ref} from 'vue'
-import account_card from "../../components/card/account_card";
+<script lang="ts">
+import {ref, reactive, toRefs} from 'vue'
+import account_card from "../../components/card/account_card.vue";
+import profile_card from "../../components/card/profile_card.vue";
+import {Account_List} from "../../types/Account_List";
 
 export default {
-  components: {account_card},
+  name: 'profile',
+  components: {
+    profile_card,
+    account_card
+  },
   setup() {
-    const msg = ref('Hello world')
     const nickname = ref('Test Username')
-    const avatar_url = ref('https://img12.360buyimg.com/imagetools/jfs/t1/143702/31/16654/116794/5fc6f541Edebf8a57/4138097748889987.png')
+    const avatar_url = ref('../../assets/images/test_avatar.png')
+    const accounts = reactive<{ account_list: Account_List[] }>({
+      account_list:
+        [{aid: 1, title: "MOOC", from: "/assets/images/mooc.png"},
+          {aid: 2, title: "SPOC", from: "/assets/images/spoc.png"},
+          {aid: 3, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {aid: 4, title: "MOOC", from: "/assets/images/mooc.png"},
+          {aid: 5, title: "SPOC", from: "/assets/images/spoc.png"},
+          {aid: 6, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {aid: 7, title: "MOOC", from: "/assets/images/mooc.png"},
+          {aid: 8, title: "SPOC", from: "/assets/images/spoc.png"},
+          {aid: 9, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {aid: 10, title: "MOOC", from: "/assets/images/mooc.png"},
+          {aid: 11, title: "SPOC", from: "/assets/images/spoc.png"},
+          {aid: 12, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {aid: 13, title: "MOOC", from: "/assets/images/mooc.png"},
+          {aid: 14, title: "SPOC", from: "/assets/images/spoc.png"},
+          {aid: 15, title: "教学立方", from: "/assets/images/jxlf.png"},]
+    })
     return {
-      msg, nickname, avatar_url
+      nickname,
+      avatar_url,
+      ...toRefs(accounts)
     }
   }
 }
 </script>
 
 <style>
-.profile-card {
-  margin-top: 20px;
-  align-items: center;
-  border-radius: 0;
-  box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
-}
-
-.avatar {
-  margin-right: 20px;
+.account-group {
+  margin-top: -20px;
+  margin-bottom: -10px;
 }
 
 .profile {

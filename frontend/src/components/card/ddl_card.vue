@@ -1,5 +1,4 @@
 <template>
-  <!--  <nut-cell-group title="DDL">-->
   <nut-cell
     class="ddl-card"
     :title=ddl_item.title
@@ -13,7 +12,6 @@
       />
     </template>
   </nut-cell>
-  <!--  </nut-cell-group>-->
 </template>
 
 <script lang="ts">
