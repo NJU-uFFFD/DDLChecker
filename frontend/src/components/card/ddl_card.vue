@@ -8,7 +8,7 @@
       <template v-slot:icon>
         <img
           class="site-icon"
-          src="../../assets/images/mooc.png"
+          src="/assets/images/mooc.png"
         />
       </template>
     </nut-cell>

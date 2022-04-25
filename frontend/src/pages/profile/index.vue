@@ -1,5 +1,5 @@
 <template>
-  <view class="my">
+  <view class="profile">
     <text>我是个人页！</text>
   </view>
 </template>
