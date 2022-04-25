@@ -1,4 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '个人',
-  "usingComponents": {}
+  navigationBarTitleText: '个人'
 })
