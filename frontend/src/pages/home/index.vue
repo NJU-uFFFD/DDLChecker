@@ -23,15 +23,15 @@ export default {
     const msg = ref('Hello world')
     const ddls = reactive<{ ddl_list: DDL_List [] }>({
       ddl_list:
-        [{id: 1, title: "第一个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
-          {id: 2, title: "第二个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
-          {id: 3, title: "第三个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},
-          {id: 4, title: "第四个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
-          {id: 5, title: "第五个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
-          {id: 6, title: "第六个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},
-          {id: 7, title: "第七个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
-          {id: 8, title: "第八个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
-          {id: 9, title: "第九个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},]
+        [{did: 1, title: "第一个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
+          {did: 2, title: "第二个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
+          {did: 3, title: "第三个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},
+          {did: 4, title: "第四个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
+          {did: 5, title: "第五个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
+          {did: 6, title: "第六个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},
+          {did: 7, title: "第七个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
+          {did: 8, title: "第八个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
+          {did: 9, title: "第九个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},]
     })
     return {
       msg,
