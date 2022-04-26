@@ -1,12 +1,16 @@
 ## 就当这是个开发记录了...
 
 ### 目录
+
 ```
  - main.py 程序入口
  - routes 后端 API
+   - account.py 用户账号管理
+   - todo.py 用户ddl管理
+   - data pattern.md qian'hou
  - crawler
-   - auth 登录认证
-   - fetch 爬虫获取数据
+   - auth.py 登录认证
+   - fetch.py 爬虫获取数据
 ```
 
 #### 2022/4/18
