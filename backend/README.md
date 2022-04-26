@@ -7,7 +7,7 @@
  - routes 后端 API
    - account.py 用户账号管理
    - todo.py 用户ddl管理
-   - data pattern.md 前后端数据交流格式
+   - pattern.md 前后端数据交流格式
  - db 数据层
  - crawler
    - auth.py 登录认证
