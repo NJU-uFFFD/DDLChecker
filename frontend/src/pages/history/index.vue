@@ -21,6 +21,7 @@ async function test() {
 }
 
 export default {
+  name: "history",
   setup() {
     const msg = ref('Hello world')
     return {
