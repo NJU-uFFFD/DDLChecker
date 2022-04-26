@@ -14,9 +14,11 @@
     - profile 我的
   - components 组件
     - card 卡片
+    - menu 菜单
   - assets 资源
     - images 图片
     - styles 自定义风格
+  - types 接口类型 
   - app.ts 小程序入口
   - app.config.ts 小程序编译选项
   - app.scss
@@ -29,10 +31,16 @@
 
 ## 开发记录
 
-### -2022/4/24 Sakiyary
+### 2022/4/24 @Sakiyary
 
 1. 初始化项目为`pages`, `components`, `assets`, 有`.vue`文件的地方就不用`.scss`(不然还要Vue干吗).
 2. 引入`@nutui`, 感觉不是很会套.
 3. 试了一下`nutui`的`cell`组件, ~~并不是那么好用, 感觉不如自己写~~, 海星.
 4. 只写了空壳, 函数都没有.
 5. 自定义风格中替换了主色调.
+
+### 2022/4/25 @Sakiyary
+
+1. `home`和`profile`两页都用组件化的格式初始化了一下.
+2. 当`<script>`区域报错的时候, 记得改为`<script lang="ts">`.
+3. 接着套.

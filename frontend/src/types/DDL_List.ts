@@ -1,5 +1,5 @@
 export interface DDL_List {
-  id: number,
+  did: number,
   title: string,
   ddl_time: string,
   from: string
