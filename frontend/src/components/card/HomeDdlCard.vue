@@ -2,7 +2,7 @@
   <nut-cell
     class="home-ddl-card"
     :title=ddlData.title
-    :sub-title=ddlData.ddl_time.toLocaleString()
+    :sub-title=ddlTime
     desc="查看详情"
     @click="testClick">
     <template
@@ -16,25 +16,34 @@
 </template>
 
 <script lang="ts">
-import {ref} from 'vue';
+import {defineComponent, ref} from 'vue';
 import {Toast} from '@nutui/nutui-taro';
 import {DDLData} from "../../types/DDLData";
 
-export default {
+export default defineComponent({
   props: {
     ddlData: Object as () => DDLData
   },
-  setup() {
+  setup(props) {
     const switchChecked = ref(true);
     const testClick = (event) => {
       Toast.text('点击事件');
     };
+
+    // const ddlTime = (new Intl.DateTimeFormat("zh-CN", {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false}).format)(props.ddlData?.ddl_time);
+    //上述用法会出现上午12:40或者24:40这种离谱的情况,太难受啦!!
+
+    const t = props.ddlData?.ddl_time;
+    const ddlTime = String(t?.getFullYear() + "年" + t?.getMonth() + "月" + t?.getDate() + "日 " +
+      (t?.getHours() > 9 ? t?.getHours() : "0" + t?.getHours()) + ":" + (t?.getMinutes() > 9 ? t?.getMinutes() : "0" + t?.getMinutes()))
+
     return {
       testClick,
       switchChecked,
+      ddlTime,
     };
   }
-}
+})
 </script>
 
 <style>

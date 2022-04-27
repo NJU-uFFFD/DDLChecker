@@ -14,12 +14,14 @@
 </template>
 
 <script>
-export default {
+import {defineComponent} from "vue";
+
+export default defineComponent({
   props: {
     nickname: String,
     avatarUrl: String
   }
-}
+})
 </script>
 
 <style>

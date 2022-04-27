@@ -1,20 +1,21 @@
 <template>
   <nut-menu>
     <nut-menu-item
-      v-model="state.value1"
-      :options="state.options1"/>
+      v-model="value1"
+      :options="options1"/>
     <nut-menu-item
-      v-model="state.value2"
-      @change="handleChange"
-      :options="state.options2"/>
+      v-model="value2"
+      @change="changeSort"
+      :options="options2"/>
   </nut-menu>
 </template>
 
 <script>
-import {reactive} from 'vue';
+import {reactive, toRefs, defineComponent} from 'vue';
 
-export default {
-  setup() {
+export default defineComponent({
+  name: "HomeDdlListMenu",
+  setup(props, {emit}) {
     const state = reactive({
       options1: [
         {text: '全部DDL', value: 0},
@@ -22,25 +23,26 @@ export default {
         {text: '宽松DDL', value: 2}
       ],
       options2: [
-        {text: '由近至远', value: 'a'},
-        {text: '由远至近', value: 'b'},
-        {text: '分类排序', value: 'c'},
-        {text: '工作量排序', value: 'd'},
+        {text: '由近至远', value: "a"},
+        {text: '由远至近', value: "b"},
+        {text: '按id排序', value: "c"},
+        {text: '工作量排序', value: "d"},
       ],
       value1: 0,
-      value2: 'a'
+      value2: "a"
     });
 
-    const handleChange = val => {
-      console.log('val', val);
+    //这个给父组件传值的函数真的太坑了, debug了好久
+    const changeSort = val => {
+      emit('sortMode', val)
     }
 
     return {
-      state,
-      handleChange
+      ...toRefs(state),
+      changeSort
     };
   }
-}
+})
 </script>
 
 <style>
