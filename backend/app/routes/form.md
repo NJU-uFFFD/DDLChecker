@@ -19,6 +19,7 @@
   		"end" -> int(>=0)
   		"filter" -> dirt
   				"is_completed" -> int(0, 1)
+  				"is_overtime" -> int(0, 1)
   				"by_course" -> int(0, 1)
   				"by_tag" -> int(0, 1)
   ```
@@ -26,7 +27,7 @@
 - "ddl/delete":
 
   ```
-  		"title" -> str (len 1 - 128)
+  		"ddl_id" -> int(>=0)
   ```
 
   
@@ -38,23 +39,27 @@
 - "ddl/add":
 
   ```
-  None
+  		"ddl_id" ->int(>=0)
   ```
   
 - "ddl/list":
 
   ```
-  		"title" -> str (len 1 - 50)
-  		"content" -> str (len 1 - 200)
-  		"ddl_time" -> int
-  		"tag" -> str
-  		"course_uuid" -> uuid
+  		"ddl_list" -> list[{
+                  "ddl_id" -> int(>=0)
+                  "title" -> str (len 1 - 50)
+                  "content" -> str (len 1 - 200)
+                  "ddl_time" -> int
+                  "tag" -> str
+                  "course_uuid" -> uuid
+              }
+  		]
   ```
 
 - "ddl/delete":
 
   ```
-  None
+  		"ddl_id" ->int(>=0)
   ```
 
   
