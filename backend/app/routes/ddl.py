@@ -9,24 +9,23 @@ bp = Blueprint("ddl", __name__, url_prefix="/ddl")
 @bp.route("/add", methods=['POST', 'GET'])
 def add_ddl():
     """
-    允许用户手动添加ddl
-    data:   "title" -> str (len 1 - 128)
-            "content" -> str (len 1 - 256)
-            "ddl_time" -> int
-            "tag" -> str
-            "course_uuid" -> uuid
-    :return: standard_response()
+    用户手动添加ddl
+    :return: make_response()
     """
     open_id, data = get_context()
-
-    data = check_data(AddDDLRules, data)
+    check_data(AddDDLRules, data)
 
     return make_response(0, "OK", {})
 
 
 @bp.route("/list", methods=['POST', 'GET'])
 def list_dll():
+    """
+    返回用户查询的ddl(默认按照时间顺序排序， filter可选)
+    :return: make_response()
+    """
     open_id, data = get_context()
+    check_data(ListDDLsRules, data)
 
     return make_response(0, "OK", {})
 
