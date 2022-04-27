@@ -11,24 +11,26 @@ def is_integer(x):
 
 class DeleteDDLRules:
     """
-        "title" -> str (len 1 - 128)
+        "ddl_id" -> int(>=0)
     """
-    title = fields.Str(required=True, validate=validate.Length(min=1, max=128))
+    title = fields.Float(required=True, validate=[validate.Range(min=0), is_integer])
 
 
 class ListDDLsRules(Schema):
     """
         "start" -> int(>=0)
         "end" -> int(>=0)
-        "filter" -> dirt
+        "filter" -> dict
             "is_completed" -> int(0, 1)
+            "is_overtime" -> int(0, 1)
             "by_course" -> int(0, 1)
             "by_tag" -> int(0, 1)
     """
     start = fields.Float(required=True, validate=[validate.Range(min=0), is_integer])
     end = fields.Float(required=True, validate=[validate.Range(min=0), is_integer])
     filter = fields.Dict(required=True,
-                         keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "by_course", "by_tag"])),
+                         keys=fields.Str(required=True,
+                                         validate=validate.OneOf(["is_completed", "is_overtime", "by_course", "by_tag"])),
                          values=fields.Float(required=True, validate=[validate.Range(min=0, max=1), is_integer]))
 
 
@@ -42,7 +44,8 @@ class AddDDLRules(Schema):
     """
     title = fields.Str(required=True, validate=validate.Length(min=1, max=128))
     content = fields.Str(validate=validate.Length(min=1, max=256))
-    ddl_time = fields.Float(required=True, validate=[validate.Range(min=round(time.time() * 1000) - 2_592_000_000), is_integer])
+    ddl_time = fields.Float(required=True,
+                            validate=[validate.Range(min=round(time.time() * 1000) - 2_592_000_000), is_integer])
     tag = fields.Str(validate=validate.Length(min=1, max=256))
     course_uuid = fields.UUID()
 
