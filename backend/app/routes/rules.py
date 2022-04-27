@@ -11,8 +11,9 @@ def is_integer(x):
 
 class DeleteDDLRules:
     """
-
+        "title" -> str (len 1 - 128)
     """
+    title = fields.Str(required=True, validate=validate.Length(min=1, max=128))
 
 
 class ListDDLsRules(Schema):
@@ -56,4 +57,4 @@ def check_data(schema, data):
     try:
         return schema().load(data)
     except ValidationError as e:
-        abort(make_response(status=-1, msg=str(e.messages), data={}), 400)
+        abort(make_response(status=-1, msg=str(e.messages), return_data={}), 400)

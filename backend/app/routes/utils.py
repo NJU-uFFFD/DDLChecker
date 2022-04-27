@@ -12,9 +12,9 @@ def get_context():
     return open_id, data
 
 
-def make_response(status: int, msg: str, data: dict) -> Response:
+def make_response(status: int, msg: str, return_data: dict) -> Response:
     """
     标准请求返回
     :return: Response
     """
-    return Response(json.dumps({"status": status, "msg": msg, "data": data}))
+    return Response(json.dumps({"status": status, "msg": msg, "return_data": return_data}))
