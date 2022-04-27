@@ -1,13 +1,14 @@
 <template>
   <nut-cell
-    class="account-card"
-    :title=account_item.title
+    class="profile-account-card"
+    :title=accountData.title
     desc="查看详情"
     @click="testClick">
-    <template v-slot:icon>
+    <template
+      #icon>
       <img
-        class="site-icon"
-        :src=account_item.from
+        class="profile-site-icon"
+        :src=accountData.from
       />
     </template>
   </nut-cell>
@@ -15,12 +16,11 @@
 
 <script lang="ts">
 import {Toast} from '@nutui/nutui-taro';
-import {Account_List} from "../../types/Account_List";
+import {AccountData} from "../../types/AccountData";
 
 export default {
-  name: "account-card",
   props: {
-    account_item: Object as () => Account_List
+    accountData: Object as () => AccountData
   },
   setup() {
     const testClick = (event) => {
@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style>
-.account-card {
+.profile-account-card {
   align-items: center;
   margin-left: 10px;
   margin-top: 0;
@@ -45,7 +45,7 @@ export default {
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
-.site-icon {
+.profile-site-icon {
   width: 30px;
   height: 30px;
   margin-top: 2px;

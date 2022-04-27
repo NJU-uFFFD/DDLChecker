@@ -1,14 +1,15 @@
 <template>
   <nut-cell
-    class="ddl-card"
-    :title=ddl_item.title
-    :sub-title=ddl_item.ddl_time
+    class="home-ddl-card"
+    :title=ddlData.title
+    :sub-title=ddlData.ddl_time.toLocaleString()
     desc="查看详情"
     @click="testClick">
-    <template v-slot:icon>
+    <template
+      #icon>
       <img
-        class="site-icon"
-        :src=ddl_item.from
+        class="home-site-icon"
+        :src=ddlData.from
       />
     </template>
   </nut-cell>
@@ -17,12 +18,11 @@
 <script lang="ts">
 import {ref} from 'vue';
 import {Toast} from '@nutui/nutui-taro';
-import {DDL_List} from "../../types/DDL_List";
+import {DDLData} from "../../types/DDLData";
 
 export default {
-  name: "ddl_card",
   props: {
-    ddl_item: Object as () => DDL_List
+    ddlData: Object as () => DDLData
   },
   setup() {
     const switchChecked = ref(true);
@@ -39,22 +39,22 @@ export default {
 
 <style>
 
-.ddl-card {
+.home-ddl-card {
   margin-top: 12px;
   margin-bottom: 10px;
   align-items: center;
   margin-left: 10px;
   width: 95%;
-  height: 100px;
-  border-radius: 50px;
+  height: 88px;
+  border-radius: 20px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
-.site-icon {
+.home-site-icon {
   width: 30px;
   height: 30px;
-  margin-top: 2px;
-  margin-left: 10px;
+  margin-top: 0;
+  margin-left: 0;
   margin-right: 20px;
 }
 

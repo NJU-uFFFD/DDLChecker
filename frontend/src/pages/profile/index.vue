@@ -1,54 +1,56 @@
 <template>
   <view class="profile">
-    <profile_card
+    <ProfileCard
       :nickname=nickname
-      :avatar_url=avatar_url>
-    </profile_card>
+      :avatarUrl=avatarUrl>
+    </ProfileCard>
     <nut-cell-group
-      class="account-group"
+      class="profile-account-group"
       title="账号管理"/>
-    <view v-for="item in account_list">
-      <account_card :account_item="item"/>
+    <view
+      v-for="data in account_list"
+      :key="data.account_id">
+      <AccountCard :accountData="data"/>
     </view>
   </view>
 </template>
 
 <script lang="ts">
 import {ref, reactive, toRefs} from 'vue'
-import account_card from "../../components/card/account_card.vue";
-import profile_card from "../../components/card/profile_card.vue";
-import {Account_List} from "../../types/Account_List";
+import AccountCard from "../../components/card/ProfileAccountCard.vue";
+import ProfileCard from "../../components/card/ProfileProfileCard.vue";
+import {AccountData} from "../../types/AccountData";
 
 export default {
   name: 'profile',
   components: {
-    profile_card,
-    account_card
+    ProfileCard,
+    AccountCard
   },
   setup() {
     const nickname = ref('Test Username')
-    const avatar_url = ref('../../assets/images/test_avatar.png')
-    const accounts = reactive<{ account_list: Account_List[] }>({
+    const avatarUrl = ref('../../assets/images/test_avatar.png')
+    const accounts = reactive<{ account_list: AccountData[] }>({
       account_list:
-        [{aid: 1, title: "MOOC", from: "/assets/images/mooc.png"},
-          {aid: 2, title: "SPOC", from: "/assets/images/spoc.png"},
-          {aid: 3, title: "教学立方", from: "/assets/images/jxlf.png"},
-          {aid: 4, title: "MOOC", from: "/assets/images/mooc.png"},
-          {aid: 5, title: "SPOC", from: "/assets/images/spoc.png"},
-          {aid: 6, title: "教学立方", from: "/assets/images/jxlf.png"},
-          {aid: 7, title: "MOOC", from: "/assets/images/mooc.png"},
-          {aid: 8, title: "SPOC", from: "/assets/images/spoc.png"},
-          {aid: 9, title: "教学立方", from: "/assets/images/jxlf.png"},
-          {aid: 10, title: "MOOC", from: "/assets/images/mooc.png"},
-          {aid: 11, title: "SPOC", from: "/assets/images/spoc.png"},
-          {aid: 12, title: "教学立方", from: "/assets/images/jxlf.png"},
-          {aid: 13, title: "MOOC", from: "/assets/images/mooc.png"},
-          {aid: 14, title: "SPOC", from: "/assets/images/spoc.png"},
-          {aid: 15, title: "教学立方", from: "/assets/images/jxlf.png"},]
+        [{account_id: 1, title: "MOOC", from: "/assets/images/mooc.png"},
+          {account_id: 2, title: "SPOC", from: "/assets/images/spoc.png"},
+          {account_id: 3, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {account_id: 4, title: "MOOC", from: "/assets/images/mooc.png"},
+          {account_id: 5, title: "SPOC", from: "/assets/images/spoc.png"},
+          {account_id: 6, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {account_id: 7, title: "MOOC", from: "/assets/images/mooc.png"},
+          {account_id: 8, title: "SPOC", from: "/assets/images/spoc.png"},
+          {account_id: 9, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {account_id: 10, title: "MOOC", from: "/assets/images/mooc.png"},
+          {account_id: 11, title: "SPOC", from: "/assets/images/spoc.png"},
+          {account_id: 12, title: "教学立方", from: "/assets/images/jxlf.png"},
+          {account_id: 13, title: "MOOC", from: "/assets/images/mooc.png"},
+          {account_id: 14, title: "SPOC", from: "/assets/images/spoc.png"},
+          {account_id: 15, title: "教学立方", from: "/assets/images/jxlf.png"},]
     })
     return {
       nickname,
-      avatar_url,
+      avatarUrl,
       ...toRefs(accounts)
     }
   }
@@ -56,7 +58,7 @@ export default {
 </script>
 
 <style>
-.account-group {
+.profile-account-group {
   margin-top: -20px;
   margin-bottom: -10px;
 }
