@@ -17,10 +17,9 @@ def add_ddl():
             "course_uuid" -> uuid
     :return: standard_response()
     """
-    # open_id, data = get_context()
+    open_id, data = get_context()
 
-    json = {"title": "s"}
-    data = check_data(AddDDLRules, json)
+    data = check_data(AddDDLRules, data)
 
     return make_response(0, "OK", {})
 
