@@ -1,33 +1,55 @@
 # 前端 taro-Vue3-TypeScript
 
-## 目录
+## 目录结构
 
 ```
-- config 编译选项
-  - dev.js
-  - index.js 
-  - prod.js
-- src 
-  - pages 页面
-    - home 首页
-    - history 历史
-    - profile 我的
-  - components 组件
-    - card 卡片
-    - menu 菜单
-  - assets 资源
-    - images 图片
-    - styles 自定义风格
-  - types 接口类型 
-  - app.ts 小程序入口
-  - app.config.ts 小程序编译选项
-  - app.scss
-  - index.html
-- package.json
-- tsconfig.json
-- babel.config.js
-- README.md
+├── dist                        编译结果目录
+|
+├── config                      项目编译配置目录
+|   ├── index.js                默认配置
+|   ├── dev.js                  开发环境配置
+|   └── prod.js                 生产环境配置
+|
+├── src                         源码目录
+|   ├── components              组件文件目录
+|   |   ├── card                卡片组件目录
+|   |   └── menu                菜单组件目录
+|   |
+|   ├── pages                   页面文件目录
+|   |   ├── home                home 页面目录
+|   |   |   ├── index.vue       home 页面逻辑+样式 (下同)
+|   |   |   └── index.config.ts home 页面配置 (下同)
+|   |   ├── history             history 页面目录
+|   |   └── profile             profile 页面目录
+|   |
+|   ├── types                   数据接口文件目录
+|   |
+|   ├── app.ts                  项目入口文件
+|   ├── app.scss                项目总通用样式
+|   ├── app.config.ts           项目入口配置
+|   └── index.html              H5项目额外配置
+|
+├── project.config.json         微信小程序项目配置
+├── project.tt.json             字节跳动小程序项目配置
+|
+├── babel.config.js             Babel 配置
+├── tsconfig.json               TypeScript 配置
+├── .eslintrc                   ESLint 配置
+|
+├── package.json
+└── README.md                   
 ```
+
+## `Vue3`风格要求
+
+1. 始终以 `key` 配合 `v-for`
+2. 对于绝大多数项目来说，在单文件组件和字符串模板中，组件名称应该始终是 `PascalCase` 的——但是在 `DOM` 模板中是 `kebab-case` 的。
+3. `JS/JSX` 中的组件名应该始终是 `PascalCase` 的，尽管在较为简单的应用中，只使用 `app.component` 进行全局组件注册时，可以使用 `kebab-case` 字符串。
+4. 在单文件组件、字符串模板和 `JSX` 中，没有内容的组件应该是自闭合的——但在 `DOM` 模板里永远不要这样做。
+5. 组件名称应该倾向于完整的单词，而不是缩写。
+6. 在声明 `prop` 的时候，其命名应该始终使用 `camelCase`，而在模板和 `JSX` 中应该始终使用 `kebab-case`。
+7. 多个 `attribute` 的元素应该分多行撰写，每个 `attribute` 一行。
+8. 指令缩写 (用 `:` 表示 `v-bind`:，`@` 表示 `v-on`: 和用 `#` 表示 `v-slot`) 应该要么始终使用，要么始终不使用。
 
 ## 开发记录
 
@@ -44,3 +66,9 @@
 1. `home`和`profile`两页都用组件化的格式初始化了一下.
 2. 当`<script>`区域报错的时候, 记得改为`<script lang="ts">`.
 3. 接着套.
+
+### 2022/4/27 @Sakiyary
+
+1. 按照风格要求重构代码
+
+   

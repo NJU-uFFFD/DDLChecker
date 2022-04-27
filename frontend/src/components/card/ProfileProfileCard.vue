@@ -1,29 +1,29 @@
 <template>
   <nut-cell
-    class="profile-card"
+    class="profile-profile-card"
     :title=nickname
     sub-title="查看详情">
-    <template v-slot:icon>
+    <template
+      #icon>
       <nut-avatar
-        class="avatar"
+        class="profile-avatar"
         size="large"
-        :icon="avatar_url"/>
+        :icon="avatarUrl"/>
     </template>
   </nut-cell>
 </template>
 
 <script>
 export default {
-  name: "profile_card",
   props: {
     nickname: String,
-    avatar_url: String
+    avatarUrl: String
   }
 }
 </script>
 
 <style>
-.profile-card {
+.profile-profile-card {
   margin-top: 20px;
   margin-bottom: 0;
   align-items: center;
@@ -31,7 +31,7 @@ export default {
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
-.avatar {
+.profile-avatar {
   margin-right: 20px;
 }
 

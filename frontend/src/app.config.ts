@@ -6,7 +6,8 @@ export default defineAppConfig({
   ],
   window: {
     backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#f9f9f9',
+    navigationBarBackgroundColor: '#ffffff',
+    backgroundColor: '#f9f9f9',
     navigationBarTitleText: 'WeChat',
     navigationBarTextStyle: 'black',
     // enablePullDownRefresh: true,

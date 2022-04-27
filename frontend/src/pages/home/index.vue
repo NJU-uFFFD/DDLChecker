@@ -1,47 +1,47 @@
 <template>
   <view class="home">
-    <ddl_list_menu/>
-    <view v-for="item in ddl_list">
-      <ddl_card :ddl_item="item"/>
+    <DdlListMenu/>
+    <view
+      v-for="data in ddlList"
+      :key="data.ddl_time">
+      <DdlCard :ddlData="data"/>
     </view>
   </view>
 </template>
 
 <script lang="ts">
 import {reactive, ref, toRefs} from 'vue';
-import ddl_card from "../../components/card/ddl_card.vue";
-import ddl_list_menu from "../../components/menu/ddl_list_menu.vue";
-import {DDL_List} from "../../types/DDL_List";
+import DdlCard from "../../components/card/HomeDdlCard.vue";
+import DdlListMenu from "../../components/menu/HomeDdlListMenu.vue";
+import {DDLData} from "../../types/DDLData";
 
 export default {
   name: 'home',
   components: {
-    ddl_card,
-    ddl_list_menu
+    DdlCard,
+    DdlListMenu
   },
   setup() {
-    const msg = ref('Hello world')
-    const ddls = reactive<{ ddl_list: DDL_List [] }>({
-      ddl_list:
-        [{did: 1, title: "第一个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
-          {did: 2, title: "第二个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
-          {did: 3, title: "第三个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},
-          {did: 4, title: "第四个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
-          {did: 5, title: "第五个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
-          {did: 6, title: "第六个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},
-          {did: 7, title: "第七个DDL", ddl_time: "2022/04/30 23:59", from: "/assets/images/jxlf.png"},
-          {did: 8, title: "第八个DDL", ddl_time: "2022/05/06 23:59", from: "/assets/images/spoc.png"},
-          {did: 9, title: "第九个DDL", ddl_time: "2022/06/10 23:59", from: "/assets/images/mooc.png"},]
+    const ddls = reactive<{ ddlList: DDLData [] }>({
+      ddlList:
+        [{ddl_id: 1, title: "第一个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/jxlf.png", content: "", tag: ""},
+          {ddl_id: 2, title: "第二个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/spoc.png", content: "", tag: ""},
+          {ddl_id: 3, title: "第三个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/mooc.png", content: "", tag: ""},
+          {ddl_id: 4, title: "第四个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/jxlf.png", content: "", tag: ""},
+          {ddl_id: 5, title: "第五个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/spoc.png", content: "", tag: ""},
+          {ddl_id: 6, title: "第六个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/mooc.png", content: "", tag: ""},
+          {ddl_id: 7, title: "第七个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/jxlf.png", content: "", tag: ""},
+          {ddl_id: 8, title: "第八个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/spoc.png", content: "", tag: ""},
+          {ddl_id: 9, title: "第九个DDL", ddl_time: new Date(1656453270035), from: "/assets/images/mooc.png", content: "", tag: ""},]
     })
     return {
-      msg,
       ...toRefs(ddls)
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
 .home {
   background: #f9f9f9;
 }
