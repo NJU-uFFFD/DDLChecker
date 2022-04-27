@@ -3,11 +3,13 @@
 ### 目录
 
 ```
- - main.py 程序入口
+ - app.py 程序入口
  - routes 后端 API
+   - utils.py 常用函数
+   - exts.py 防止循环引用
    - account.py 用户账号管理
-   - todo.py 用户ddl管理
-   - pattern.md 前后端数据交流格式
+   - ddl.py 用户ddl管理
+   - form.md 前后端数据交流格式
  - db 数据层
  - crawler
    - auth.py 登录认证

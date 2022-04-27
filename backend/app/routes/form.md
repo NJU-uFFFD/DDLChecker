@@ -1,4 +1,4 @@
-# Data Pattern
+# Data form
 
 - add_todo:
 
@@ -7,5 +7,5 @@
   		"content" -> str (len 1 - 200)
   		"ddl_time" -> int
   		"tag" -> str
-  		"course" -> str
+  		"course_uuid" -> uuid
   ```
