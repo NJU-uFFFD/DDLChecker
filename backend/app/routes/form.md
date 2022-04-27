@@ -2,7 +2,7 @@
 
 ## 前端  -> 后端
 
-- add_ddl:
+- "ddl/add":
 
   ```
   		"title" -> str (len 1 - 50)
@@ -12,7 +12,7 @@
   		"course_uuid" -> uuid
   ```
 
-- list_ddl:
+- "ddl/list":
 
   ```
   		"start" -> int(>=0)
@@ -23,12 +23,38 @@
   				"by_tag" -> int(0, 1)
   ```
 
+- "ddl/delete":
+
+  ```
+  		"title" -> str (len 1 - 128)
+  ```
+
   
 
 
 
 ## 后端 -> 前端
 
-- add_ddl:
+- "ddl/add":
+
+  ```
+  None
+  ```
+  
+- "ddl/list":
+
+  ```
+  		"title" -> str (len 1 - 50)
+  		"content" -> str (len 1 - 200)
+  		"ddl_time" -> int
+  		"tag" -> str
+  		"course_uuid" -> uuid
+  ```
+
+- "ddl/delete":
+
+  ```
+  None
+  ```
 
   
