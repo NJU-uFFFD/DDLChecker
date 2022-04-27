@@ -1,4 +1,6 @@
+import logging
 import time
+import json
 
 from marshmallow import Schema, fields, ValidationError, validate
 from routes.utils import make_response
@@ -10,7 +12,7 @@ class AddDDLRules(Schema):
     content = fields.Str(required=True, validate=validate.Length(min=1, max=256))
     ddl_time = fields.Int(required=True, validate=validate.Range(min=round(time.time() * 1000) - 2_592_000_000))
     tag = fields.Str(required=True, validate=validate.Length(min=1, max=256))
-    course = fields.UUID(required=True)
+    course_uuid = fields.UUID(required=True)
 
 
 def check_data(schema, data):

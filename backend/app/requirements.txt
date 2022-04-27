@@ -1,1 +1,2 @@
 flask-sqlalchemy==2.5.1
+marshmallow==3.15.0

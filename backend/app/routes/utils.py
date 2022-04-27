@@ -1,9 +1,5 @@
 import json
 from flask import request, abort, jsonify, Response
-from marshmallow import Schema, fields, ValidationError
-
-
-
 
 
 def get_context():
@@ -11,7 +7,7 @@ def get_context():
     获取用户的open_id 和 http请求headers
     :return: open_id, data(json)
     """
-    data = jsonify(request.get_data())
+    data = request.get_json()
     open_id = request.headers['x-wx-openid']
     return open_id, data
 
