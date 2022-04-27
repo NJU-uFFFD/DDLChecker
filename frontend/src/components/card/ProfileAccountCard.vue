@@ -17,8 +17,9 @@
 <script lang="ts">
 import {Toast} from '@nutui/nutui-taro';
 import {AccountData} from "../../types/AccountData";
+import {defineComponent} from "vue";
 
-export default {
+export default defineComponent({
   props: {
     accountData: Object as () => AccountData
   },
@@ -30,7 +31,7 @@ export default {
       testClick,
     };
   }
-}
+})
 </script>
 
 <style>
