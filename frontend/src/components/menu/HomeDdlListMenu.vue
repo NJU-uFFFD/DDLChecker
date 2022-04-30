@@ -25,7 +25,7 @@ export default defineComponent({
       options2: [
         {text: '由近至远', value: "a"},
         {text: '由远至近', value: "b"},
-        {text: '按id排序', value: "c"},
+        {text: '按ID排序', value: "c"},
         {text: '工作量排序', value: "d"},
       ],
       value1: 0,

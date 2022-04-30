@@ -20,6 +20,7 @@ import {AccountData} from "../../types/AccountData";
 import {defineComponent} from "vue";
 
 export default defineComponent({
+  name: "ProfileAccountCard",
   props: {
     accountData: Object as () => AccountData
   },
