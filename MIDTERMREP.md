@@ -79,42 +79,42 @@ nlp
 ```
 DDLChecker
 ├── backend                         后端目录
-|	├── app                         后端程序目录
-|	|   ├── crawler                 爬虫组件目录
-|	|	|   ├── auth                登录接口目录
-|	|	|   └── fetch               爬虫接口目录
-|	| 	|
-|	|   ├── db                      数据层目录
-|	|   ├── routes                  后端API目录
-|	|   ├── app.py                  后端程序入口
-|	|   └── requirements.txt        依赖文件
-|	| 
-|	├── Dockerfile                  容器管理文件
-|	└── README.md                   后端的读我!
+|   ├── app                         后端程序目录
+|   |   ├── crawler                 爬虫组件目录
+|   |   |   ├── auth                登录接口目录
+|   |   |   └── fetch               爬虫接口目录
+|   |   |
+|   |   ├── db                      数据层目录
+|   |   ├── routes                  后端API目录
+|   |   ├── app.py                  后端程序入口
+|   |   └── requirements.txt        依赖文件
+|   |
+|   ├── Dockerfile                  容器管理文件
+|   └── README.md                   后端的读我!
 |
 ├── frontend                        前端目录
-|	├── dist                        编译结果目录
-|	├── config                      项目编译配置目录
-|	|   ├── index.js                默认配置
-|	|   ├── dev.js                  开发环境配置
-|	|   └── prod.js                 生产环境配置
-|	| 
-|	├── src                         源码目录
-|	|   ├── assets                  资源文件目录
-|	|   ├── components              组件文件目录
-|	|   ├── pages                   页面文件目录
-|	|   ├── types                   数据接口文件目录
-|	|   ├── app.ts                  项目入口文件
-|	|   ├── app.scss                项目总通用样式
-|	|   ├── app.config.ts           项目入口配置
-|	|   └── index.html              H5项目额外配置
-|	| 
-|	├── project.config.json         微信小程序项目配置
-|	├── babel.config.js             Babel 配置
-|	├── tsconfig.json               TypeScript 配置
-|	├── .eslintrc                   ESLint 配置
-|	├── package.json                依赖文件
-|	└── README.md                   前端的读我!
+|   ├── dist                        编译结果目录
+|   ├── config                      项目编译配置目录
+|   |   ├── index.js                默认配置
+|   |   ├── dev.js                  开发环境配置
+|   |   └── prod.js                 生产环境配置
+|   |
+|   ├── src                         源码目录
+|   |   ├── assets                  资源文件目录
+|   |   ├── components              组件文件目录
+|   |   ├── pages                   页面文件目录
+|   |   ├── types                   数据接口文件目录
+|   |   ├── app.ts                  项目入口文件
+|   |   ├── app.scss                项目总通用样式
+|   |   ├── app.config.ts           项目入口配置
+|   |   └── index.html              H5项目额外配置
+|   | 
+|   ├── project.config.json         微信小程序项目配置
+|   ├── babel.config.js             Babel 配置
+|   ├── tsconfig.json               TypeScript 配置
+|   ├── .eslintrc                   ESLint 配置
+|   ├── package.json                依赖文件
+|   └── README.md                   前端的读我!
 |
 └── README.md                       总项目的读我!
 ```
