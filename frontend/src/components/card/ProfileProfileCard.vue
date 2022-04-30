@@ -17,6 +17,7 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
+  name: "ProfileProfileCard",
   props: {
     nickname: String,
     avatarUrl: String
