@@ -1,7 +1,8 @@
 import json
 from flask import request, Response
+from flask import Flask
 
-
+Flask.make_response()
 def get_context():
     """
     获取用户的open_id 和 http请求headers
