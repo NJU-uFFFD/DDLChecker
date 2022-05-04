@@ -5,7 +5,7 @@ from flask import Flask
 
 def get_context():
     """
-    获取用户的open_id 和 http请求headers
+    获取用户的 open_id 和 http 请求 headers
     :return: open_id, data(json)
     """
     data = request.get_json()

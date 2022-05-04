@@ -2,6 +2,9 @@ from flask import Blueprint
 from routes.utils import get_context, make_response
 import json
 
+from db import db
+from db.user import User
+
 bp = Blueprint("account", __name__, url_prefix="/account")
 
 

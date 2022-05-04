@@ -1,6 +1,6 @@
-from __init__ import db
+from db import db
 
-class Todo(db.Model):
+class Ddl(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	userid = db.Column(db.Integer, db.ForeignKey('user.id'))
 	title = db.Column(db.String(256))

@@ -36,17 +36,17 @@ class ListDDLsRules(Schema):
 
 class AddDDLRules(Schema):
     """
-        "title" -> str (len 1 - 128)
-        "content" -> str (len 1 - 256)(not necessary)
+        "title" -> str (len 1 - 256)
+        "content" -> str (len 1 - 4096)(not necessary)
         "ddl_time" -> int(不得在30天前)
-        "tag" -> str(not necessary)
+        "tag" -> str(len 1 - 4096)(not necessary)
         "course_uuid" -> uuid(not necessary)
     """
-    title = fields.Str(required=True, validate=validate.Length(min=1, max=128))
-    content = fields.Str(validate=validate.Length(min=1, max=256))
+    title = fields.Str(required=True, validate=validate.Length(min=1, max=256))
+    content = fields.Str(validate=validate.Length(min=1, max=4096))
     ddl_time = fields.Float(required=True,
                             validate=[validate.Range(min=round(time.time() * 1000) - 2_592_000_000), is_integer])
-    tag = fields.Str(validate=validate.Length(min=1, max=256))
+    tag = fields.Str(validate=validate.Length(min=1, max=4096))
     course_uuid = fields.UUID()
 
 
