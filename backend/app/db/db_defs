@@ -1,0 +1,26 @@
+TODO-item
+	id PRIMARY AUTO_INCREMENT
+	userid
+	title	256
+	detail	4096
+	tag	string(json)
+	source	int
+	ddl(timestamp) bigint
+	course_uuid 64
+	is_completed Boolean
+
+User
+	userid	PRIMARY AUTO_INCREMENT
+	openid	128 
+
+Account
+	id PRIMARY AUTO_INCREMENT
+	userid
+	account
+	password
+	platform	int
+
+
+
+Community
+	id PRIMARY AUTO_INCREMENT
