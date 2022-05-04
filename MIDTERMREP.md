@@ -52,7 +52,8 @@ Github Organization: [NJU-EL2022-uFFFD](https://github.com/NJU-EL2022-uFFFD)
 
 ### 前端 (Taro - Vue3 - TypeScript)
 
-如下图: (等待补充...)
+如下图: 
+<div style="text-align: start"><img src="assets/MIDTERMREP/image-20220505004622136.png" alt="image-20220505004622136" style="zoom: 50%;" /><img src="assets/MIDTERMREP/image-20220505004915694.png" alt="image-20220505004915694" style="zoom:50%;" /></div>
 
 ### 后端 (Flask)
 
