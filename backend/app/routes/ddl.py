@@ -57,7 +57,7 @@ def list_dll():
         filter_list.append(Ddl.is_completed is True)
     if data['filter']['is_overtime']:
         filter_list.append(Ddl.ddl_time > round(time.time() * 1000))
-    return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).all())})
+    return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).order_by(Ddl.ddl_time).slice(data['start'], data['end']).all())})
 
 
 @bp.route("/delete", methods=['POST', 'GET'])
@@ -73,8 +73,10 @@ def delete_ddl():
     # 数据库操作
     userid = User.query.filter(User.openid == open_id).first().id
     del_ddl = Ddl.query.get(data['ddl_id'])
-    # if del_ddl is None:
-    #     return make_response(-1, "ddl_id not found", {})
+    if del_ddl is None:
+        return make_response(-1, "Ddl_id not found.", {})
+    if del_ddl.userid != userid:
+        return make_response(-1, "Cannot delete others' ddl.", {})
 
     db.session.delete(del_ddl)
     db.session.commit()
