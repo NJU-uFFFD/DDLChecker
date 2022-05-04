@@ -9,3 +9,13 @@ class Todo(db.Model):
 	source = db.Column(db.Integer)
 	ddl_time = db.Column(db.BigInteger)
 	is_completed = db.Column(db.Boolean)
+
+	def __init__(self, userid, title, ddl_time, content='', tag='[]', source=1, is_completed=False):
+		self.userid = userid
+		self.title = title
+		self.content = content
+		self.tag = tag
+		self.source = source
+		self.ddl_time = ddl_time
+		self.is_completed = is_completed
+
