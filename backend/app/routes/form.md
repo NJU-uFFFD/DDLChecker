@@ -5,10 +5,10 @@
 - "ddl/add":
 
   ```
-  		"title" -> str (len 1 - 50)
-  		"content" -> str (len 1 - 200)
+  		"title" -> str (len 1 - 256)
+  		"content" -> str (len 1 - 4096)
   		"ddl_time" -> int
-  		"tag" -> str
+  		"tag" -> str(len 1 - 4096)
   		"course_uuid" -> uuid
   ```
 
@@ -47,10 +47,10 @@
   ```
   		"ddl_list" -> list[{
                   "ddl_id" -> int(>=0)
-                  "title" -> str (len 1 - 50)
-                  "content" -> str (len 1 - 200)
+                  "title" -> str (len 1 - 256)
+                  "content" -> str (len 1 - 4096)
                   "ddl_time" -> int
-                  "tag" -> str
+                  "tag" -> str(len 1 - 4)
                   "course_uuid" -> uuid
               }
   		]

@@ -1,6 +1,8 @@
 from flask import Blueprint
 from routes.utils import get_context, make_response
 from routes.rules import *
+from db import db
+from db.ddl import Ddl
 
 
 bp = Blueprint("ddl", __name__, url_prefix="/ddl")
@@ -29,19 +31,21 @@ def list_dll():
     return_data = {
         "ddl_list" ->list[{
                 "ddl_id" ->int(>=0),
-                "title" -> str (len 1 - 128),
-                "content" -> str (len 1 - 256)(not necessary),
+                "title" -> str (len 1 - 256),
+                "content" -> str (len 1 - 4096)(not necessary),
                 "ddl_time" -> int(不得在30天前),
-                "tag" -> str(not necessary),
+                "tag" -> str(len 1 - 4096)(not necessary),
                 "course_uuid" -> uuid(not necessary)
             }
         ]
     }
     """
-    open_id, data = get_context()
-    check_data(ListDDLsRules, data)
+    # open_id, data = get_context()
+    # check_data(ListDDLsRules, data)
 
     # 数据库操作
+    todos = Ddl.query.filter(Ddl.id == 123).all()
+    print(todos)
 
     return make_response(0, "OK", {})
 
