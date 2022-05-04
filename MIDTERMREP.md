@@ -4,7 +4,7 @@
 
 队员:  杜凌霄 (队长)  黄梓彦  凌翊宸  李薛成
 
-Github Organization: [NJU-EL2022-uFFFD](https://github.com/NJU-EL2022-uFFFD)
+Github Organization: [NJU-EL2022-uFFFD](https://github.com/NJU-EL2022-uFFFD) (仓库已设置 `private`, 在比赛完赛前不会开源)
 
 ## 作品目标
 
@@ -42,17 +42,22 @@ Github Organization: [NJU-EL2022-uFFFD](https://github.com/NJU-EL2022-uFFFD)
 
 目前的项目**目录结构**于报告末尾**附录**, 可参考. 后期可能会根据**风格规范**进一步重构.
 
+
+
 ## 人员分工
 
 前端: 李薛成; 凌翊宸 (前端接口/部分代码逻辑). 
 
 后端: 杜凌霄; 黄梓彦 (数据库); 凌翊宸 (爬虫). 
 
+
+
 ## 当前进度
 
 ### 前端 (Taro - Vue3 - TypeScript)
 
-如下图: (等待补充...)
+如下图: 
+<div style="text-align: start"><img src="assets/MIDTERMREP/image-20220505004622136.png" alt="image-20220505004622136" style="zoom: 30%;" /><img src="assets/MIDTERMREP/image-20220505004915694.png" alt="image-20220505004915694" style="zoom:30%;" /></div>
 
 ### 后端 (Flask)
 
@@ -61,6 +66,8 @@ Github Organization: [NJU-EL2022-uFFFD](https://github.com/NJU-EL2022-uFFFD)
 ### 数据库 (MySQL)
 
 已完成相关的 **CRUD 数据层**. 
+
+
 
 ## 一些优点/技术亮点 (自卖自夸)
 
@@ -78,11 +85,15 @@ Github Organization: [NJU-EL2022-uFFFD](https://github.com/NJU-EL2022-uFFFD)
 
 开源爬虫部分代码, 接受 **Pull Request** 新增或优化爬虫逻辑.
 
+
+
 ## 问题与挑战 (寻找出路)
 
 由于前期市场调研不充分导致可能存在市场需求不强烈. 
 
 用户规模小导致社区功能难以上线. 
+
+
 
 ## 附录 - 项目结构
 
