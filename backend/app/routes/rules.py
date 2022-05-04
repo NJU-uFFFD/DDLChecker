@@ -1,21 +1,14 @@
 import time
 from marshmallow import Schema, fields, ValidationError, validate
-from sqlalchemy.sql.coercions import schema
-
 from routes.utils import make_response
 from flask import abort
-
-
-def is_integer(x):
-    if x != int(x):
-        raise ValidationError("Not a valid integer")
 
 
 class DeleteDDLRules(Schema):
     """
         "ddl_id" -> int(>=0)
     """
-    ddl_id = fields.Float(required=True, validate=[validate.Range(min=0), is_integer])
+    ddl_id = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
 
 
 class ListDDLsRules(Schema):
@@ -26,8 +19,8 @@ class ListDDLsRules(Schema):
             "is_completed" -> bool
             "is_overtime" -> bool
     """
-    start = fields.Float(required=True, validate=[validate.Range(min=0), is_integer])
-    end = fields.Float(required=True, validate=[validate.Range(min=0), is_integer])
+    start = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
+    end = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
     filter = fields.Dict(required=True,
                          keys=fields.Str(required=True,
                                          validate=validate.OneOf(["is_completed", "is_overtime"])),
@@ -44,8 +37,7 @@ class AddDDLRules(Schema):
     """
     title = fields.Str(required=True, validate=validate.Length(min=1, max=256))
     content = fields.Str(required=True, validate=validate.Length(min=1, max=4096))
-    ddl_time = fields.Float(required=True,
-                            validate=[validate.Range(min=round(time.time() * 1000) - 2_592_000_000), is_integer])
+    ddl_time = fields.Integer(strict=True, required=True, validate=[validate.Range(min=round(time.time() * 1000) - 2_592_000_000)])
     tag = fields.Str(required=True, validate=validate.Length(min=1, max=4096))
     course_uuid = fields.UUID(required=True)
 
