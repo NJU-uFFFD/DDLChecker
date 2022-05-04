@@ -1,5 +1,4 @@
-import json
-from flask import request, Response
+from flask import request, Response, jsonify
 from flask import Flask
 
 
@@ -18,5 +17,5 @@ def make_response(status: int, msg: str, return_data: dict) -> Response:
     标准请求返回
     :return: Response
     """
-    return Response(json.dumps({"status": status, "msg": msg, "return_data": return_data}))
+    return jsonify({"status": status, "msg": msg, "return_data": return_data})
 
