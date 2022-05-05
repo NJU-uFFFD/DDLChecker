@@ -1,5 +1,6 @@
 from flask import request, Response, jsonify
-from flask import Flask
+from flask import abort
+from marshmallow import ValidationError
 
 
 def get_context():
@@ -19,3 +20,15 @@ def make_response(status: int, msg: str, return_data: dict) -> Response:
     """
     return jsonify({"status": status, "msg": msg, "return_data": return_data})
 
+
+def check_data(schema, data):
+    """
+    json输入格式校验
+    :param schema: 校验规则
+    :param data: 校验数据
+    :return:若校验失败，abort并返回错误
+    """
+    try:
+        return schema().load(data)
+    except ValidationError as e:
+        abort(make_response(status=-1, msg=str(e.messages), return_data={}), 400)
