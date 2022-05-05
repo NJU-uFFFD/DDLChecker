@@ -7,7 +7,7 @@ from db import db
 bp = Blueprint("user", __name__, url_prefix="/user")
 
 
-@bp.route("/register")
+@bp.route("/register", methods=['GET', 'POST'])
 def register():
     open_id, data = get_context()
     check_data(RegisterRules, data)
