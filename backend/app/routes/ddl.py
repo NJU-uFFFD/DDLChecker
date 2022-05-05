@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify
-from routes.utils import get_context, make_response
-from routes.rules import *
+from flask import Blueprint
+from routes.utils import get_context, check_data, make_response
+from routes.rules.ddl_rules import *
 from db import db
 from db.ddl import Ddl
 from db.user import User
