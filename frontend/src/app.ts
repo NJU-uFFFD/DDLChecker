@@ -1,5 +1,5 @@
 import {createApp} from 'vue'
-import {Button, Cell, CellGroup, Icon, Menu, MenuItem, Avatar, Popup, OverLay} from "@nutui/nutui-taro";
+import {Button, Cell, CellGroup, Icon, Menu, MenuItem, Avatar, Popup, OverLay, Form, FormItem, TextArea} from "@nutui/nutui-taro";
 import './app.scss'
 import Taro from "@tarojs/taro";
 import {request} from "./util/request";
@@ -56,5 +56,8 @@ App.use(Button)
   .use(Avatar)
   .use(Popup)
   .use(OverLay)
+  .use(FormItem)
+  .use(Form)
+  .use(TextArea)
 
 export default App
