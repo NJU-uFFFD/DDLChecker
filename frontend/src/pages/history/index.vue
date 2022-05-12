@@ -20,12 +20,13 @@ async function test() {
   console.log(r)
 }
 
+
 export default {
   name: "history",
   setup() {
     const msg = ref('Hello world')
     return {
-      msg, test
+      msg, test, test2
     }
   }
 }

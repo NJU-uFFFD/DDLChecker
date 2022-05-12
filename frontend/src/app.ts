@@ -4,6 +4,23 @@ import './app.scss'
 import Taro from "@tarojs/taro";
 
 const App = createApp({
+  created() {
+    // 如果不存在则注册新用户
+    const r = Taro.cloud.callContainer({
+      path: "/user/register",
+      method: "POST",
+      data: {}
+    })
+    console.log(r)
+
+    r.catch((reason) => {
+      Taro.showModal({
+        title: '网络错误',
+        content: '连接到服务器时发生错误, 请稍后再试或反馈给我们: ' + JSON.stringify(reason),
+        showCancel: false
+      })
+    })
+  },
   onShow() {
   },
 })
@@ -12,6 +29,7 @@ const App = createApp({
 Taro.cloud.init({
   env: "prod-8gf8jswafda304f9"
 })
+
 
 App.use(Button)
   .use(Cell)
