@@ -16,11 +16,11 @@ def add_ddl():
     :return: make_response()
     return_data = {"id" -> int(>=0)}
     """
-    open_id, data = get_context()
+    openid, data = get_context()
     check_data(AddDDLRules, data)
 
     # 数据库操作
-    userid = User.query.filter(User.openid == open_id).first().id
+    userid = User.query.filter(User.openid == openid).first().id
     new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data['tag'], data['course_uuid'])
     db.session.add(new_ddl)
     db.session.commit()
@@ -47,16 +47,16 @@ def list_dll():
         ]
     }
     """
-    open_id, data = get_context()
+    openid, data = get_context()
     check_data(ListDDLsRules, data)
 
     # 数据库操作
-    userid = User.query.filter(User.openid == open_id).first().id
+    userid = User.query.filter(User.openid == openid).first().id
     filter_list = [Ddl.userid == userid]
     if data['filter']['is_completed']:
         filter_list.append(Ddl.is_completed is True)
     if data['filter']['is_overtime']:
-        filter_list.append(Ddl.ddl_time > round(time.time() * 1000))
+        filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
     return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).order_by(Ddl.ddl_time).slice(data['start'], data['end']).all())})
 
 
@@ -67,11 +67,11 @@ def delete_ddl():
     :return: make_response()
     return_data = {"id" -> int(>=0)}
     """
-    open_id, data = get_context()
+    openid, data = get_context()
     check_data(DeleteDDLRules, data)
 
     # 数据库操作
-    userid = User.query.filter(User.openid == open_id).first().id
+    userid = User.query.filter(User.openid == openid).first().id
     del_ddl = Ddl.query.get(data['ddl_id'])
     if del_ddl is None:
         return make_response(-1, "Ddl_id not found.", {})
