@@ -9,8 +9,8 @@ def get_context():
     :return: open_id, data(json)
     """
     data = request.get_json()
-    open_id = request.headers['x-wx-openid']
-    return open_id, data
+    openid = request.headers['x-wx-openid']
+    return openid, data
 
 
 def make_response(status: int, msg: str, return_data: dict) -> Response:

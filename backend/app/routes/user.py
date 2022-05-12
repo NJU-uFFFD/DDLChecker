@@ -14,15 +14,15 @@ def register():
     """
     登录接口, 每次用户打开小程序时调用
     """
-    open_id, data = get_context()
+    openid, data = get_context()
     check_data(RegisterRules, data)
 
     new_user = False
 
-    user = User.query.filter(User.openid == open_id).first()
+    user = User.query.filter(User.openid == openid).first()
     if user is None:
         new_user = True
-        user = User(open_id, data.get('username') or "用户" + str(random.randint(100000000, 999999999)))
+        user = User(openid, data.get('username') or "用户" + str(random.randint(100000000, 999999999)))
         db.session.add(user)
         db.session.commit()
 
