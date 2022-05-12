@@ -9,12 +9,12 @@ bp = Blueprint("user", __name__, url_prefix="/user")
 
 @bp.route("/register", methods=['GET', 'POST'])
 def register():
-    open_id, data = get_context()
+    openid, data = get_context()
     check_data(RegisterRules, data)
 
-    user = User.query.filter(User.openid == open_id, User.username == data['username']).first()
+    user = User.query.filter(User.openid == openid, User.username == data['username']).first()
     if user is None:
-        user = User(open_id, data['username'])
+        user = User(openid, data['username'])
         db.session.add(user)
         db.session.commit()
 
