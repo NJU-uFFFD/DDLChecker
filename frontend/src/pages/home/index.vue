@@ -19,7 +19,7 @@ import HomeDdlCard from "../../components/card/HomeDdlCard.vue";
 import HomeDdlListMenu from "../../components/menu/HomeDdlListMenu.vue";
 import {DDLData} from "../../types/DDLData";
 import Taro from "@tarojs/taro";
-import {WX_SERVICE} from "../../config"
+import {request} from "../../util/request"
 
 export default {
   name: 'home',
@@ -28,7 +28,7 @@ export default {
     HomeDdlListMenu
   },
   setup() {
-    const ddls = reactive<{ ddlList: DDLData [] }>({
+    // const ddls = reactive<{ ddlList: DDLData [] }>({
     //   ddlList:
     //     [{ddl_id: 1, title: "第一个DDL", ddl_time: new Date(1656454270035), from: "/assets/images/jxlf.png", content: "", tag: ""},
     //       {ddl_id: 2, title: "第二个DDL", ddl_time: new Date(1655453250035), from: "/assets/images/spoc.png", content: "", tag: ""},
@@ -61,11 +61,8 @@ export default {
     }
 
     function fetchDdls() {
-      const r = Taro.cloud.callContainer({
+      const r = request({
         path: "/ddl/list",
-        header: {
-          'X-WX-SERVICE': WX_SERVICE,
-        },
         method: "POST",
         data: {}
       })

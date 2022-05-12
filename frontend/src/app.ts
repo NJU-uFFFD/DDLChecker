@@ -2,17 +2,15 @@ import {createApp} from 'vue'
 import {Button, Cell, CellGroup, Icon, Menu, MenuItem, Avatar, Popup, OverLay} from "@nutui/nutui-taro";
 import './app.scss'
 import Taro from "@tarojs/taro";
-import {WX_SERVICE, ENV_ID} from "./config"
+import {request} from "./util/request";
+import {ENV_ID} from "./config";
 
 
 const App = createApp({
   created() {
     // 如果不存在则注册新用户
-    const r = Taro.cloud.callContainer({
+    const r = request({
       path: "/user/register",
-      header: {
-        'X-WX-SERVICE': WX_SERVICE,
-      },
       method: "POST",
       data: {}
     })
