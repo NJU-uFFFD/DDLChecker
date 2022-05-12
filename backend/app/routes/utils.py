@@ -18,7 +18,7 @@ def make_response(status: int, msg: str, return_data: dict) -> Response:
     标准请求返回
     :return: Response
     """
-    return jsonify({"status": status, "msg": msg, "return_data": return_data})
+    return jsonify({"code": status, "msg": msg, "data": return_data})
 
 
 def check_data(schema, data):
