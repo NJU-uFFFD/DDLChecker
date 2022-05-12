@@ -2,9 +2,7 @@ import {createApp} from 'vue'
 import {Button, Cell, CellGroup, Icon, Menu, MenuItem, Avatar, Popup, OverLay} from "@nutui/nutui-taro";
 import './app.scss'
 import Taro from "@tarojs/taro";
-
-
-const WX_SERVICE = 'flask-7dmy'
+import {WX_SERVICE, ENV_ID} from "./config"
 
 
 const App = createApp({
@@ -47,7 +45,7 @@ const App = createApp({
 
 // 微信云托管初始化
 Taro.cloud.init({
-  env: "prod-8gf8jswafda304f9"
+  env: ENV_ID
 })
 
 

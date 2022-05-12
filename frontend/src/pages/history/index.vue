@@ -10,23 +10,12 @@
 import {ref} from 'vue'
 import Taro from "@tarojs/taro";
 
-async function test() {
-  const r = await Taro.cloud.callContainer({
-    path: "/test",
-    method: "POST",
-    data: {"test": 123}
-  })
-
-  console.log(r)
-}
-
-
 export default {
   name: "history",
   setup() {
     const msg = ref('Hello world')
     return {
-      msg, test, test2
+      msg
     }
   }
 }
