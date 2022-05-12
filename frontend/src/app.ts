@@ -3,17 +3,37 @@ import {Button, Cell, CellGroup, Icon, Menu, MenuItem, Avatar, Popup, OverLay} f
 import './app.scss'
 import Taro from "@tarojs/taro";
 
+
+const WX_SERVICE = 'flask-7dmy'
+
+
 const App = createApp({
   created() {
     // 如果不存在则注册新用户
     const r = Taro.cloud.callContainer({
       path: "/user/register",
+      header: {
+        'X-WX-SERVICE': WX_SERVICE,
+      },
       method: "POST",
       data: {}
     })
     console.log(r)
 
-    r.catch((reason) => {
+    r.then((res) => {
+      console.log(res)
+      try {
+        if (res.data.data.new) {
+          Taro.showModal({
+            title: '新用户注册',
+            content: 'TODO: 新手指引',
+            showCancel: false
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }).catch((reason) => {
       Taro.showModal({
         title: '网络错误',
         content: '连接到服务器时发生错误, 请稍后再试或反馈给我们: ' + JSON.stringify(reason),
