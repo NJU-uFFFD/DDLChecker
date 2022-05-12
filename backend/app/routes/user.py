@@ -17,12 +17,13 @@ def register():
     open_id, data = get_context()
     check_data(RegisterRules, data)
 
+    new_user = False
+
     user = User.query.filter(User.openid == open_id).first()
     if user is None:
+        new_user = True
         user = User(open_id, data.get('username') or "用户" + str(random.randint(100000000, 999999999)))
         db.session.add(user)
         db.session.commit()
 
-    return make_response(0, "OK", {"userid": user.id, "username": user.username})
-
-
+    return make_response(0, "OK", {"userid": user.id, "username": user.username, "new": new_user})

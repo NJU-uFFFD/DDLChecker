@@ -1,4 +1,4 @@
 flask-sqlalchemy==2.5.1
 marshmallow==3.15.0
-hanlp==2.1.0b27
+hanlp_restful==0.0.17
 mysqlclient==2.1.0
