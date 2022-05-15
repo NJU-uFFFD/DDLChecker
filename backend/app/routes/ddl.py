@@ -21,7 +21,7 @@ def add_ddl():
 
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
-    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data['tag'], data['course_uuid'])
+    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data.get('tag') or "[]", data.get('course_uuid'))
     db.session.add(new_ddl)
     db.session.commit()
 

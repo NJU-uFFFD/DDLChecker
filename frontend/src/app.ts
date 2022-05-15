@@ -1,9 +1,27 @@
 import {createApp} from 'vue'
-import {Button, Cell, CellGroup, Icon, Menu, MenuItem, Avatar, Popup, OverLay, Form, FormItem, TextArea, Input, DatePicker, Picker} from "@nutui/nutui-taro";
+import {
+  Dialog,
+  Button,
+  Cell,
+  CellGroup,
+  Icon,
+  Menu,
+  MenuItem,
+  Avatar,
+  Popup,
+  OverLay,
+  Form,
+  FormItem,
+  TextArea,
+  Input,
+  DatePicker,
+  Picker,
+  Toast
+} from "@nutui/nutui-taro";
 import './app.scss'
 import Taro from "@tarojs/taro";
 import {request} from "./util/request";
-import {ENV_ID} from "./config";
+import {ENV_ID, USE_CONTAINER} from "./config";
 
 
 const App = createApp({
@@ -42,9 +60,11 @@ const App = createApp({
 })
 
 // 微信云托管初始化
-Taro.cloud.init({
-  env: ENV_ID
-})
+if(USE_CONTAINER) {
+  Taro.cloud.init({
+    env: ENV_ID
+  })
+}
 
 
 App.use(Button)
@@ -62,5 +82,7 @@ App.use(Button)
   .use(Input)
   .use(DatePicker)
   .use(Picker)
+  .use(Dialog)
+  .use(Toast)
 
 export default App

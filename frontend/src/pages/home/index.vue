@@ -12,31 +12,45 @@
     <view>
       <nut-overlay v-model:visible="state.showAdd" :close-on-click-overlay=false :z-index="200">
         <nut-form>
+
+<!--          TODO: 表单内容检验-->
+
           <nut-form-item label="代办事项标题">
-            <input class="nut-input-text" placeholder="请输入代办事项标题" type="text"/>
+            <input v-model="state.addInfo.title" class="nut-input-text" placeholder="请输入代办事项标题" type="text"/>
           </nut-form-item>
+
           <nut-form-item label="Deadline">
+            <input :value="state.addInfo.date.toLocaleString()" placeholder="选择时间" readonly="true" disabled="true"
+                   @click="state.datePickerShow = true">
 
-            <nut-cell title="显示中文" :desc="state.addInfo.date" @click="state.datePickerShow = true"></nut-cell>
-
-            <nut-datepicker
-              v-model="state.addInfo.date"
-              v-model:visible="state.datePickerShow"
-              :is-show-chinese="true"
+            <nut-datepicker catchMove
+                            v-model="state.addInfo.date"
+                            class="datepicker"
+                            type="datetime"
+                            title="Deadline 选择"
+                            v-model:visible="state.datePickerShow"
+                            @confirm="datePickerConfirm"
+                            :min-date="getMinDate()"
+                            :is-show-chinese="true"
+                            :lock-scroll="true"
             ></nut-datepicker>
           </nut-form-item>
+
           <nut-form-item label="详细说明">
-            <input class="nut-input-text" placeholder="请输入详细说明" type="text"/>
+            <input v-model="state.addInfo.detail" class="nut-input-text" placeholder="请输入详细说明" type="text"/>
           </nut-form-item>
-          <nut-form-item label="地址">
-            <input class="nut-input-text" placeholder="请输入地址" type="text"/>
-          </nut-form-item>
-          <nut-form-item label="备注">
-            <nut-textarea placeholder="请输入备注" type="text"/>
-          </nut-form-item>
+
         </nut-form>
+
+        <nut-button size="large" type="danger" @click="state.showAdd = false">关闭</nut-button>
+        <nut-button size="large" type="success" @click="submitDdl()" :loading="state.ddlSubmitting">添加</nut-button>
+
       </nut-overlay>
     </view>
+
+    <!-- Toast -->
+    <nut-toast :msg="toastInfo.msg" v-model:visible="toastInfo.show" :type="toastInfo.type"
+               @closed="toastInfo.onClosed" :cover="toastInfo.cover"/>
 
     <!-- 手动添加 ddl 的按钮 -->
     <nut-button type="primary" id="add_button" @click="addDdl">+</nut-button>
@@ -48,8 +62,8 @@ import {reactive, toRefs} from 'vue';
 import HomeDdlCard from "../../components/card/HomeDdlCard.vue";
 import HomeDdlListMenu from "../../components/menu/HomeDdlListMenu.vue";
 import {DDLData} from "../../types/DDLData";
-import Taro from "@tarojs/taro";
 import {request} from "../../util/request"
+import Taro from "@tarojs/taro";
 
 export default {
   name: 'home',
@@ -139,10 +153,24 @@ export default {
     let state = reactive({
       "showAdd": false,
       "datePickerShow": false,
+      "ddlSubmitting": false,
+      "showToast": false,
+      "toastMessage": "",
       "addInfo": {
         "title": "",
-        "date": new Date()
+        "date": new Date(),
+        "detail": ""
       }
+    })
+
+    let toastInfo = reactive({
+      msg: 'toast',
+      type: 'text',
+      show: false,
+      cover: false,
+      title: '',
+      bottom: '',
+      center: true,
     })
 
     function sortDdlList(mode: string) {
@@ -161,8 +189,58 @@ export default {
     }
 
     function addDdl() {
+      state.addInfo = {
+        "title": "",
+        "date": new Date(),
+        "detail": ""
+      }
+      state.ddlSubmitting = false
       state.showAdd = true
+    }
 
+    function datePickerConfirm({selectedValue}) {
+      const date = selectedValue.slice(0, 3).join('-');
+      const time = selectedValue.slice(3).join(':');
+      state.addInfo.date = new Date(date + ' ' + time);
+    }
+
+    const openToast = (type: string, msg: string, cover: boolean = false, title: string = "", bottom: string = "", center: boolean = true) => {
+      toastInfo.show = true
+      toastInfo.msg = msg
+      toastInfo.type = type
+      toastInfo.cover = cover
+      toastInfo.title = title
+      toastInfo.bottom = bottom
+      toastInfo.center = center
+    }
+
+    function submitDdl() {
+      state.ddlSubmitting = true
+      const r = request({
+        "method": "POST",
+        "path": "/ddl/add",
+        "data": {
+          "title": state.addInfo.title,
+          "ddl_time": state.addInfo.date.getTime(),
+          "content": state.addInfo.detail
+        }
+      })
+
+      r.then((res) => {
+        state.showAdd = false
+
+        if (res.statusCode == 200 && res.data.code == 0) {
+          openToast('success', "添加成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: '添加代办出错: ' + JSON.stringify(reason),
+          showCancel: false
+        })
+      })
     }
 
     // function fetchDdls() {
@@ -180,11 +258,20 @@ export default {
     //
     // fetchDdls()
 
+    const getMinDate = (() => {
+      let now = new Date()
+      return new Date(now.setDate(now.getDate() - 30))
+    })
+
     return {
       ...toRefs(ddls),
       sortDdlList,
       addDdl,
-      state
+      datePickerConfirm,
+      getMinDate,
+      submitDdl,
+      state,
+      toastInfo
     }
   }
 }
@@ -199,5 +286,10 @@ export default {
   position: fixed;
   right: 30px;
   bottom: 30px;
+}
+
+/* bug fix for datepicker */
+.nut-picker-item {
+  display: none;
 }
 </style>
