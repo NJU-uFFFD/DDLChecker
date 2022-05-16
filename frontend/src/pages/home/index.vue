@@ -11,10 +11,9 @@
           :key="data">
           <HomeDdlCard :ddlData="data"/>
         </view>
+
       </scroll-view>
     </view>
-
-
 
     <!-- 手动添加 ddl 的弹出层 -->
     <view>
@@ -51,7 +50,7 @@
         </nut-form>
 
         <nut-button size="large" type="danger" @click="state.showAdd = false">关闭</nut-button>
-        <nut-button size="large" type="success" @click="submitDdl()" :loading="state.ddlSubmitting">添加</nut-button>
+        <nut-button size="large" type="success" @click="submitDdl" :loading="state.ddlSubmitting">添加</nut-button>
 
       </nut-overlay>
     </view>
@@ -87,6 +86,8 @@ export default {
       "datePickerShow": false,
       "ddlSubmitting": false,
       "refreshing": false,
+      "offset": 0,
+      "more": true,
       "addInfo": {
         "title": "",
         "date": new Date(),
@@ -161,6 +162,7 @@ export default {
         if (res.statusCode == 200 && res.data.code == 0) {
           state.showAdd = false
           openToast('success', "添加成功!")
+          listRefresh()
         } else {
           throw JSON.stringify(res)
         }
@@ -193,31 +195,38 @@ export default {
 
     function listRefresh() {
       state.refreshing = true
-      fetchDdls(0, 10 - 1, (list) => {
+      state.offset = 10
+      state.more = true
+      fetchDdls(0, 10, (list) => {
         state.refreshing = false
         ddls.ddlList = list
         console.log(list)
       })
     }
 
-    // todo: 获取更多
-    fetchDdls(0, 9,(list) => {
-      ddls.ddlList = list
-    })
+    listRefresh()
 
     function listLower() {
-      // 滑动到底部, 获取新的 ddl
-      console.log("下")
-    }
 
-    // fetchDdls()
+      if (!state.more || state.refreshing) {
+        return
+      }
+
+      // 滑动到底部, 获取新的 ddl
+      fetchDdls(state.offset, state.offset + 10,(list) => {
+        if (list.length == 0) {
+          console.log("无更多项目.")
+          state.more = false
+        }
+        ddls.ddlList.push.apply(ddls.ddlList, list)
+      })
+      state.offset += 10
+    }
 
     const getMinDate = (() => {
       let now = new Date()
       return new Date(now.setDate(now.getDate() - 30))
     })
-
-
 
     return {
       ...toRefs(ddls),
