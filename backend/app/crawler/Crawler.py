@@ -5,7 +5,8 @@ class Crawler:
     def __init__(self):
         pass
 
-    def required_fields(self) -> dict:
+    @staticmethod
+    def required_fields() -> dict:
         """
         登录需要的信息
         :return:

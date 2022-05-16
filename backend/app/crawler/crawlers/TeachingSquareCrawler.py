@@ -13,7 +13,8 @@ class TeachingSquareCrawler(Crawler):
         self.session = None
         self.login_data = None
 
-    def required_fields(self):
+    @staticmethod
+    def required_fields():
         return {"account": {"name": "账号", "detail": "教学立方账号"},
                 "password": {"name": "密码", "detail": "教学立方密码"}}
 
