@@ -4,9 +4,13 @@
       :nickname=nickname
       :avatarUrl=avatarUrl>
     </ProfileCard>
+
+    <nut-cell @click="addAccount"> + 添加账号</nut-cell>
+
     <nut-cell-group
       class="profile-account-group"
       title="账号管理"/>
+
     <view
       v-for="data in account_list"
       :key="data.account_id">
@@ -48,9 +52,15 @@ export default {
           {account_id: 14, title: "SPOC", from: "/assets/images/spoc.png"},
           {account_id: 15, title: "教学立方", from: "/assets/images/jxlf.png"},]
     })
+
+    function addAccount() {
+
+    }
+
     return {
       nickname,
       avatarUrl,
+      addAccount,
       ...toRefs(accounts)
     }
   }
