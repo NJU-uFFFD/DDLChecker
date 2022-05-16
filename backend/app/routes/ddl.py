@@ -53,10 +53,11 @@ def list_dll():
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
     filter_list = [Ddl.userid == userid]
-    if data['filter']['is_completed']:
-        filter_list.append(Ddl.is_completed is True)
-    if data['filter']['is_overtime']:
-        filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
+    if 'filter' in data:
+        if data['filter']['is_completed']:
+            filter_list.append(Ddl.is_completed is True)
+        if data['filter']['is_overtime']:
+            filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
     return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).order_by(Ddl.ddl_time).slice(data['start'], data['end']).all())})
 
 

@@ -2,11 +2,19 @@
   <view class="home">
     <HomeDdlListMenu
       @sortMode="sortDdlList"/>
-    <view
-      v-for="data in ddlList"
-      :key="data">
-      <HomeDdlCard :ddlData="data"/>
+
+    <view>
+      <scroll-view :refresher-triggered="state.refreshing" :scroll-y="true" style="height: 91vh;" @scrolltolower="listLower"
+                   @scroll="scroll" @refresherrefresh="listRefresh" refresherEnabled="true">
+        <view
+          v-for="data in ddlList"
+          :key="data">
+          <HomeDdlCard :ddlData="data"/>
+        </view>
+      </scroll-view>
     </view>
+
+
 
     <!-- 手动添加 ddl 的弹出层 -->
     <view>
@@ -72,90 +80,13 @@ export default {
     HomeDdlListMenu
   },
   setup() {
-    const ddls = reactive<{ ddlList: DDLData [] }>({
-      ddlList:
-        [{
-          id: 1,
-          title: "第一个DDL",
-          ddl_time: new Date(1656454270035),
-          from: "/assets/images/jxlf.png",
-          content: "",
-          tag: ""
-        },
-          {
-            id: 2,
-            title: "第二个DDL",
-            ddl_time: new Date(1655453250035),
-            from: "/assets/images/spoc.png",
-            content: "",
-            tag: ""
-          },
-          {
-            id: 3,
-            title: "第三个DDL",
-            ddl_time: new Date(1656453270035),
-            from: "/assets/images/mooc.png",
-            content: "",
-            tag: ""
-          },
-          {
-            id: 6,
-            title: "第四个DDL",
-            ddl_time: new Date(1656452440035),
-            from: "/assets/images/jxlf.png",
-            content: "",
-            tag: ""
-          },
-          {
-            id: 5,
-            title: "第五个DDL",
-            ddl_time: new Date(1656456270035),
-            from: "/assets/images/spoc.png",
-            content: "",
-            tag: ""
-          },
-          {
-            id: 4,
-            title: "第六个DDL",
-            ddl_time: new Date(1656463270435),
-            from: "/assets/images/mooc.png",
-            content: "",
-            tag: ""
-          },
-          {
-            id: 7,
-            title: "第七个DDL",
-            ddl_time: new Date(1652323272435),
-            from: "/assets/images/jxlf.png",
-            content: "",
-            tag: ""
-          },
-          {
-            id: 8,
-            title: "第八个DDL",
-            ddl_time: new Date(1656453270235),
-            from: "/assets/images/spoc.png",
-            content: "",
-            tag: ""
-          },
-          {
-            id: 9,
-            title: "第九个DDL",
-            ddl_time: new Date(1656434458035),
-            from: "/assets/images/mooc.png",
-            content: "",
-            tag: ""
-          },]
-          .sort((o1, o2) => o1.ddl_time.valueOf() - o2.ddl_time.valueOf())
-      //初始以由近至远排序
-    })
+    let ddls = reactive({"ddlList": []});
 
     let state = reactive({
       "showAdd": false,
       "datePickerShow": false,
       "ddlSubmitting": false,
-      "showToast": false,
-      "toastMessage": "",
+      "refreshing": false,
       "addInfo": {
         "title": "",
         "date": new Date(),
@@ -173,20 +104,20 @@ export default {
       center: true,
     })
 
-    function sortDdlList(mode: string) {
-      ddls.ddlList = ddls.ddlList.sort((o1, o2) => {
-        switch (mode) {
-          case "a":
-            return o1.ddl_time.valueOf() - o2.ddl_time.valueOf()
-          case "b":
-            return o2.ddl_time.valueOf() - o1.ddl_time.valueOf()
-          case "c":
-            return o1.id - o2.id
-          default:
-            return o2.id - o1.id
-        }
-      })
-    }
+    // function sortDdlList(mode: string) {
+    //   ddls.ddlList = ddls.ddlList.sort((o1, o2) => {
+    //     switch (mode) {
+    //       case "a":
+    //         return o1.ddl_time.valueOf() - o2.ddl_time.valueOf()
+    //       case "b":
+    //         return o2.ddl_time.valueOf() - o1.ddl_time.valueOf()
+    //       case "c":
+    //         return o1.id - o2.id
+    //       default:
+    //         return o2.id - o1.id
+    //     }
+    //   })
+    // }
 
     function addDdl() {
       state.addInfo = {
@@ -227,9 +158,8 @@ export default {
       })
 
       r.then((res) => {
-        state.showAdd = false
-
         if (res.statusCode == 200 && res.data.code == 0) {
+          state.showAdd = false
           openToast('success', "添加成功!")
         } else {
           throw JSON.stringify(res)
@@ -240,22 +170,46 @@ export default {
           content: '添加代办出错: ' + JSON.stringify(reason),
           showCancel: false
         })
+        state.ddlSubmitting = false
       })
     }
 
-    // function fetchDdls() {
-    //   const r = request({
-    //     path: "/ddl/list",
-    //     method: "POST",
-    //     data: {}
-    //   })
-    //   console.log(r)
-    //
-    //   r.then((res) => {
-    //     console.log(res.data.data.ddl_list)
-    //   })
-    // }
-    //
+    function fetchDdls(start, end, callback) {
+      const r = request({
+        path: "/ddl/list",
+        method: "POST",
+        data: {
+          "start": start,
+          "end": end
+        }
+      })
+
+      r.then((res) => {
+        callback(res.data.data.ddl_list)
+      }).catch((reason) => {
+        console.error("DDL fetch error: " + JSON.stringify(reason))
+      })
+    }
+
+    function listRefresh() {
+      state.refreshing = true
+      fetchDdls(0, 10 - 1, (list) => {
+        state.refreshing = false
+        ddls.ddlList = list
+        console.log(list)
+      })
+    }
+
+    // todo: 获取更多
+    fetchDdls(0, 9,(list) => {
+      ddls.ddlList = list
+    })
+
+    function listLower() {
+      // 滑动到底部, 获取新的 ddl
+      console.log("下")
+    }
+
     // fetchDdls()
 
     const getMinDate = (() => {
@@ -263,13 +217,17 @@ export default {
       return new Date(now.setDate(now.getDate() - 30))
     })
 
+
+
     return {
       ...toRefs(ddls),
-      sortDdlList,
+      // sortDdlList,
       addDdl,
       datePickerConfirm,
       getMinDate,
       submitDdl,
+      listRefresh,
+      listLower,
       state,
       toastInfo
     }
