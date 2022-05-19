@@ -39,5 +39,5 @@ class AddDDLRules(Schema):
     ddl_time = fields.Integer(strict=True, required=True, validate=[validate.Range(min=round(time.time() * 1000) - 2_592_000_000)])
     tag = fields.Str(required=False, validate=validate.Length(min=1, max=4096))
     course_uuid = fields.UUID(required=False)
-    source = fields.UUID(required=False)
+    source_uuid = fields.UUID(required=False)
 
