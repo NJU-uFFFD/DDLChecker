@@ -17,9 +17,9 @@ User
 Account
 	id PRIMARY AUTO_INCREMENT
 	userid
+	platform
 	account
-	password
-	platform	int
+	password str
 
 
 

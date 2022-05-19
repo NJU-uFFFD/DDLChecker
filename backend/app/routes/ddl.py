@@ -42,8 +42,8 @@ def list_dll():
                 "content" -> str (len 1 - 4096),
                 "ddl_time" -> int(不得在30天前),
                 "tag" -> str(len 1 - 4096),
-                "course_uuid" -> uuid
-                "source" -> str(len 1 - 256)
+                "course_uuid" -> str
+                "source_uuid" -> str
                 "is_completed" -> bool
             }
         ]

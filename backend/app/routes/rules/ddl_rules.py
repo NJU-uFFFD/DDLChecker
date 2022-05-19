@@ -31,13 +31,13 @@ class AddDDLRules(Schema):
         "content" -> str (len 1 - 4096)(not necessary)
         "ddl_time" -> int(不得在30天前)
         "tag" -> str(len 1 - 4096)(not necessary)
-        "course_uuid" -> uuid(not necessary)
-        "source" -> str(len 1 - 256)
+        "course_uuid" -> str(not necessary)
+        "source_uuid" -> str(not necessary)
     """
     title = fields.Str(required=True, validate=validate.Length(min=1, max=256))
     content = fields.Str(required=True, validate=validate.Length(min=1, max=4096))
     ddl_time = fields.Integer(strict=True, required=True, validate=[validate.Range(min=round(time.time() * 1000) - 2_592_000_000)])
     tag = fields.Str(required=False, validate=validate.Length(min=1, max=4096))
     course_uuid = fields.UUID(required=False)
-    source = fields.Str(required=False, validate=validate.Length(min=1, max=256))
+    source = fields.UUID(required=False)
 
