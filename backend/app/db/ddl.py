@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from db import db
 
 
+@dataclass
 class Ddl(db.Model):
     id: int
     userid: int
@@ -10,7 +12,7 @@ class Ddl(db.Model):
     course_uuid: str
     ddl_time: int
     is_completed: bool
-    source: str
+    source_uuid: str
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(256))
