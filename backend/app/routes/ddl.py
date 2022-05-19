@@ -1,3 +1,5 @@
+import time
+
 from flask import Blueprint
 from routes.utils import get_context, check_data, make_response
 from routes.rules.ddl_rules import *
@@ -21,8 +23,8 @@ def add_ddl():
 
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
-    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data.get('tag'),
-                  data.get('course_uuid'), data.get('source_uuid'))
+    new_ddl = Ddl(userid, data['title'], data['ddl_time'], int(time.time()*1000), data['content'], data.get('tag'),
+                  data.get('course_uuid'), data.get('platform_uuid'))
     db.session.add(new_ddl)
     db.session.commit()
 
@@ -41,9 +43,10 @@ def list_dll():
                 "title" -> str (len 1 - 256),
                 "content" -> str (len 1 - 4096),
                 "ddl_time" -> int(不得在30天前),
+                "create_time" -> int
                 "tag" -> str(len 1 - 4096),
                 "course_uuid" -> str
-                "source_uuid" -> str
+                "platform_uuid" -> str
                 "is_completed" -> bool
             }
         ]
