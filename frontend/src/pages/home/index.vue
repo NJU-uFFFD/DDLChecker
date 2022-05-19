@@ -1,63 +1,73 @@
 <template>
   <view class="home">
-    <HomeDdlListMenu
-      @sortMode="sortDdlList"/>
 
-    <view>
-      <scroll-view :refresher-triggered="state.refreshing" :scroll-y="true" style="height: 91vh;" @scrolltolower="listLower"
-                   @scroll="scroll" @refresherrefresh="listRefresh" refresherEnabled="true">
-        <view
-          v-for="data in ddlList"
-          :key="data">
-          <HomeDdlCard :ddlData="data"/>
-        </view>
+    <!--分类与排序菜单-->
+    <nut-menu>
+      <nut-menu-item
+        v-model="menu.value1"
+        :options="menu.options1"/>
+      <nut-menu-item
+        v-model="menu.value2"
+        @change="listRefresh"
+        :options="menu.options2"/>
+    </nut-menu>
 
-      </scroll-view>
-    </view>
+    <!--DDL列表-->
+    <scroll-view
+      :refresher-triggered="state.refreshing"
+      :scroll-y="true"
+      style="height: 91vh;"
+      @scrolltolower="listLower"
+      @scroll="scroll"
+      @refresherrefresh="listRefresh"
+      refresherEnabled="true">
+      <view
+        v-for="data in ddl_list"
+        :key="data">
+        <HomeDdlCard :ddlData="data"/>
+      </view>
+
+    </scroll-view>
 
     <!-- 手动添加 ddl 的弹出层 -->
-    <view>
-      <nut-overlay v-model:visible="state.showAdd" :close-on-click-overlay=false :z-index="200">
-        <nut-form>
+    <nut-overlay v-model:visible="state.showAdd" :close-on-click-overlay=false :z-index="200">
+      <nut-form>
+        <!--TODO: 表单内容检验-->
+        <nut-form-item label="代办事项标题">
+          <input v-model="state.addInfo.title" class="nut-input-text" placeholder="请输入代办事项标题" type="text"/>
+        </nut-form-item>
 
-<!--          TODO: 表单内容检验-->
+        <nut-form-item label="Deadline">
+          <input :value="state.addInfo.date.toLocaleString()" placeholder="选择时间" readonly="true" disabled="true" @click="state.datePickerShow = true">
+        </nut-form-item>
+        <nut-form-item label="详细说明">
+          <input v-model="state.addInfo.detail" class="nut-input-text" placeholder="请输入详细说明" type="text"/>
+        </nut-form-item>
+      </nut-form>
 
-          <nut-form-item label="代办事项标题">
-            <input v-model="state.addInfo.title" class="nut-input-text" placeholder="请输入代办事项标题" type="text"/>
-          </nut-form-item>
+      <nut-datepicker catchMove
+                      v-model="state.addInfo.date"
+                      type="datetime"
+                      title="Deadline 选择"
+                      v-model:visible="state.datePickerShow"
+                      @confirm="datePickerConfirm"
+                      :min-date="getMinDate()"
+                      :is-show-chinese="true"
+                      :lock-scroll="true"
+      ></nut-datepicker>
 
-          <nut-form-item label="Deadline">
-            <input :value="state.addInfo.date.toLocaleString()" placeholder="选择时间" readonly="true" disabled="true"
-                   @click="state.datePickerShow = true">
+      <nut-button size="large" type="danger" @click="state.showAdd = false">关闭</nut-button>
+      <nut-button size="large" type="success" @click="submitDdl" :loading="state.ddlSubmitting">添加</nut-button>
 
-            <nut-datepicker catchMove
-                            v-model="state.addInfo.date"
-                            class="datepicker"
-                            type="datetime"
-                            title="Deadline 选择"
-                            v-model:visible="state.datePickerShow"
-                            @confirm="datePickerConfirm"
-                            :min-date="getMinDate()"
-                            :is-show-chinese="true"
-                            :lock-scroll="true"
-            ></nut-datepicker>
-          </nut-form-item>
-
-          <nut-form-item label="详细说明">
-            <input v-model="state.addInfo.detail" class="nut-input-text" placeholder="请输入详细说明" type="text"/>
-          </nut-form-item>
-
-        </nut-form>
-
-        <nut-button size="large" type="danger" @click="state.showAdd = false">关闭</nut-button>
-        <nut-button size="large" type="success" @click="submitDdl" :loading="state.ddlSubmitting">添加</nut-button>
-
-      </nut-overlay>
-    </view>
+    </nut-overlay>
 
     <!-- Toast -->
-    <nut-toast :msg="toastInfo.msg" v-model:visible="toastInfo.show" :type="toastInfo.type"
-               @closed="toastInfo.onClosed" :cover="toastInfo.cover"/>
+    <nut-toast
+      :msg="toastInfo.msg"
+      v-model:visible="toastInfo.show"
+      :type="toastInfo.type"
+      @closed="toastInfo.onClosed"
+      :cover="toastInfo.cover"/>
 
     <!-- 手动添加 ddl 的按钮 -->
     <nut-button type="primary" id="add_button" @click="addDdl">+</nut-button>
@@ -67,7 +77,6 @@
 <script lang="ts">
 import {reactive, toRefs} from 'vue';
 import HomeDdlCard from "../../components/card/HomeDdlCard.vue";
-import HomeDdlListMenu from "../../components/menu/HomeDdlListMenu.vue";
 import {DDLData} from "../../types/DDLData";
 import {request} from "../../util/request"
 import Taro from "@tarojs/taro";
@@ -76,10 +85,9 @@ export default {
   name: 'home',
   components: {
     HomeDdlCard,
-    HomeDdlListMenu
   },
   setup() {
-    let ddls = reactive({"ddlList": []});
+    let ddls = reactive<{ ddl_list: DDLData [] }>({ddl_list: []});
 
     let state = reactive({
       "showAdd": false,
@@ -105,36 +113,20 @@ export default {
       center: true,
     })
 
-    // function sortDdlList(mode: string) {
-    //   ddls.ddlList = ddls.ddlList.sort((o1, o2) => {
-    //     switch (mode) {
-    //       case "a":
-    //         return o1.ddl_time.valueOf() - o2.ddl_time.valueOf()
-    //       case "b":
-    //         return o2.ddl_time.valueOf() - o1.ddl_time.valueOf()
-    //       case "c":
-    //         return o1.id - o2.id
-    //       default:
-    //         return o2.id - o1.id
-    //     }
-    //   })
-    // }
-
-    function addDdl() {
-      state.addInfo = {
-        "title": "",
-        "date": new Date(),
-        "detail": ""
-      }
-      state.ddlSubmitting = false
-      state.showAdd = true
-    }
-
-    function datePickerConfirm({selectedValue}) {
-      const date = selectedValue.slice(0, 3).join('-');
-      const time = selectedValue.slice(3).join(':');
-      state.addInfo.date = new Date(date + ' ' + time);
-    }
+    const menu = reactive({
+      options1: [
+        {text: '全部DDL', value: 0},
+        {text: '紧急DDL', value: 1},
+        {text: '宽松DDL', value: 2},
+        {text: '超时DDL', value: 3},
+      ],
+      options2: [
+        {text: '由近至远', value: false},
+        {text: '由远至近', value: true},
+      ],
+      value1: 0,
+      value2: false
+    });
 
     const openToast = (type: string, msg: string, cover: boolean = false, title: string = "", bottom: string = "", center: boolean = true) => {
       toastInfo.show = true
@@ -146,6 +138,7 @@ export default {
       toastInfo.center = center
     }
 
+    // 添加 DDL 相关
     function submitDdl() {
       state.ddlSubmitting = true
       const r = request({
@@ -176,7 +169,25 @@ export default {
       })
     }
 
-    function fetchDdls(start, end, callback) {
+    function addDdl() {
+      state.addInfo = {
+        "title": "",
+        "date": new Date(),
+        "detail": ""
+      }
+      state.ddlSubmitting = false
+      state.showAdd = true
+    }
+
+    function datePickerConfirm({selectedValue}) {
+      const date = selectedValue.slice(0, 3).join('-');
+      const time = selectedValue.slice(3).join(':');
+      state.addInfo.date = new Date(date + ' ' + time);
+    }
+
+
+    // 获取 DDL 相关
+    function fetchDdls(start: number, end: number, callback: Function) {
       const r = request({
         path: "/ddl/list",
         method: "POST",
@@ -193,44 +204,46 @@ export default {
       })
     }
 
+    // 刷新列表
     function listRefresh() {
+      console.log("ddl refresh.")
       state.refreshing = true
       state.offset = 10
       state.more = true
-      fetchDdls(0, 10, (list) => {
+      fetchDdls(0, 10, (list: DDLData[]) => {
         state.refreshing = false
-        ddls.ddlList = list
+        ddls.ddl_list = list
         console.log(list)
       })
     }
 
-    listRefresh()
-
     function listLower() {
-
       if (!state.more || state.refreshing) {
         return
       }
-
       // 滑动到底部, 获取新的 ddl
-      fetchDdls(state.offset, state.offset + 10,(list) => {
+      fetchDdls(state.offset, state.offset + 10, (list) => {
         if (list.length == 0) {
           console.log("无更多项目.")
           state.more = false
         }
-        ddls.ddlList.push.apply(ddls.ddlList, list)
+        ddls.ddl_list.push.apply(ddls.ddl_list, list)
       })
       state.offset += 10
     }
 
+    // 获取 DDL 时间上限
     const getMinDate = (() => {
       let now = new Date()
       return new Date(now.setDate(now.getDate() - 30))
     })
 
+    // 第一次加载列表
+    listRefresh()
+
     return {
       ...toRefs(ddls),
-      // sortDdlList,
+      menu,
       addDdl,
       datePickerConfirm,
       getMinDate,
@@ -255,8 +268,4 @@ export default {
   bottom: 30px;
 }
 
-/* bug fix for datepicker */
-.nut-picker-item {
-  display: none;
-}
 </style>
