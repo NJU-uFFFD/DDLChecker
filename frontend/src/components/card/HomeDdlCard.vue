@@ -28,16 +28,18 @@ export default defineComponent({
   setup({ddlData}) {
     const switchChecked = ref(true);
     const ddlCardClick = (event) => {
-      Toast.text('点击事件');
+      //TODO: 查看详情
     };
 
     // const ddlTime = (new Intl.DateTimeFormat("zh-CN", {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false}).format)(props.ddlData?.ddl_time);
     // 上述用法会出现上午12:40或者24:40这种离谱的情况,太难受啦!!
 
-    const t = new Date(ddlData?.ddl_time);
-    const ddlTime = String(`${t?.getFullYear()}年${t?.getMonth()}月${t?.getDate()}日
-    ${typeof (t) == "object" && t.getHours() > 9 ? t.getHours() : "0" + t?.getHours()}:
-    ${typeof (t) == "object" && t.getMinutes() > 9 ? t.getMinutes() : "0" + t?.getMinutes()}`)
+    if (ddlData === undefined) return
+
+    const t = new Date(ddlData.ddl_time);
+    const ddlTime = String(`${t.getFullYear()}年${t.getMonth()}月${t.getDate()}日
+    ${typeof (t) == "object" && t.getHours() > 9 ? t.getHours() : "0" + t.getHours()}:
+    ${typeof (t) == "object" && t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`)
 
     return {
       ddlCardClick,
