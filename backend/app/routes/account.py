@@ -2,10 +2,7 @@ from flask import Blueprint
 
 from crawler.util import list_crawlers
 from routes.utils import get_context, make_response
-import json
-
-from db import db
-from db.user import User
+from db.account import Account
 
 bp = Blueprint("account", __name__, url_prefix="/account")
 

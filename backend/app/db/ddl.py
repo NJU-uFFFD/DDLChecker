@@ -1,8 +1,6 @@
 from db import db
-from dataclasses import dataclass
 
 
-@dataclass
 class Ddl(db.Model):
     id: int
     userid: int
@@ -20,15 +18,15 @@ class Ddl(db.Model):
     tag = db.Column(db.String(4096))
     course_uuid = db.Column(db.String(64))
     ddl_time = db.Column(db.BigInteger)
-    source = db.Column(db.String(256))
+    source_uuid = db.Column(db.String(64))
     is_completed = db.Column(db.Boolean)
 
-    def __init__(self, userid, title, ddl_time, content, tag, course_uuid, source="", is_completed=False):
+    def __init__(self, userid, title, ddl_time, content, tag, course_uuid, source_uuid="", is_completed=False):
         self.userid = userid
         self.title = title
         self.content = content
         self.tag = tag
         self.course_uuid = course_uuid
         self.ddl_time = ddl_time
-        self.source = source
+        self.source_uuid = source_uuid
         self.is_completed = is_completed

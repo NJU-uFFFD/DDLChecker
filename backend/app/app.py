@@ -4,9 +4,6 @@ from config import *
 from db import db
 
 
-WX_APPID = ""
-
-
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 app.register_blueprint(ddl.bp)
@@ -20,6 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 with app.app_context():
+    db.drop_all()
     db.create_all()
 
 
