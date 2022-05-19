@@ -37,7 +37,7 @@ export default defineComponent({
     if (ddlData === undefined) return
 
     const t = new Date(ddlData.ddl_time);
-    const ddlTime = String(`${t.getFullYear()}年${t.getMonth()}月${t.getDate()}日
+    const ddlTime = String(`${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日
     ${typeof (t) == "object" && t.getHours() > 9 ? t.getHours() : "0" + t.getHours()}:
     ${typeof (t) == "object" && t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`)
 

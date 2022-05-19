@@ -5,6 +5,7 @@
     <nut-menu>
       <nut-menu-item
         v-model="menu.value1"
+        @change="listRefresh"
         :options="menu.options1"/>
       <nut-menu-item
         v-model="menu.value2"
@@ -30,18 +31,34 @@
     </scroll-view>
 
     <!-- 手动添加 ddl 的弹出层 -->
-    <nut-overlay v-model:visible="state.showAdd" :close-on-click-overlay=false :z-index="200">
+    <nut-overlay
+      v-model:visible="state.showAdd"
+      :close-on-click-overlay=false
+      :z-index="200">
       <nut-form>
         <!--TODO: 表单内容检验-->
         <nut-form-item label="代办事项标题">
-          <input v-model="state.addInfo.title" class="nut-input-text" placeholder="请输入代办事项标题" type="text"/>
+          <input
+            v-model="state.addInfo.title"
+            class="nut-input-text"
+            placeholder="请输入代办事项标题"
+            type="text"/>
         </nut-form-item>
 
         <nut-form-item label="Deadline">
-          <input :value="state.addInfo.date.toLocaleString()" placeholder="选择时间" readonly="true" disabled="true" @click="state.datePickerShow = true">
+          <input
+            :value="state.addInfo.date.toLocaleString()"
+            placeholder="选择时间"
+            readonly="true"
+            disabled="true"
+            @click="state.datePickerShow = true"/>
         </nut-form-item>
         <nut-form-item label="详细说明">
-          <input v-model="state.addInfo.detail" class="nut-input-text" placeholder="请输入详细说明" type="text"/>
+          <input
+            v-model="state.addInfo.detail"
+            class="nut-input-text"
+            placeholder="请输入详细说明"
+            type="text"/>
         </nut-form-item>
       </nut-form>
 
@@ -54,7 +71,7 @@
                       :min-date="getMinDate()"
                       :is-show-chinese="true"
                       :lock-scroll="true"
-      ></nut-datepicker>
+      />
 
       <nut-button size="large" type="danger" @click="state.showAdd = false">关闭</nut-button>
       <nut-button size="large" type="success" @click="submitDdl" :loading="state.ddlSubmitting">添加</nut-button>
@@ -193,7 +210,14 @@ export default {
         method: "POST",
         data: {
           "start": start,
-          "end": end
+          "end": end,
+          "filter": {
+            "is_completed": false,
+            "is_overtime": menu.value1 == 3
+          },
+          "sorter": {
+            "reversed": menu.value2
+          }
         }
       })
 
