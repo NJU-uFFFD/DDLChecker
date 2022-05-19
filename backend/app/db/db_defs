@@ -7,6 +7,7 @@ TODO-item
 	source	int
 	ddl(timestamp) bigint
 	course_uuid 64
+	source 256
 	is_completed Boolean
 
 User

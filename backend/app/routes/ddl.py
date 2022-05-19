@@ -21,7 +21,8 @@ def add_ddl():
 
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
-    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data.get('tag') or "[]", data.get('course_uuid'))
+    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data.get('tag') or "[]",
+                  data.get('course_uuid'), data.get('source') or "")
     db.session.add(new_ddl)
     db.session.commit()
 
@@ -42,6 +43,7 @@ def list_dll():
                 "ddl_time" -> int(不得在30天前),
                 "tag" -> str(len 1 - 4096),
                 "course_uuid" -> uuid
+                "source" -> str(len 1 - 256)
                 "is_completed" -> bool
             }
         ]
