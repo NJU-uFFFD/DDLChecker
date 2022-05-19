@@ -52,6 +52,9 @@ def list_dll():
     openid, data = get_context()
     check_data(ListDDLsRules, data)
 
+    if not 0 < data['end'] - data['start'] < 20:
+        return make_response(400, "invalid range.(nmsl)", {})
+
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
     filter_list = [Ddl.userid == userid]
@@ -81,9 +84,9 @@ def delete_ddl():
     userid = User.query.filter(User.openid == openid).first().id
     del_ddl = Ddl.query.get(data['ddl_id'])
     if del_ddl is None:
-        return make_response(-1, "Ddl_id not found.", {})
+        return make_response(404, "Ddl_id not found.(nmsl)", {})
     if del_ddl.userid != userid:
-        return make_response(-1, "Cannot delete others' ddl.", {})
+        return make_response(403, "Cannot delete others' ddl(nmsl).", {})
 
     db.session.delete(del_ddl)
     db.session.commit()
