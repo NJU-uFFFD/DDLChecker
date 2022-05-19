@@ -23,7 +23,7 @@ class Ddl(db.Model):
     source_uuid = db.Column(db.String(64))
     is_completed = db.Column(db.Boolean)
 
-    def __init__(self, userid, title, ddl_time, content, tag, course_uuid, source_uuid="", is_completed=False):
+    def __init__(self, userid, title, ddl_time, content, tag, course_uuid, source_uuid, is_completed=False):
         self.userid = userid
         self.title = title
         self.content = content

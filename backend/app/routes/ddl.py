@@ -21,8 +21,8 @@ def add_ddl():
 
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
-    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data.get('tag') or "[]",
-                  data.get('course_uuid'), data.get('source_uuid') or "")
+    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data.get('tag'),
+                  data.get('course_uuid'), data.get('source_uuid'))
     db.session.add(new_ddl)
     db.session.commit()
 
@@ -60,7 +60,11 @@ def list_dll():
             filter_list.append(Ddl.is_completed is True)
         if data['filter']['is_overtime']:
             filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
-    return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).order_by(Ddl.ddl_time).slice(data['start'], data['end']).all())})
+    if 'tag' in data:
+        filter_list.append(Ddl.tag == data['tag'])
+    return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).
+                                                order_by(Ddl.ddl_time.desc() if 'sorter' in data and data['sorter']['reversed']
+                                                else Ddl.ddl_time).slice(data['start'], data['end']).all())})
 
 
 @bp.route("/delete", methods=['POST', 'GET'])
