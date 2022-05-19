@@ -197,12 +197,9 @@ export default {
     }
 
     function datePickerConfirm({selectedValue}) {
-      const date = selectedValue.slice(0, 3).join('-');
-      const time = selectedValue.slice(3).join(':');
-      state.addInfo.date = new Date(date + ' ' + time);
+      state.addInfo.date = new Date(selectedValue[0], selectedValue[1] - 1, selectedValue[2], selectedValue[3], selectedValue[4])
     }
-
-
+    
     // 获取 DDL 相关
     function fetchDdls(start: number, end: number, callback: Function) {
       const r = request({
