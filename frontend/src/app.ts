@@ -17,7 +17,8 @@ import {
   DatePicker,
   Picker,
   Toast,
-  CountDown
+  CountDown,
+  Swipe
 } from "@nutui/nutui-taro";
 import './app.scss'
 import Taro from "@tarojs/taro";
@@ -86,5 +87,6 @@ App.use(Button)
   .use(Dialog)
   .use(Toast)
   .use(CountDown)
+  .use(Swipe)
 
 export default App
