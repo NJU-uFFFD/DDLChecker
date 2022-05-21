@@ -87,10 +87,8 @@
         <nut-cell>
           <nut-input
             v-model="state.addInfo.title"
-            style="height: auto;font-size: 24px;padding-left: 0;"
-            type="textarea"
+            style="height: auto;font-size: 20px;padding-left: 0;"
             maxLength="32"
-            rows="1.2"
             :border="false"
             :placeholder="state.addInfo.title===''?'新建待办':state.addInfo.title"
           />
@@ -98,9 +96,8 @@
         <nut-cell>
           <nut-input
             v-model="state.pickerDate.toLocaleString()"
-            style="height: auto;font-size: 24px;padding-left: 0;"
+            style="height: auto;font-size: 20px;padding-left: 0;"
             :border="false"
-            rows="1.2"
             disabled
             :placeholder="state.pickerDate.toLocaleString()"
             @click.stop="state.datePickerShow = true"
@@ -108,7 +105,7 @@
         </nut-cell>
         <nut-cell>
           <nut-input
-            style="height: auto;font-size: 24px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
+            style="height: auto;font-size: 20px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
             type="textarea"
             show-word-limit
             :rows="Math.floor(state.addInfo.detail.length/20)+2<11?Math.floor(state.addInfo.detail.length/20)+2:11"
