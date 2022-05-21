@@ -13,11 +13,12 @@
       />
     </template>
   </nut-cell>
+
 </template>
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue';
-import {Toast} from '@nutui/nutui-taro';
+import {Dialog, Toast} from '@nutui/nutui-taro';
 import {DDLData} from "../../types/DDLData";
 
 export default defineComponent({
@@ -25,25 +26,23 @@ export default defineComponent({
   props: {
     ddlData: Object as () => DDLData
   },
-  setup({ddlData}) {
-    const switchChecked = ref(true);
-    const ddlCardClick = (event) => {
-      //TODO: 查看详情
+  emits: ['onClick'],
+  setup({ddlData}, {emit}) {
+    if (ddlData === undefined) return;
+    const ddlCardClick = () => {
+      emit("onClick", ddlData)
     };
 
     // const ddlTime = (new Intl.DateTimeFormat("zh-CN", {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false}).format)(props.ddlData?.ddl_time);
     // 上述用法会出现上午12:40或者24:40这种离谱的情况,太难受啦!!
 
-    if (ddlData === undefined) return
-
     const t = new Date(ddlData.ddl_time);
     const ddlTime = String(`${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日
-    ${typeof (t) == "object" && t.getHours() > 9 ? t.getHours() : "0" + t.getHours()}:
-    ${typeof (t) == "object" && t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`)
+    ${t.getHours() > 9 ? t.getHours() : "0" + t.getHours()}:
+    ${t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`);
 
     return {
       ddlCardClick,
-      switchChecked,
       ddlTime,
     };
   }

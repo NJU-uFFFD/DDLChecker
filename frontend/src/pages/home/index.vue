@@ -25,10 +25,20 @@
       <view
         v-for="data in ddl_list"
         :key="data">
-        <HomeDdlCard :ddlData="data"/>
+        <HomeDdlCard
+          :ddlData="data"
+          @onClick="onDdlClick"/>
       </view>
-
     </scroll-view>
+
+    <!-- DDL详情 -->
+    <nut-dialog
+      :title=state.ddlDetailData.title
+      :content=state.ddlDetailData.content
+      close-on-click-overlay
+      lock-scroll
+      v-model:visible="state.showDetails"
+    />
 
     <!-- 手动添加 ddl 的弹出层 -->
     <nut-overlay
@@ -63,7 +73,7 @@
         </nut-form-item>
       </nut-form>
 
-      <nut-button class="add-ddl-close-button" type="danger" @click="state.showAdd = false">关闭</nut-button>
+      <nut-button class="add-ddl-cancel-button" type="danger" @click="state.showAdd = false">取消</nut-button>
       <nut-button class="add-ddl-submit-button" type="success" @click="submitDdl" :loading="state.ddlSubmitting">添加</nut-button>
 
       <nut-datepicker catchMove
@@ -98,10 +108,12 @@ import HomeDdlCard from "../../components/card/HomeDdlCard.vue";
 import {DDLData} from "../../types/DDLData";
 import {request} from "../../util/request"
 import Taro from "@tarojs/taro";
+import HomeDdlDetailsCard from "../../components/card/HomeDdlDetailsCard.vue";
 
 export default {
   name: 'home',
   components: {
+    HomeDdlDetailsCard,
     HomeDdlCard,
   },
   setup() {
@@ -118,7 +130,9 @@ export default {
         "title": "",
         "date": new Date(),
         "detail": ""
-      }
+      },
+      "showDetails": false,
+      "ddlDetailData": {}
     })
 
     let toastInfo = reactive({
@@ -203,6 +217,7 @@ export default {
 
     // 获取 DDL 相关
     function fetchDdls(start: number, end: number, callback: Function) {
+      state.refreshing = true
       const r = request({
         path: "/ddl/list",
         method: "POST",
@@ -223,6 +238,8 @@ export default {
         callback(res.data.data.ddl_list)
       }).catch((reason) => {
         console.error("DDL fetch error: " + JSON.stringify(reason))
+      }).finally(() => {
+        state.refreshing = false
       })
     }
 
@@ -254,11 +271,16 @@ export default {
       state.offset += 10
     }
 
-    // 获取 DDL 时间上限
+    // 获取 DDL 时间下限
     const getMinDate = (() => {
       let now = new Date()
       return new Date(now.setDate(now.getDate() - 30))
     })
+
+    const onDdlClick = (ddlData) => {
+      state.ddlDetailData = ddlData
+      state.showDetails = true
+    };
 
     // 第一次加载列表
     listRefresh()
@@ -273,7 +295,8 @@ export default {
       listRefresh,
       listLower,
       state,
-      toastInfo
+      toastInfo,
+      onDdlClick
     }
   }
 }
@@ -297,7 +320,7 @@ export default {
   width: 96vw;
 }
 
-.add-ddl-close-button {
+.add-ddl-cancel-button {
   position: fixed;
   bottom: 35vh;
   left: 10vw;
