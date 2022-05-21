@@ -9,7 +9,7 @@
       #icon>
       <img
         class="home-site-icon"
-        :src=ddlData.from
+        :src="getAccountIcon(ddlData.platform_uuid)"
       />
     </template>
   </nut-cell>
@@ -17,9 +17,9 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
-import {Dialog, Toast} from '@nutui/nutui-taro';
+import {defineComponent, ref} from 'vue'
 import {DDLData} from "../../types/DDLData";
+import {getAccountIcon} from "../../util/ui"
 
 export default defineComponent({
   name: "HomeDdlCard",
@@ -44,6 +44,7 @@ export default defineComponent({
     return {
       ddlCardClick,
       ddlTime,
+      getAccountIcon
     };
   }
 })
@@ -52,13 +53,13 @@ export default defineComponent({
 <style>
 
 .home-ddl-card {
-  margin-top: 12px;
-  margin-bottom: 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
   align-items: center;
-  margin-left: 10px;
-  width: 95%;
-  height: 88px;
-  border-radius: 20px;
+  /*margin-left: 10px;*/
+  /*width: 95%;*/
+  height: 70px;
+  border-radius: 0;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
