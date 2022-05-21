@@ -153,6 +153,7 @@
     <nut-button
       type="primary"
       class="add_button"
+      style="position: fixed;height: 8vh;width: 10vh;right: 30px;bottom: 30px;box-shadow: 0 4px 15px 0 rgba(237, 238, 241, 10)"
       icon="uploader"
       @click="state.showAdd = true"/>
 
@@ -413,12 +414,6 @@ export default {
 <style>
 .home {
   background: #f9f9f9;
-}
-
-.add_button {
-  position: fixed;
-  right: 30px;
-  bottom: 30px;
 }
 
 /*表单内行高设置*/
