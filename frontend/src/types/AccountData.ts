@@ -1,5 +1,5 @@
 export interface AccountData {
-  account_id: number,
-  title: string,
-  from: string
+  id: number,
+  user_id: number,
+  platform_uuid: string
 }

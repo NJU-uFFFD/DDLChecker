@@ -1,3 +1,5 @@
+import time
+
 from flask import Blueprint
 from routes.utils import get_context, check_data, make_response
 from routes.rules.ddl_rules import *
@@ -21,7 +23,8 @@ def add_ddl():
 
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
-    new_ddl = Ddl(userid, data['title'], data['ddl_time'], data['content'], data.get('tag') or "[]", data.get('course_uuid'))
+    new_ddl = Ddl(userid, data['title'], data['ddl_time'], int(time.time()*1000), data['content'], data.get('tag'),
+                  data.get('course_uuid'), data.get('platform_uuid'))
     db.session.add(new_ddl)
     db.session.commit()
 
@@ -40,8 +43,10 @@ def list_dll():
                 "title" -> str (len 1 - 256),
                 "content" -> str (len 1 - 4096),
                 "ddl_time" -> int(不得在30天前),
+                "create_time" -> int
                 "tag" -> str(len 1 - 4096),
-                "course_uuid" -> uuid
+                "course_uuid" -> str
+                "platform_uuid" -> str
                 "is_completed" -> bool
             }
         ]
@@ -49,6 +54,9 @@ def list_dll():
     """
     openid, data = get_context()
     check_data(ListDDLsRules, data)
+
+    if not 0 < data['end'] - data['start'] < 20:
+        return make_response(400, "invalid range.(nmsl)", {})
 
     # 数据库操作
     userid = User.query.filter(User.openid == openid).first().id
@@ -58,7 +66,11 @@ def list_dll():
             filter_list.append(Ddl.is_completed is True)
         if data['filter']['is_overtime']:
             filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
-    return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).order_by(Ddl.ddl_time).slice(data['start'], data['end']).all())})
+    if 'tag' in data:
+        filter_list.append(Ddl.tag == data['tag'])
+    return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).
+                                                order_by(Ddl.ddl_time.desc() if 'sorter' in data and data['sorter']['reversed']
+                                                else Ddl.ddl_time).slice(data['start'], data['end']).all())})
 
 
 @bp.route("/delete", methods=['POST', 'GET'])
@@ -75,9 +87,9 @@ def delete_ddl():
     userid = User.query.filter(User.openid == openid).first().id
     del_ddl = Ddl.query.get(data['ddl_id'])
     if del_ddl is None:
-        return make_response(-1, "Ddl_id not found.", {})
+        return make_response(404, "Ddl_id not found.(nmsl)", {})
     if del_ddl.userid != userid:
-        return make_response(-1, "Cannot delete others' ddl.", {})
+        return make_response(403, "Cannot delete others' ddl(nmsl).", {})
 
     db.session.delete(del_ddl)
     db.session.commit()
