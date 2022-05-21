@@ -7,6 +7,7 @@ TODO-item
 	source	int
 	ddl(timestamp) bigint
 	course_uuid 64
+	source 256
 	is_completed Boolean
 
 User
@@ -16,9 +17,9 @@ User
 Account
 	id PRIMARY AUTO_INCREMENT
 	userid
+	platform
 	account
-	password
-	platform	int
+	password str
 
 
 

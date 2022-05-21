@@ -1,9 +1,11 @@
 export interface DDLData {
   id: number,
+  userid: number,
   title: string,
   content: string,
-  ddl_time: number,
   tag: string,
-  // from: string,
-  // course_uuid: string
+  ddl_time: number,
+  is_completed: boolean,
+  course_uuid: string,
+  platform_uuid: string
 }
