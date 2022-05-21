@@ -1,7 +1,7 @@
 from flask import request, Response, jsonify
 from flask import abort
 from marshmallow import ValidationError
-
+from db.user import User
 
 def get_context():
     """
@@ -12,14 +12,12 @@ def get_context():
     openid = request.headers['x-wx-openid']
     return openid, data
 
-
 def make_response(status: int, msg: str, return_data: dict) -> Response:
     """
     标准请求返回
     :return: Response
     """
     return jsonify({"code": status, "msg": msg, "data": return_data})
-
 
 def check_data(schema, data):
     """
@@ -32,3 +30,5 @@ def check_data(schema, data):
         return schema().load(data)
     except ValidationError as e:
         abort(make_response(status=-1, msg=str(e.messages), return_data={}), 400)
+
+
