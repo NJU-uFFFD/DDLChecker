@@ -28,10 +28,10 @@
         <nut-swipe>
           <HomeDdlCard
             :ddlData="data"
-            @onClick="onDdlClick"/>
+            @onClick="onDdlClick"
+            @onCompleteStatusChange="completeDdl"/>
           <template #right>
-            <nut-button shape="square" style="height:100%" type="danger">删除</nut-button>
-            <nut-button shape="square" style="height:100%" type="info">收藏</nut-button>
+            <nut-button style="height:100%;border-radius: 10px" type="danger" @click="deleteDdl(data)">删除</nut-button>
           </template>
         </nut-swipe>
 
@@ -53,6 +53,7 @@
       <nut-cell
         style="box-shadow: 0 0 0 0"
         :title="state.ddlDetailData.content"/>
+      <!-- 查改 -->
       <!--      <nut-form>-->
       <!--        <nut-form-item label="截止时间">-->
       <!--          <input-->
@@ -326,6 +327,37 @@ export default {
       state.pickerDate = new Date(ddlData.ddl_time)
     };
 
+    function deleteDdl(ddlData) {
+      console.log("删除 DDL ID: " + ddlData.id)
+      const r = request({
+        method: "POST",
+        path: "/ddl/delete",
+        data: {
+          "ddl_id": ddlData.id
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode == 200 && res.data.code == 0) {
+          openToast('success', "删除成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: '删除代办出错: ' + JSON.stringify(reason),
+          showCancel: false
+        })
+      }).finally(() => {
+        listRefresh()
+      })
+    }
+
+    function completeDdl(ddlData) {
+      console.log(ddlData)
+    }
+
     // 第一次加载列表
     listRefresh()
 
@@ -340,7 +372,9 @@ export default {
       listLower,
       state,
       toastInfo,
-      onDdlClick
+      onDdlClick,
+      deleteDdl,
+      completeDdl
     }
   }
 }

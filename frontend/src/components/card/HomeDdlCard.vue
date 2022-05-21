@@ -3,7 +3,6 @@
     class="home-ddl-card"
     :title=ddlData.title
     :sub-title=ddlTime
-    desc="查看详情"
     @click="ddlCardClick">
     <template
       #icon>
@@ -11,6 +10,20 @@
         class="home-site-icon"
         :src="getAccountIcon(ddlData.platform_uuid)"
       />
+    </template>
+    <template
+      #link>
+      <nut-icon
+        style="position: absolute;right: 7vw"
+        name="check-normal"
+        size="28"
+      />
+      <nut-icon
+        style="position: absolute;right: 6vw"
+        :name="ddlData.is_completed?'Check':''"
+        color="#2c68ff"
+        size="32"
+        @click.stop="completeDdl"/>
     </template>
   </nut-cell>
 
@@ -26,7 +39,7 @@ export default defineComponent({
   props: {
     ddlData: Object as () => DDLData
   },
-  emits: ['onClick'],
+  emits: ['onClick', 'onCompleteStatusChange'],
   setup({ddlData}, {emit}) {
     if (ddlData === undefined) return;
     const ddlCardClick = () => {
@@ -41,10 +54,17 @@ export default defineComponent({
     ${t.getHours() > 9 ? t.getHours() : "0" + t.getHours()}:
     ${t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`);
 
+    function completeDdl() {
+      if (ddlData === undefined) return;
+      ddlData.is_completed = !ddlData.is_completed
+      emit("onCompleteStatusChange", ddlData)
+    }
+
     return {
       ddlCardClick,
       ddlTime,
-      getAccountIcon
+      getAccountIcon,
+      completeDdl
     };
   }
 })
@@ -56,10 +76,10 @@ export default defineComponent({
   margin-top: 6px;
   margin-bottom: 6px;
   align-items: center;
-  /*margin-left: 10px;*/
-  /*width: 95%;*/
+  margin-left: 2vw;
+  width: 96vw;
   height: 70px;
-  border-radius: 0;
+  border-radius: 10px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
