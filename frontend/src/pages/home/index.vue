@@ -35,22 +35,23 @@
       v-model:visible="state.showAdd"
       :close-on-click-overlay=false
       :z-index="200">
-      <nut-form>
+      <nut-form
+        class="add-form">
         <!--TODO: 表单内容检验-->
-        <nut-form-item label="代办事项标题">
+        <nut-form-item label="待办标题">
           <input
             v-model="state.addInfo.title"
             class="nut-input-text"
-            placeholder="请输入代办事项标题"
+            placeholder="请输入待办标题"
             type="text"/>
         </nut-form-item>
 
-        <nut-form-item label="Deadline">
+        <nut-form-item label="截止时间">
           <input
             :value="state.addInfo.date.toLocaleString()"
             placeholder="选择时间"
-            readonly="true"
-            disabled="true"
+            readonly
+            disabled
             @click="state.datePickerShow = true"/>
         </nut-form-item>
         <nut-form-item label="详细说明">
@@ -61,6 +62,9 @@
             type="text"/>
         </nut-form-item>
       </nut-form>
+
+      <nut-button class="add-ddl-close-button" type="danger" @click="state.showAdd = false">关闭</nut-button>
+      <nut-button class="add-ddl-submit-button" type="success" @click="submitDdl" :loading="state.ddlSubmitting">添加</nut-button>
 
       <nut-datepicker catchMove
                       v-model="state.addInfo.date"
@@ -73,9 +77,6 @@
                       :lock-scroll="true"
       />
 
-      <nut-button size="large" type="danger" @click="state.showAdd = false">关闭</nut-button>
-      <nut-button size="large" type="success" @click="submitDdl" :loading="state.ddlSubmitting">添加</nut-button>
-
     </nut-overlay>
 
     <!-- Toast -->
@@ -87,7 +88,7 @@
       :cover="toastInfo.cover"/>
 
     <!-- 手动添加 ddl 的按钮 -->
-    <nut-button type="primary" id="add_button" @click="addDdl">+</nut-button>
+    <nut-button type="primary" class="add_button" icon="uploader" @click="addDdl"/>
   </view>
 </template>
 
@@ -199,7 +200,7 @@ export default {
     function datePickerConfirm({selectedValue}) {
       state.addInfo.date = new Date(selectedValue[0], selectedValue[1] - 1, selectedValue[2], selectedValue[3], selectedValue[4])
     }
-    
+
     // 获取 DDL 相关
     function fetchDdls(start: number, end: number, callback: Function) {
       const r = request({
@@ -283,10 +284,35 @@ export default {
   background: #f9f9f9;
 }
 
-#add_button {
+.add_button {
   position: fixed;
   right: 30px;
   bottom: 30px;
 }
 
+.add-form {
+  position: fixed;
+  top: 30vh;
+  right: 2vw;
+  width: 96vw;
+}
+
+.add-ddl-close-button {
+  position: fixed;
+  bottom: 35vh;
+  left: 10vw;
+  width: 35vw;;
+}
+
+.add-ddl-submit-button {
+  position: fixed;
+  bottom: 35vh;
+  right: 10vw;
+  width: 35vw;
+}
+
+/*表单内行高设置*/
+.nut-cell {
+  line-height: normal;
+}
 </style>
