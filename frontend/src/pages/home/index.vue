@@ -90,7 +90,7 @@
             style="height: auto;font-size: 20px;padding-left: 0;"
             maxLength="32"
             :border="false"
-            :placeholder="state.addInfo.title===''?'新建待办':state.addInfo.title"
+            placeholder="新建待办"
           />
         </nut-cell>
         <nut-cell>
@@ -111,7 +111,7 @@
             :rows="Math.floor(state.addInfo.detail.length/20)+2<11?Math.floor(state.addInfo.detail.length/20)+2:11"
             maxLength="128"
             :border="false"
-            :placeholder="state.addInfo.detail===''?'请输入待办详情':state.addInfo.detail"
+            placeholder="请输入待办详情"
           />
         </nut-cell>
       </nut-cell-group>
@@ -136,7 +136,7 @@
                     type="datetime"
                     title="Deadline 选择"
                     v-model:visible="state.datePickerShow"
-                    @confirm="datePickerConfirm"
+                    @confirm="({selectedValue : t}) =>state.pickerDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4])"
                     :min-date="getMinDate()"
                     :is-show-chinese="true"
                     :lock-scroll="true"
@@ -150,7 +150,12 @@
       :cover="toastInfo.cover"/>
 
     <!-- 手动添加 ddl 的按钮 -->
-    <nut-button type="primary" class="add_button" icon="uploader" @click="addDdl"/>
+    <nut-button
+      type="primary"
+      class="add_button"
+      icon="uploader"
+      @click="state.showAdd = true"/>
+
   </view>
 </template>
 
@@ -230,9 +235,9 @@ export default {
         "method": "POST",
         "path": "/ddl/add",
         "data": {
-          "title": state.addInfo.title ? state.addInfo.title : "新建待办",
+          "title": state.addInfo.title || "新建待办",
           "ddl_time": state.pickerDate.getTime(),
-          "content": state.addInfo.detail ? state.addInfo.detail : "无详情"
+          "content": state.addInfo.detail || "无详情"
         }
       })
 
@@ -250,22 +255,15 @@ export default {
           content: '添加代办出错: ' + JSON.stringify(reason),
           showCancel: false
         })
+      }).finally(() => {
+        state.addInfo = {
+          "title": "",
+          "detail": ""
+        }
+        state.pickerDate = new Date()
+        state.showAdd = false
         state.ddlSubmitting = false
       })
-    }
-
-    function addDdl() {
-      state.addInfo = {
-        "title": "",
-        "detail": ""
-      }
-      state.pickerDate = new Date()
-      state.ddlSubmitting = false
-      state.showAdd = true
-    }
-
-    function datePickerConfirm({selectedValue}) {
-      state.pickerDate = new Date(selectedValue[0], selectedValue[1] - 1, selectedValue[2], selectedValue[3], selectedValue[4])
     }
 
     // 获取 DDL 相关
@@ -398,8 +396,6 @@ export default {
     return {
       ...toRefs(ddls),
       menu,
-      addDdl,
-      datePickerConfirm,
       getMinDate,
       submitDdl,
       listRefresh,
