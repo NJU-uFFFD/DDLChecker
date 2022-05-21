@@ -95,7 +95,6 @@
         </nut-cell>
         <nut-cell>
           <nut-input
-            v-model="state.pickerDate.toLocaleString()"
             style="height: auto;font-size: 20px;padding-left: 0;"
             :border="false"
             disabled
@@ -105,6 +104,7 @@
         </nut-cell>
         <nut-cell>
           <nut-input
+            v-model="state.addInfo.detail"
             style="height: auto;font-size: 20px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
             type="textarea"
             show-word-limit
