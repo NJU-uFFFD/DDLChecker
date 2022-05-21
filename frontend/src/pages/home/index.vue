@@ -75,50 +75,63 @@
     </nut-dialog>
 
     <!-- 手动添加 ddl 的弹出层 -->
-    <nut-dialog
-      title="添加待办"
-      v-model:visible="state.showAdd"
-      close-on-click-overlay
-      lock-scroll
-      ok-text="添加"
-      @ok="submitDdl">
-      <nut-form>
+    <nut-popup
+      position="bottom"
+      style="height:80vh;"
+      round
+      safe-area-inset-bottom
+      v-model:visible="state.showAdd">
+      <nut-cell-group
+        style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
         <!--TODO: 表单内容检验-->
-        <nut-form-item label="待办标题">
-          <input
+        <nut-cell>
+          <nut-input
             v-model="state.addInfo.title"
-            class="nut-input-text"
-            placeholder="请输入待办标题"
-            type="text"/>
-        </nut-form-item>
-        <nut-form-item label="截止时间">
-          <input
-            :value="state.pickerDate.toLocaleString()"
-            placeholder="选择时间"
-            readonly
+            style="height: auto;font-size: 24px;padding-left: 0;"
+            type="textarea"
+            maxLength="32"
+            rows="1.2"
+            :border="false"
+            :placeholder="state.addInfo.title===''?'新建待办':state.addInfo.title"
+          />
+        </nut-cell>
+        <nut-cell>
+          <nut-input
+            v-model="state.pickerDate.toLocaleString()"
+            style="height: auto;font-size: 24px;padding-left: 0;"
+            :border="false"
+            rows="1.2"
             disabled
-            @click="state.datePickerShow = true"/>
-        </nut-form-item>
-        <nut-form-item label="详细说明">
-          <input
-            v-model="state.addInfo.detail"
-            class="nut-input-text"
-            placeholder="请输入详细说明"
-            type="text"/>
-        </nut-form-item>
-      </nut-form>
-      <template #footer>
-        <nut-button
-          plain type="info"
-          @click="state.showAdd = false">取消
-        </nut-button>
-        <nut-button
-          type="info"
-          @click="submitDdl"
-          :loading="state.ddlSubmitting">添加
-        </nut-button>
-      </template>
-    </nut-dialog>
+            :placeholder="state.pickerDate.toLocaleString()"
+            @click.stop="state.datePickerShow = true"
+          />
+        </nut-cell>
+        <nut-cell>
+          <nut-input
+            style="height: auto;font-size: 24px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
+            type="textarea"
+            show-word-limit
+            :rows="Math.floor(state.addInfo.detail.length/20)+2<11?Math.floor(state.addInfo.detail.length/20)+2:11"
+            maxLength="128"
+            :border="false"
+            :placeholder="state.addInfo.detail===''?'请输入待办详情':state.addInfo.detail"
+          />
+        </nut-cell>
+      </nut-cell-group>
+      <nut-button
+        type="info"
+        plain
+        style="height:8vh;width:40vw;left:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+        @click="state.showAdd = false">
+        取消
+      </nut-button>
+      <nut-button
+        type="info"
+        style="height:8vh;width:40vw;right:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+        @click="submitDdl"
+        :loading="state.ddlSubmitting">添加
+      </nut-button>
+    </nut-popup>
 
     <!-- 选择DDL时间 -->
     <nut-datepicker catchMove
@@ -220,9 +233,9 @@ export default {
         "method": "POST",
         "path": "/ddl/add",
         "data": {
-          "title": state.addInfo.title,
+          "title": state.addInfo.title ? state.addInfo.title : "新建待办",
           "ddl_time": state.pickerDate.getTime(),
-          "content": state.addInfo.detail
+          "content": state.addInfo.detail ? state.addInfo.detail : "无详情"
         }
       })
 
