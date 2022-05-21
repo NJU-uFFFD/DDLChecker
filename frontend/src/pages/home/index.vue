@@ -355,9 +355,9 @@ export default {
       })
     }
 
-    // 完成 DDL
+    // 完成/撤销完成 DDL
     function completeDdl(ddlData) {
-      console.log("完成 DDL ID: " + ddlData.id + " 并更新")
+      console.log((ddlData.is_completed == true ? "完成 DDL ID: " : "撤销 DDL ID: ") + ddlData.id + " 并更新")
       const r = request({
         method: "POST",
         path: "/ddl/update",
@@ -369,14 +369,14 @@ export default {
 
       r.then((res) => {
         if (res.statusCode == 200 && res.data.code == 0) {
-          openToast('success', "完成待办成功!")
+          openToast('success', ddlData.is_completed == true ? "完成待办成功!" : "撤销成功!")
         } else {
           throw JSON.stringify(res)
         }
       }).catch((reason) => {
         Taro.showModal({
           title: '错误',
-          content: '完成待办出错: ' + JSON.stringify(reason),
+          content: (ddlData.is_completed == true ? '完成待办出错: ' : '撤销出错: ') + JSON.stringify(reason),
           showCancel: false
         })
       })
