@@ -16,7 +16,8 @@ import {
   Input,
   DatePicker,
   Picker,
-  Toast
+  Toast,
+  CountDown
 } from "@nutui/nutui-taro";
 import './app.scss'
 import Taro from "@tarojs/taro";
@@ -60,7 +61,7 @@ const App = createApp({
 })
 
 // 微信云托管初始化
-if(USE_CONTAINER) {
+if (USE_CONTAINER) {
   Taro.cloud.init({
     env: ENV_ID
   })
@@ -84,5 +85,6 @@ App.use(Button)
   .use(Picker)
   .use(Dialog)
   .use(Toast)
+  .use(CountDown)
 
 export default App
