@@ -1,12 +1,14 @@
+import logging
+
 from flask import Flask
 from routes import *
 from config import *
 from db import db
-
+import logging
 
 WX_APPID = ""
 
-
+logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s', level=logging.INFO)
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 app.register_blueprint(ddl.bp)
@@ -27,5 +29,13 @@ def hello():
     return "hello!"
 
 
+
+
 if __name__ == '__main__':
     app.run()
+    # import crawler.crawlers.TeachingSquareCrawler
+    # c = crawler.crawlers.TeachingSquareCrawler.TeachingSquareCrawler()
+    # c.login({"account": "18015503001", "password": "98324364xue"})
+    # print(c.fetch_ddl())
+
+
