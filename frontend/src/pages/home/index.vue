@@ -327,13 +327,14 @@ export default {
       state.pickerDate = new Date(ddlData.ddl_time)
     };
 
+    // 删除 DDL
     function deleteDdl(ddlData) {
       console.log("删除 DDL ID: " + ddlData.id)
       const r = request({
         method: "POST",
         path: "/ddl/delete",
         data: {
-          "ddl_id": ddlData.id
+          "id": ddlData.id
         }
       })
 
@@ -354,8 +355,31 @@ export default {
       })
     }
 
+    // 完成 DDL
     function completeDdl(ddlData) {
-      console.log(ddlData)
+      console.log("完成 DDL ID: " + ddlData.id + " 并更新")
+      const r = request({
+        method: "POST",
+        path: "/ddl/update",
+        data: {
+          "id": ddlData.id,
+          "is_completed": ddlData.is_completed
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode == 200 && res.data.code == 0) {
+          openToast('success', "完成待办成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: '完成待办出错: ' + JSON.stringify(reason),
+          showCancel: false
+        })
+      })
     }
 
     // 第一次加载列表
