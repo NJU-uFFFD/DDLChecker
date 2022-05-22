@@ -16,6 +16,7 @@ class ListDDLsRules(Schema):
         "filter" -> dict(not necessary)
             "is_completed" -> bool
             "is_overtime" -> bool
+            “is_deleted” -> bool
         "time_range" -> dict(not necessary)
             "start" -> int
             "end" -> int
@@ -26,7 +27,7 @@ class ListDDLsRules(Schema):
     start = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
     end = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
     filter = fields.Dict(required=False,
-                         keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "is_overtime"])),
+                         keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "is_overtime", "is_deleted"])),
                          values=fields.Boolean(required=True))
     time_range = fields.Dict(required=False,
                              keys=fields.Str(required=True, validate=validate.OneOf(["start", "end"])),
@@ -64,6 +65,7 @@ class UpdateDDLRules(Schema):
         "course_uuid" -> str(not necessary)
         "platform_uuid" -> str(not necessary)
         "is_completed" -> bool(not necessary)
+        "is_deleted" ->bool(not necessary)
     """
     id = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
     title = fields.Str(required=False, validate=validate.Length(min=1, max=256))
@@ -74,4 +76,5 @@ class UpdateDDLRules(Schema):
     course_uuid = fields.UUID(required=False)
     platform_uuid = fields.UUID(required=False)
     is_completed = fields.Boolean(required=False)
+    is_deleted = fields.Boolean(required=False)
 
