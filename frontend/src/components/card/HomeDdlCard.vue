@@ -19,7 +19,7 @@
         size="28"
       />
       <nut-icon
-        style="position: absolute;right: 6vw"
+        style="position: absolute;right:2vw;padding-top: 4vw;padding-bottom: 4vw;padding-left: 4vw;padding-right: 4vw;"
         :name="ddlData.is_completed?'Check':''"
         color="#2c68ff"
         size="32"
