@@ -22,7 +22,7 @@ def add_ddl():
     # 数据库操作
     user = User.query.filter(User.openid == openid).first()
     if user is None:
-        return make_response(-1, "user not registered", {})
+        return make_response(-1, "User not registered", {})
     userid = user.id
     new_ddl = Ddl(userid, data['title'], data['ddl_time'], int(time.time()*1000), data['content'], data.get('tag'),
                   data.get('course_uuid'), data.get('platform_uuid'))
@@ -58,12 +58,12 @@ def list_dll():
     check_data(ListDDLsRules, data)
 
     if not 0 <= data['end'] - data['start'] <= 20:
-        return make_response(400, "invalid slice range.(nmsl)", {})
+        return make_response(400, "Invalid slice range.(nmsl)", {})
 
     # 数据库操作
     user = User.query.filter(User.openid == openid).first()
     if user is None:
-        return make_response(-1, "user not registered", {})
+        return make_response(-1, "User not registered.", {})
     userid = user.id
     filter_list = [Ddl.userid == userid]
     if 'filter' in data:
@@ -75,7 +75,7 @@ def list_dll():
         filter_list.append(Ddl.tag == data['tag'])
     if 'time_range' in data:
         if data['time_range']['start'] > data['time_range']['end']:
-            return make_response(400, "invalid time range.(nmsl)", {})
+            return make_response(400, "Invalid time range.(nmsl)", {})
         else:
             filter_list.append(data['time_range']['start'] <= Ddl.ddl_time)
             filter_list.append(data['time_range']['end'] >= Ddl.ddl_time)
@@ -100,18 +100,18 @@ def delete_ddl():
     # 数据库操作
     user = User.query.filter(User.openid == openid).first()
     if user is None:
-        return make_response(-1, "user not registered", {})
+        return make_response(-1, "User not registered.", {})
     userid = user.id
-    del_ddl = Ddl.query.get(data['id'])
-    if del_ddl is None:
-        return make_response(404, "Ddl_id not found.(nmsl)", {})
-    if del_ddl.userid != userid:
-        return make_response(403, "Cannot delete others' ddl(nmsl).", {})
+    ddl = Ddl.query.get(data['id'])
+    if ddl is None:
+        return make_response(404, "Id not found.(nmsl)", {})
+    if ddl.userid != userid:
+        return make_response(403, "Cannot delete others' ddl.(nmsl)", {})
 
-    db.session.delete(del_ddl)
+    db.session.delete(ddl)
     db.session.commit()
 
-    return make_response(0, "OK", {"id": del_ddl.id})
+    return make_response(0, "OK", {"id": ddl.id})
 
 
 @bp.route("/update", methods=['POST', 'GET'])
@@ -127,11 +127,11 @@ def update_ddl():
     # 数据库操作
     user = User.query.filter(User.openid == openid).first()
     if user is None:
-        return make_response(-1, "user not registered", {})
+        return make_response(-1, "User not registered", {})
     userid = user.id
     ddl = Ddl.query.get(data['id'])
     if ddl is None:
-        return make_response(404, "Ddl_id not found.(nmsl)", {})
+        return make_response(404, "Id not found.(nmsl)", {})
     if ddl.userid != userid:
         return make_response(403, "Cannot delete others' ddl(nmsl).", {})
 
