@@ -14,7 +14,9 @@ class ListDDLsRules(Schema):
         "start" -> int(>=0)
         "end" -> int(>=0)
         "filter" -> dict(not necessary)
+            "is_not_completed" -> bool
             "is_completed" -> bool
+            "is_not_overtime" -> bool
             "is_overtime" -> bool
             “is_deleted” -> bool
         "time_range" -> dict(not necessary)
@@ -27,7 +29,7 @@ class ListDDLsRules(Schema):
     start = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
     end = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
     filter = fields.Dict(required=False,
-                         keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "is_overtime", "is_deleted"])),
+                         keys=fields.Str(required=True, validate=validate.OneOf(["is_not_completed", "is_completed", "is_not_overtime", "is_overtime", "is_deleted"])),
                          values=fields.Boolean(required=True))
     time_range = fields.Dict(required=False,
                              keys=fields.Str(required=True, validate=validate.OneOf(["start", "end"])),
@@ -49,7 +51,8 @@ class AddDDLRules(Schema):
     """
     title = fields.Str(required=True, validate=validate.Length(min=1, max=256))
     content = fields.Str(required=True, validate=validate.Length(min=1, max=4096))
-    ddl_time = fields.Integer(strict=True, required=True, validate=validate.Range(min=round(time.time() * 1000) - 2_592_000_000))
+    ddl_time = fields.Integer(strict=True, required=True,
+                              validate=validate.Range(min=round(time.time() * 1000) - 2_592_000_000))
     tag = fields.Str(required=False, validate=validate.Length(min=1, max=4096))
     course_uuid = fields.UUID(required=False)
     platform_uuid = fields.UUID(required=False)
@@ -77,4 +80,3 @@ class UpdateDDLRules(Schema):
     platform_uuid = fields.UUID(required=False)
     is_completed = fields.Boolean(required=False)
     is_deleted = fields.Boolean(required=False)
-
