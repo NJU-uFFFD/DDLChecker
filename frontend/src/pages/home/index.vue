@@ -226,7 +226,7 @@
     <!--  删除 DDL 相关  -->
     <nut-dialog
       title="删除 DDL"
-      content="真的不需要这个 DDL 了吗？"
+      content="真的不需要这个 DDL 了吗 ？"
       close-on-click-overlay
       lock-scroll
       v-model:visible="state.showDelete">
@@ -248,7 +248,12 @@
       v-model:visible="toastInfo.show"
       :type="toastInfo.type"
       @closed="toastInfo.onClosed"
-      :cover="toastInfo.cover"/>
+      :cover="toastInfo.cover"
+      duration="1000"
+      bg-color="rgba(0, 0, 0, 0.5)"
+      :center="false"
+      bottom="16%"
+    />
 
     <!-- 手动添加 ddl 的按钮 -->
     <nut-button
@@ -537,6 +542,8 @@ export default {
           content: (ddlData.is_completed == true ? '完成待办出错: ' : '撤销出错: ') + JSON.stringify(reason),
           showCancel: false
         })
+      }).finally(() => {
+        listRefresh()
       })
     }
 
