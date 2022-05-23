@@ -1,7 +1,7 @@
-from flask import request, Response, jsonify
 from flask import abort
+from flask import request, Response, jsonify
 from marshmallow import ValidationError
-from db.user import User
+
 
 def get_context():
     """

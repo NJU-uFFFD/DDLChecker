@@ -6,5 +6,7 @@ MYSQL_USERNAME = os.environ.get('MYSQL_USERNAME') or 'root'
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'g6jVKKbc'
 MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE') or 'DDLChecker'
 
+INVOKE_PATH_TOKEN = os.environ.get('CRON_TOKEN')
+
 APP_ID = ""
 APP_SECRET = ""
