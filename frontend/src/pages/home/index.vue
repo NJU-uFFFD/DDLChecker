@@ -24,14 +24,20 @@
             <nut-button
               type="primary"
               @click="filterToggleAll(true)"
-              style="width:30vw; height: 6vh; margin-top: 3vh; margin-bottom: 2vh">
+              style="width:30vw; height: 5vh;margin-top: 2vh">
               全选
             </nut-button>
             <nut-button
               plain type="primary"
               @click="filterToggleAll(false)"
-              style="width:30vw; height: 6vh; margin-bottom: 1vh">
-              取消全选
+              style="width:30vw; height: 5vh;">
+              全不选
+            </nut-button>
+            <nut-button
+              plain type="default"
+              @click="filterReverse"
+              style="width:30vw; height: 5vh;">
+              反选
             </nut-button>
           </div>
         </div>
@@ -323,6 +329,12 @@ export default {
       (filterGroup.value as any).toggleAll(f)
     }
 
+    const filterReverse = () => {
+      menu.filterCheckboxGroup = ['1', '2', '3', '4', '5', '6'].filter((x) => {
+        return menu.filterCheckboxGroup.indexOf(x) == -1
+      })
+    }
+
     //消息通知
     const openToast = (type: string, msg: string, cover: boolean = false, title: string = "", bottom: string = "", center: boolean = true) => {
       toastInfo.show = true
@@ -535,6 +547,7 @@ export default {
       menu,
       filterToggleAll,
       filterGroup,
+      filterReverse,
       getMinDate,
       submitDdl,
       listRefresh,
