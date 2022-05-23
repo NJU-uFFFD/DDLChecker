@@ -1,3 +1,6 @@
+import logging
+
+import requests
 from flask import abort
 from flask import request, Response, jsonify
 from marshmallow import ValidationError
@@ -9,7 +12,13 @@ def get_context():
     :return: open_id, data(json)
     """
     data = request.get_json()
-    openid = request.headers['x-wx-openid']
+
+    # 启用公网访问后防止用户伪造 openid
+    if 'x-wx-source' in request.headers:
+        openid = request.headers['x-wx-openid']
+    else:
+        openid = None
+
     return openid, data
 
 def make_response(status: int, msg: str, return_data: dict) -> Response:

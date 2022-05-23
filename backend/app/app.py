@@ -3,6 +3,8 @@ from routes import *
 from config import *
 from db import db
 import logging
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 WX_APPID = ""
 
@@ -23,6 +25,14 @@ db.init_app(app)
 with app.app_context():
     # db.drop_all()
     db.create_all()
+
+
+# 访问频率限制
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["60 per minute", "3 per second"]
+)
 
 
 @app.route("/")
