@@ -40,6 +40,7 @@
               反选
             </nut-button>
           </div>
+
         </div>
       </nut-menu-item>
       <nut-menu-item
@@ -428,10 +429,10 @@ export default {
           "start": start,
           "end": end,
           "filter": {
-            "is_not_completed": '1' in menu.filterCheckboxGroup,
-            "is_completed": '2' in menu.filterCheckboxGroup,
-            "is_not_overtime": '3' in menu.filterCheckboxGroup,
-            "is_overtime": '4' in menu.filterCheckboxGroup
+            "is_not_completed": menu.filterCheckboxGroup.indexOf('1') != -1,
+            "is_completed": menu.filterCheckboxGroup.indexOf('2') != -1,
+            "is_not_overtime": menu.filterCheckboxGroup.indexOf('3') != -1,
+            "is_overtime": menu.filterCheckboxGroup.indexOf('4') != -1
           },
           "sorter": {
             "reversed": menu.value
