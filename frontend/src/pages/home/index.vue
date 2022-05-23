@@ -1,19 +1,48 @@
 <template>
   <view class="home">
 
-    <!--分类与排序菜单-->
+    <!--筛选与排序菜单-->
     <nut-menu>
       <nut-menu-item
-        v-model="menu.value1"
-        @change="listRefresh"
-        :options="menu.options1"/>
+        title="筛选">
+        <div style="display: flex; flex: 1; justify-content: space-between; align-items: center">
+          <nut-checkboxgroup
+            v-model="menu.filterCheckboxGroup"
+            ref="filterGroup"
+            @change="filterChangebox"
+            style="display: flex;flex-flow: wrap">
+            <nut-checkbox
+              v-for="item in menu.filterCheckboxSource"
+              :key="item.label"
+              :label="item.label"
+              icon-size="24"
+              style="display: flex; height: 6vh; width:25vw">{{ item.value }}
+            </nut-checkbox>
+          </nut-checkboxgroup>
+          <div
+            style="width: 60vw">
+            <nut-button
+              type="primary"
+              @click="filterToggleAll(true)"
+              style="width:30vw; height: 6vh; margin-top: 3vh; margin-bottom: 2vh">
+              全选
+            </nut-button>
+            <nut-button
+              plain type="primary"
+              @click="filterToggleAll(false)"
+              style="width:30vw; height: 6vh; margin-bottom: 1vh">
+              取消全选
+            </nut-button>
+          </div>
+        </div>
+      </nut-menu-item>
       <nut-menu-item
-        v-model="menu.value2"
+        v-model="menu.value"
         @change="listRefresh"
-        :options="menu.options2"/>
+        :options="menu.options"/>
     </nut-menu>
 
-    <!--DDL列表-->
+    <!-- DDL列表 -->
     <scroll-view
       :refresher-triggered="state.refreshing"
       :scroll-y="true"
@@ -22,23 +51,27 @@
       @scroll="scroll"
       @refresherrefresh="listRefresh"
       refresherEnabled="true">
-      <view
+
+      <nut-swipe
         v-for="data in ddl_list"
         :key="data">
-        <nut-swipe>
-          <HomeDdlCard
-            :ddlData="data"
-            @onClick="onDdlClick"
-            @onCompleteStatusChange="completeDdl"/>
-          <template #right>
-            <nut-button style="height:100%;border-radius: 10px" type="danger" @click="deleteDdl(data)">删除</nut-button>
-          </template>
-        </nut-swipe>
+        <HomeDdlCard
+          :ddlData="data"
+          @onClick="state.ddlDetailData = data; state.showDetails = true"
+          @onCompleteStatusChange="completeDdl"/>
+        <template #right>
+          <nut-button
+            style="height:100%; border-radius: 10px"
+            type="danger"
+            @click="state.showDelete=true;state.deleteInfo=data">
+            删除
+          </nut-button>
+        </template>
+      </nut-swipe>
 
-      </view>
     </scroll-view>
 
-    <!-- DDL详情 -->
+    <!-- DDL 详情 -->
     <nut-dialog
       :title=state.ddlDetailData.title
       close-on-click-overlay
@@ -53,28 +86,70 @@
       <nut-cell
         style="box-shadow: 0 0 0 0"
         :title="state.ddlDetailData.content"/>
-      <!-- 查改 -->
-      <!--      <nut-form>-->
-      <!--        <nut-form-item label="截止时间">-->
-      <!--          <input-->
-      <!--            :value="state.pickerDate.toLocaleString()"-->
-      <!--            :placeholder="state.pickerDate.toLocaleString()"-->
-      <!--            readonly-->
-      <!--            disabled-->
-      <!--            @click="state.datePickerShow = true"/>-->
-      <!--        </nut-form-item>-->
-      <!--        <nut-form-item label="详细说明">-->
-      <!--          <input-->
-      <!--            v-model="state.ddlDetailData.content"-->
-      <!--            class="nut-input-text"-->
-      <!--            :placeholder="state.ddlDetailData.content"-->
-      <!--            type="text"/>-->
-      <!--        </nut-form-item>-->
-      <!--      </nut-form>-->
-
+      <template #footer>
+        <nut-button
+          type="info"
+          @click="state.showEdit = true">修改
+        </nut-button>
+      </template>
     </nut-dialog>
 
-    <!-- 手动添加 ddl 的弹出层 -->
+    <!-- 修改 DDL 的弹出层 -->
+    <nut-popup
+      position="bottom"
+      style="height:80vh;"
+      round
+      safe-area-inset-bottom
+      v-model:visible="state.showEdit">
+      <nut-cell-group
+        style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+        <!--TODO: 表单内容检验-->
+        <nut-cell>
+          <nut-input
+            v-model="state.ddlDetailData.title"
+            style="height: auto;font-size: 20px;padding-left: 0;"
+            maxLength="32"
+            :border="false"
+          />
+        </nut-cell>
+        <nut-cell>
+          <nut-input
+            style="height: auto;font-size: 20px;padding-left: 0;"
+            :border="false"
+            disabled
+            :placeholder="state.pickerDate.toLocaleString()"
+            @click.stop="state.datePickerShow = true"
+          />
+        </nut-cell>
+        <nut-cell>
+          <nut-input
+            v-model="state.ddlDetailData.content"
+            style="height: auto;font-size: 20px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
+            type="textarea"
+            show-word-limit
+            rows=11
+            maxLength="128"
+            :border="false"
+          />
+        </nut-cell>
+      </nut-cell-group>
+      <nut-button
+        type="info"
+        plain
+        style="height:8vh;width:40vw;left:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+        @click="state.showEdit = false">
+        取消
+      </nut-button>
+      <nut-button
+        type="info"
+        style="height:8vh;width:40vw;right:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+        @click="editDdl(state.ddlDetailData)"
+        :loading="state.ddlEditSubmitting">
+        修改
+      </nut-button>
+    </nut-popup>
+
+    <!-- 手动添加 DDL 的弹出层 -->
     <nut-popup
       position="bottom"
       style="height:80vh;"
@@ -104,11 +179,11 @@
         </nut-cell>
         <nut-cell>
           <nut-input
-            v-model="state.addInfo.detail"
+            v-model="state.addInfo.content"
             style="height: auto;font-size: 20px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
             type="textarea"
             show-word-limit
-            :rows="Math.floor(state.addInfo.detail.length/20)+2<11?Math.floor(state.addInfo.detail.length/20)+2:11"
+            :rows="Math.floor(state.addInfo.content.length/20)+2<11?Math.floor(state.addInfo.content.length/20)+2:11"
             maxLength="128"
             :border="false"
             placeholder="请输入待办详情"
@@ -126,21 +201,40 @@
         type="info"
         style="height:8vh;width:40vw;right:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
         @click="submitDdl"
-        :loading="state.ddlSubmitting">添加
+        :loading="state.ddlAddSubmitting">
+        添加
       </nut-button>
     </nut-popup>
 
-    <!-- 选择DDL时间 -->
-    <nut-datepicker catchMove
-                    v-model="state.pickerDate"
-                    type="datetime"
-                    title="Deadline 选择"
-                    v-model:visible="state.datePickerShow"
-                    @confirm="({selectedValue : t}) =>state.pickerDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4])"
-                    :min-date="getMinDate()"
-                    :is-show-chinese="true"
-                    :lock-scroll="true"
+    <!-- 选择 DDL 时间 -->
+    <nut-datepicker
+      v-model="state.pickerDate"
+      type="datetime"
+      title="Deadline 选择"
+      v-model:visible="state.datePickerShow"
+      @confirm="({selectedValue : t}) =>state.pickerDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4])"
+      :min-date="getMinDate()"
     />
+
+    <!--  删除 DDL 相关  -->
+    <nut-dialog
+      title="删除 DDL"
+      content="真的不需要这个 DDL 了吗？"
+      close-on-click-overlay
+      lock-scroll
+      v-model:visible="state.showDelete">
+      <template #footer>
+        <nut-button
+          plain type="danger"
+          @click="state.showDelete = false">取消
+        </nut-button>
+        <nut-button
+          type="danger"
+          @click="deleteDdl(state.deleteInfo)">删除
+        </nut-button>
+      </template>
+    </nut-dialog>
+
     <!-- Toast -->
     <nut-toast
       :msg="toastInfo.msg"
@@ -161,7 +255,7 @@
 </template>
 
 <script lang="ts">
-import {reactive, toRefs} from 'vue';
+import {reactive, ref, toRefs} from 'vue';
 import HomeDdlCard from "../../components/card/HomeDdlCard.vue";
 import {DDLData} from "../../types/DDLData";
 import {request} from "../../util/request"
@@ -177,21 +271,23 @@ export default {
 
     let state = reactive({
       "showAdd": false,
+      "showDelete": false,
+      "showEdit": false,
       "datePickerShow": false,
-      "ddlSubmitting": false,
+      "ddlAddSubmitting": false,
       "refreshing": false,
       "offset": 0,
       "more": true,
       "addInfo": {
         "title": "",
         // "date": new Date(),
-        "detail": ""
+        "content": ""
       },
+      deleteInfo: {},
       "showDetails": false,
       "ddlDetailData": {},
       "pickerDate": new Date(),
-      "showEditDate": false,
-      "showEditContent": false
+      "ddlEditSubmitting": false,
     })
 
     let toastInfo = reactive({
@@ -205,19 +301,34 @@ export default {
     })
 
     const menu = reactive({
-      options1: [
-        {text: '全部DDL', value: 0},
-        {text: '紧急DDL', value: 1},
-        {text: '宽松DDL', value: 2},
-        {text: '超时DDL', value: 3},
-      ],
-      options2: [
+      options: [
         {text: '由近至远', value: false},
         {text: '由远至近', value: true},
       ],
-      value1: 0,
-      value2: false
-    });
+      value: false,
+      filterCheckboxGroup: ['1', '3', '4', '5', '6'],
+      filterCheckboxSource: [
+        {label: '1', value: '未完成'},
+        {label: '2', value: '已完成'},
+        {label: '3', value: '未超时'},
+        {label: '4', value: '已超时'},
+        {label: '5', value: '宽松'},
+        {label: '6', value: '紧急'},
+      ]
+    })
+
+
+    const filterChangebox = (label: any[]) => {
+      label.length === menu.filterCheckboxSource.length ? '全选' : '取消全选'
+      listRefresh()
+    }
+
+    const filterGroup = ref(null)
+
+    const filterToggleAll = (f: boolean) => {
+      (filterGroup.value as any).toggleAll(f)
+    }
+
 
     const openToast = (type: string, msg: string, cover: boolean = false, title: string = "", bottom: string = "", center: boolean = true) => {
       toastInfo.show = true
@@ -231,14 +342,14 @@ export default {
 
     // 添加 DDL 相关
     function submitDdl() {
-      state.ddlSubmitting = true
+      state.ddlAddSubmitting = true
       const r = request({
         "method": "POST",
         "path": "/ddl/add",
         "data": {
           "title": state.addInfo.title || "新建待办",
           "ddl_time": state.pickerDate.getTime(),
-          "content": state.addInfo.detail || "无详情"
+          "content": state.addInfo.content || "无详情"
         }
       })
 
@@ -259,11 +370,45 @@ export default {
       }).finally(() => {
         state.addInfo = {
           "title": "",
-          "detail": ""
+          "content": ""
         }
         state.pickerDate = new Date()
         state.showAdd = false
-        state.ddlSubmitting = false
+        state.ddlAddSubmitting = false
+      })
+    }
+
+    //修改 DDL 相关
+    function editDdl(ddlData) {
+      state.ddlEditSubmitting = true
+      const r = request({
+        method: "POST",
+        path: "/ddl/update",
+        data: {
+          "id": ddlData.id,
+          "title": ddlData.title,
+          "ddl_time": state.pickerDate.getTime(),
+          "content": ddlData.content
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode == 200 && res.data.code == 0) {
+          openToast('success', "修改成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: '修改代办出错: ' + JSON.stringify(reason),
+          showCancel: false
+        })
+      }).finally(() => {
+        listRefresh()
+        state.pickerDate = new Date()
+        state.showEdit = false
+        state.ddlEditSubmitting = false
       })
     }
 
@@ -277,11 +422,13 @@ export default {
           "start": start,
           "end": end,
           "filter": {
-            "is_completed": false,
-            "is_overtime": menu.value1 == 3
+            "is_not_completed": '1' in menu.filterCheckboxGroup,
+            "is_completed": '2' in menu.filterCheckboxGroup,
+            "is_not_overtime": '3' in menu.filterCheckboxGroup,
+            "is_overtime": '4' in menu.filterCheckboxGroup
           },
           "sorter": {
-            "reversed": menu.value2
+            "reversed": menu.value
           }
         }
       })
@@ -329,21 +476,16 @@ export default {
       return new Date(now.setDate(now.getDate() - 30))
     })
 
-    // 查看DDL详情
-    const onDdlClick = (ddlData) => {
-      state.ddlDetailData = ddlData
-      state.showDetails = true
-      state.pickerDate = new Date(ddlData.ddl_time)
-    };
-
     // 删除 DDL
     function deleteDdl(ddlData) {
       console.log("删除 DDL ID: " + ddlData.id)
+      ddlData.is_deleted = true
       const r = request({
         method: "POST",
-        path: "/ddl/delete",
+        path: "/ddl/update",
         data: {
-          "id": ddlData.id
+          "id": ddlData.id,
+          "is_deleted": ddlData.is_deleted
         }
       })
 
@@ -397,15 +539,18 @@ export default {
     return {
       ...toRefs(ddls),
       menu,
+      filterChangebox,
+      filterToggleAll,
+      filterGroup,
       getMinDate,
       submitDdl,
       listRefresh,
       listLower,
       state,
       toastInfo,
-      onDdlClick,
       deleteDdl,
-      completeDdl
+      completeDdl,
+      editDdl
     }
   }
 }
@@ -419,5 +564,13 @@ export default {
 /*表单内行高设置*/
 .nut-cell {
   line-height: normal;
+}
+
+.nut-picker-roller-item {
+  user-select: none;
+}
+
+.nut-picker-item {
+  visibility: hidden;
 }
 </style>

@@ -69,16 +69,15 @@ def list_dll():
     userid = user.id
     filter_list = [Ddl.userid == userid]
     if 'filter' in data:
-        if 'is_completed' in data['filter']:
-            if data['filter']['is_completed']:
-                filter_list.append(Ddl.is_completed == True)
-            else:
+        if 'is_not_completed' in data['filter'] and data['filter']['is_not_completed']:
                 filter_list.append(Ddl.is_completed == False)
-        if 'is_overtime' in data['filter']:
-            if data['filter']['is_overtime']:
-                filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
-            else:
+        if 'is_completed' in data['filter'] and data['filter']['is_completed']:
+                filter_list.append(Ddl.is_completed == True)
+        if 'is_not_overtime' in data['filter']and data['filter']['is_not_overtime']:
                 filter_list.append(Ddl.ddl_time >= round(time.time() * 1000))
+        if 'is_overtime' in data['filter']and data['filter']['is_overtime']:
+                filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
+        filter_list.append(Ddl.is_deleted == False)
         if 'is_deleted' in data['filter']:
             if data['filter']['is_deleted']:
                 filter_list.append(Ddl.is_deleted == True)
