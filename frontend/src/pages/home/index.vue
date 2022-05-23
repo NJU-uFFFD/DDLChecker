@@ -9,7 +9,7 @@
           <nut-checkboxgroup
             v-model="menu.filterCheckboxGroup"
             ref="filterGroup"
-            @change="filterChangebox"
+            @change="listRefresh"
             style="display: flex;flex-flow: wrap">
             <nut-checkbox
               v-for="item in menu.filterCheckboxSource"
@@ -317,19 +317,13 @@ export default {
       ]
     })
 
-
-    const filterChangebox = (label: any[]) => {
-      label.length === menu.filterCheckboxSource.length ? '全选' : '取消全选'
-      listRefresh()
-    }
-
     const filterGroup = ref(null)
 
     const filterToggleAll = (f: boolean) => {
       (filterGroup.value as any).toggleAll(f)
     }
 
-
+    //消息通知
     const openToast = (type: string, msg: string, cover: boolean = false, title: string = "", bottom: string = "", center: boolean = true) => {
       toastInfo.show = true
       toastInfo.msg = msg
@@ -539,7 +533,6 @@ export default {
     return {
       ...toRefs(ddls),
       menu,
-      filterChangebox,
       filterToggleAll,
       filterGroup,
       getMinDate,

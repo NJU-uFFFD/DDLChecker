@@ -7,7 +7,6 @@ from db.user import User
 
 bp = Blueprint("ddl", __name__, url_prefix="/ddl")
 
-
 @bp.route("/add", methods=['POST', 'GET'])
 def add_ddl():
     """
@@ -29,7 +28,6 @@ def add_ddl():
     db.session.commit()
 
     return make_response(0, "OK", {'id': new_ddl.id})
-
 
 @bp.route("/list", methods=['POST', 'GET'])
 def list_dll():
@@ -70,17 +68,17 @@ def list_dll():
     filter_list = [Ddl.userid == userid]
     if 'filter' in data:
         if 'is_not_completed' in data['filter'] and data['filter']['is_not_completed']:
-                filter_list.append(Ddl.is_completed == False)
+            filter_list.append(Ddl.is_completed is False)
         if 'is_completed' in data['filter'] and data['filter']['is_completed']:
-                filter_list.append(Ddl.is_completed == True)
-        if 'is_not_overtime' in data['filter']and data['filter']['is_not_overtime']:
-                filter_list.append(Ddl.ddl_time >= round(time.time() * 1000))
-        if 'is_overtime' in data['filter']and data['filter']['is_overtime']:
-                filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
-        filter_list.append(Ddl.is_deleted == False)
+            filter_list.append(Ddl.is_completed is True)
+        if 'is_not_overtime' in data['filter'] and data['filter']['is_not_overtime']:
+            filter_list.append(Ddl.ddl_time >= round(time.time() * 1000))
+        if 'is_overtime' in data['filter'] and data['filter']['is_overtime']:
+            filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
+        filter_list.append(Ddl.is_deleted is False)
         if 'is_deleted' in data['filter']:
             if data['filter']['is_deleted']:
-                filter_list.append(Ddl.is_deleted == True)
+                filter_list.append(Ddl.is_deleted is True)
     if 'tag' in data:
         filter_list.append(Ddl.tag == data['tag'])
     if 'time_range' in data:
@@ -98,7 +96,6 @@ def list_dll():
         Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
         else Ddl.ddl_time).slice(data['start'], data['end']).all()),
                                    'ddl_count': ddl_count})
-
 
 @bp.route("/update", methods=['POST', 'GET'])
 def update_ddl():
