@@ -21,9 +21,17 @@ class Crawler:
         :return:
         """
 
+    def fetch_course(self) -> list:
+        """
+        获取课程 (uuid)
+        :return:
+        """
+        return []
+
     def fetch_ddl(self) -> list:
         """
         获取 ddl
         :return: ddl list
         """
         return []
+
