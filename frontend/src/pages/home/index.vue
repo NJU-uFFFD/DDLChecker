@@ -2,7 +2,8 @@
   <view class="home">
 
     <!--筛选与排序菜单-->
-    <nut-menu>
+    <nut-menu
+      style="position: relative; z-index: 1; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)">
       <nut-menu-item
         title="筛选">
         <div style="display: flex; flex: 1; justify-content: space-between; align-items: center">
@@ -53,7 +54,7 @@
     <scroll-view
       :refresher-triggered="state.refreshing"
       :scroll-y="true"
-      style="height: 91vh;"
+      style="height: 93vh;"
       @scrolltolower="listLower"
       @scroll="scroll"
       @refresherrefresh="listRefresh"
