@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from torch import unique
-
 from db import db
 
 
