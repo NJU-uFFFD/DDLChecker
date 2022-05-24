@@ -13,8 +13,7 @@ class SourceDdl(db.Model):
     ddl_time: int
     create_time: int
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(64))
-    course_uuid = db.Column(db.String(64), db.ForeignKey('course.course_uuid'))
+    course_uuid = db.Column(db.String(64))
     platform_uuid = db.Column(db.String(64))
     title = db.Column(db.String(256))
     content = db.Column(db.String(4096))
