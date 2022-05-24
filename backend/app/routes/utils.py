@@ -17,9 +17,10 @@ def get_context():
     if 'x-wx-source' in request.headers:
         openid = request.headers['x-wx-openid']
     else:
-        openid = None
+        assert False, "nmsl"
 
     return openid, data
+
 
 def make_response(status: int, msg: str, return_data: dict) -> Response:
     """

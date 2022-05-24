@@ -17,7 +17,7 @@ class Ddl(db.Model):
     is_deleted: bool
     delete_time: int
     platform_uuid: str
-    source_ddl_uuid: str
+    source_ddl_id: str
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
     title = db.Column(db.String(256))
@@ -31,10 +31,10 @@ class Ddl(db.Model):
     is_deleted = db.Column(db.Boolean)
     delete_time = db.Column(db.BigInteger)
     complete_time = db.Column(db.BigInteger)
-    source_ddl_uuid = db.Column(db.String(64))
+    source_ddl_id = db.Column(db.String(64), )
 
     def __init__(self, userid, title, ddl_time, create_time, content, tag, course_uuid, platform_uuid,
-                 source_ddl_uuid=None, complete_time=None, delete_time=None, is_completed=False, is_deleted=False):
+                 source_ddl_id=None, complete_time=None, delete_time=None, is_completed=False, is_deleted=False):
         self.userid = userid
         self.title = title
         self.content = content
@@ -47,4 +47,4 @@ class Ddl(db.Model):
         self.is_deleted = is_deleted
         self.complete_time = complete_time
         self.delete_time = delete_time
-        self.source_ddl_uuid = source_ddl_uuid
+        self.source_ddl_id = source_ddl_id
