@@ -60,7 +60,7 @@ class TeachingSquareCrawler(Crawler):
         if r['status'] != 70000:
             raise UnknownCrawlerException("非成功返回值: " + json.dumps(r))
 
-        return [{course['name']: str(uuid.uuid3(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid']))} for course in r['message']]
+        return [(course['name'], str(uuid.uuid3(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid']))) for course in r['message']]
 
     def fetch_ddl(self) -> list:
         # 获取课程列表
