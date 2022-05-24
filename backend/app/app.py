@@ -6,6 +6,8 @@ import logging
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+from service.cron import cron_work
+
 from flask import request
 import service
 
@@ -25,8 +27,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 # with app.app_context():
-#     db.drop_all()
-#     db.create_all()
+    # db.drop_all()
+    # db.create_all()
 
 
 # 访问频率限制
@@ -44,8 +46,8 @@ def hello():
 
 @app.route('/invoke')
 def invoke():
-    assert request.get_json()['cron_token'] == INVOKE_PATH_TOKEN, "Invalid cron token."
-    service.cron.cron_work()
+    # assert request.get_json()['cron_token'] == INVOKE_PATH_TOKEN, "Invalid cron token."
+    return cron_work()
 
 
 if __name__ == '__main__':
@@ -53,6 +55,9 @@ if __name__ == '__main__':
     # import crawler.crawlers.TeachingSquareCrawler
     # c = crawler.crawlers.TeachingSquareCrawler.TeachingSquareCrawler()
     # c.login({"account": "18015503001", "password": "98324364xue"})
+    # print(c.fetch_course())
+    # import crawler.crawlers.NjuSpocCrawler
+    # c = crawler.crawlers.NjuSpocCrawler.NjuSpocCrawler()
+    # c.login({"account": "211250076", "password": "Lyc_20030125"})
     # print(c.fetch_ddl())
-
 
