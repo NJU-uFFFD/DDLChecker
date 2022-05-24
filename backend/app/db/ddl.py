@@ -26,7 +26,7 @@ class Ddl(db.Model):
     title = db.Column(db.String(256))
     content = db.Column(db.String(4096))
     tag = db.Column(db.String(4096))
-    course_uuid = db.Column(db.String(64))
+    course_uuid = db.Column(db.String(64), db.ForeignKey('course.course_uuid'))
     ddl_time = db.Column(db.BigInteger)
     create_time = db.Column(db.BigInteger)
     platform_uuid = db.Column(db.String(64))
@@ -34,7 +34,7 @@ class Ddl(db.Model):
     is_deleted = db.Column(db.Boolean)
     delete_time = db.Column(db.BigInteger)
     complete_time = db.Column(db.BigInteger)
-    source_ddl_id = db.Column(db.String(64))
+    source_ddl_id = db.Column(db.Integer, db.ForeignKey('source_ddl.id'))
 
     def __init__(self, userid, title, ddl_time, create_time, content, tag, course_uuid, platform_uuid,
                  source_ddl_id=None, complete_time=None, delete_time=None, is_completed=False, is_deleted=False):
