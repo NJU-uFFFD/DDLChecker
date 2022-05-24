@@ -14,8 +14,7 @@ class Course(db.Model):
     source_ddls = db.relationship('SourceDdl', backref='course', lazy='dynamic')
     subscriptions = db.relationship('UserSubscriptions', backref='course', lazy='dynamic')
 
-
-def __init__(self, course_name, course_uuid, platform_uuid):
-    self.course_name = course_name
-    self.course_uuid = course_uuid
-    self.platform_uuid = platform_uuid
+    def __init__(self, course_name, course_uuid, platform_uuid):
+        self.course_name = course_name
+        self.course_uuid = course_uuid
+        self.platform_uuid = platform_uuid
