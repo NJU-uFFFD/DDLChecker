@@ -14,9 +14,7 @@ class ListDDLsRules(Schema):
         "start" -> int(>=0)
         "end" -> int(>=0)
         "filter" -> dict(not necessary)
-            "is_not_completed" -> bool
             "is_completed" -> bool
-            "is_not_overtime" -> bool
             "is_overtime" -> bool
             “is_deleted” -> bool
         "time_range" -> dict(not necessary)
@@ -48,6 +46,7 @@ class AddDDLRules(Schema):
         "tag" -> str(len 1 - 4096)(not necessary)
         "course_uuid" -> str(not necessary)
         "platform_uuid" -> str(not necessary)
+        "source_ddl_id" -> int(not necessary)
     """
     title = fields.Str(required=True, validate=validate.Length(min=1, max=256))
     content = fields.Str(required=True, validate=validate.Length(min=1, max=4096))
@@ -56,6 +55,7 @@ class AddDDLRules(Schema):
     tag = fields.Str(required=False, validate=validate.Length(min=1, max=4096))
     course_uuid = fields.UUID(required=False)
     platform_uuid = fields.UUID(required=False)
+    source_ddl_id = fields.Integer(required=False, validate=validate.Range(min=1))
 
 
 class UpdateDDLRules(Schema):
