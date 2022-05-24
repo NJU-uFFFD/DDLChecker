@@ -22,7 +22,7 @@ class SourceDdl(db.Model):
     create_time = db.Column(db.BigInteger)
     ddls = db.relationship('Ddl', backref='source_ddl', lazy='dynamic')
 
-    def __self__(self, course_uuid, platform_uuid, title, content, tag, ddl_time, create_time):
+    def __init__(self, course_uuid, platform_uuid, title, content, tag, ddl_time, create_time):
         self.course_uuid = course_uuid
         self.platform_uuid = platform_uuid
         self.title = title

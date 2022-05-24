@@ -1,18 +1,21 @@
 import base64
+import logging
 import random
 import re
 import string
-from Crypto.Cipher import AES
 
 import requests
+from Crypto.Cipher import AES
+from config import OCR_API_URL
+from crawler.Crawler import Crawler
 
-from crawler.auth import LoginException
+from crawler.CrawlerException import LoginException
 
 
-class NjuAuth:
-    def __init__(self):
-        self.__new_session()
+NJU_SPOC_UUID = "68dc1014-7bfe-4ea3-a000-5734303d9f59"
 
+
+class NjuSpocCrawler(Crawler):
     def __encrypt_password(self, password):
         """
         逆向 javascript 得到的加密代码
@@ -64,18 +67,24 @@ class NjuAuth:
         self.pwd_salt = re.search(
             r'<input type="hidden" id="pwdDefaultEncryptSalt" value="(.*)"', r.text).group(1)
 
-    def login(self, username: str, password: str) -> None:
+    def __get_captcha_code(self):
+        url = 'https://authserver.nju.edu.cn/authserver/captcha.html'
+        res = self.session.get(url)
+        return base64.b64encode(res.content)
+
+    def login(self, fields: dict) -> None:
         """
         登录南大统一身份认证
         登录成功不返回内容, 登录失败抛出异常
-        :param username: 南大统一身份认证用户名
-        :param password: 南大统一身份认证密码
         """
         self.__new_session()
 
+        username = fields['account']
+        password = fields['password']
+
+        captcha = ""
         if self.__need_captcha(username):
-            raise LoginException("南大统一身份认证登录需要验证码，可能是因为上次登录输入了错误的密码，"
-                                 "请尝试打开 https://authserver.nju.edu.cn/ 手动登录一次后再试。")
+            captcha = requests.post(OCR_API_URL, data=self.__get_captcha_code()).json()['result']
 
         data = {
             'username': username,
@@ -84,15 +93,47 @@ class NjuAuth:
             'dllt': 'userNamePasswordLogin',
             'execution': self.execution,
             '_eventId': self.event_id,
-            'rmShown': self.rm_shown
+            'rmShown': self.rm_shown,
+            'captchaResponse': captcha
         }
         r = self.session.post("https://authserver.nju.edu.cn/authserver/login", data=data,
                               allow_redirects=False)
+        logging.info(r.text)
 
         if r.status_code == 200:
-            raise LoginException("用户名或密码错误？")
+            raise LoginException("用户名或密码错误?")
         elif r.status_code == 302:
             # 登录成功
-            return
+            try:
+                r = self.session.get("https://study.nju.edu.cn/oauth/toMoocAuth.mooc")
+                logging.info(self.session.cookies)
+                r = self.session.post("https://study.nju.edu.cn/portal/user/hasmessage.mooc", data={
+                    "postoken": self.session.cookies.get("cpstk")
+                }, headers={
+                    "Referer": "https://study.nju.edu.cn/portal/myCourseIndex/1.mooc?checkEmail=false"
+                })
+                logging.info(r.text)
+            except Exception as e:
+                logging.debug(str(e))
+                raise LoginException("SPOC 平台登录失败, 请稍后再试.")
         else:
-            raise LoginException("未知错误，请稍后再试：" + str(r.status_code))
+            raise LoginException("未知错误, 请稍后再试: " + str(r.status_code))
+
+    @staticmethod
+    def required_fields() -> dict:
+        """
+        登录需要的信息
+        :return:
+        """
+        return {"account": {"name": "账号", "detail": "南大统一认证登录账号"},
+                "password": {"name": "密码", "detail": "南大统一认证登录密码"}}
+
+    def fetch_course(self) -> list:
+        pass
+
+    def fetch_ddl(self) -> list:
+        """
+        获取 ddl
+        :return: ddl list
+        """
+        return []
