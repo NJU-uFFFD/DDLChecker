@@ -6,7 +6,7 @@ import logging
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from service.cron import cron_work
+from service.cron import cron_work, cron_work_daily
 
 from flask import request
 import service
@@ -47,6 +47,10 @@ def hello():
 @app.route('/invoke')
 def invoke():
     # assert request.get_json()['cron_token'] == INVOKE_PATH_TOKEN, "Invalid cron token."
+
+    # if "daily" in request.get_json():
+    #     return cron_work_daily()
+
     return cron_work()
 
 
