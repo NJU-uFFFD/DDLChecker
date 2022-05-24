@@ -69,17 +69,21 @@ def list_dll():
     userid = user.id
     filter_list = [Ddl.userid == userid]
     if 'filter' in data:
-        if data['filter']['is_not_completed'] ^ data['filter']['is_completed']:
-            filter_list.append(Ddl.is_completed == data['filter']['is_completed'])
-        elif not data['filter']['is_not_completed'] and not data['filter']['is_completed']:
-            filter_list.append(Ddl.is_completed is None)
-        if data['filter']['is_not_overtime'] ^ data['filter']['is_overtime']:
-            filter_list.append(Ddl.ddl_time >= round(time.time() * 1000) if data['filter']['is_overtime'] else Ddl.ddl_time < round(time.time() * 1000))
-        elif not data['filter']['is_not_overtime'] and not data['filter']['is_overtime']:
-            filter_list.append(Ddl.ddl_time == 0)
-        # if 'is_deleted' in data['filter']:
-        #     if data['filter']['is_deleted']:
-        #         filter_list.append(Ddl.is_deleted is True)
+        if 'is_completed' in data['filter']:
+            if data['filter']['is_completed']:
+                filter_list.append(Ddl.is_completed == True)
+            else:
+                filter_list.append(Ddl.is_completed == False)
+        if 'is_overtime' in data['filter']:
+            if data['filter']['is_overtime']:
+                filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
+            else:
+                filter_list.append(Ddl.ddl_time >= round(time.time() * 1000))
+        if 'is_deleted' in data['filter']:
+            if data['filter']['is_deleted']:
+                filter_list.append(Ddl.is_deleted == True)
+            else:
+                filter_list.append(Ddl.is_deleted == False)
     if 'tag' in data:
         filter_list.append(Ddl.tag == data['tag'])
     if 'time_range' in data:
