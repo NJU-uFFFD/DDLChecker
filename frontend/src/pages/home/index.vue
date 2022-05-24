@@ -10,7 +10,7 @@
           <nut-checkboxgroup
             v-model="menu.filterCheckboxGroup"
             ref="filterGroup"
-            @change="listRefresh"
+            @change="onMenuChange"
             style="display: flex;flex-flow: wrap">
             <nut-checkbox
               v-for="item in menu.filterCheckboxSource"
@@ -30,14 +30,8 @@
             </nut-button>
             <nut-button
               plain type="primary"
-              @click="filterToggleAll(false)"
-              style="width:30vw; height: 5vh;">
-              全不选
-            </nut-button>
-            <nut-button
-              plain type="default"
               @click="filterReverse"
-              style="width:30vw; height: 5vh;">
+              style="width:30vw; height: 5vh;margin-top: 2vh;margin-bottom: 2vh">
               反选
             </nut-button>
           </div>
@@ -202,7 +196,7 @@
         type="info"
         plain
         style="height:8vh;width:40vw;left:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
-        @click="state.showAdd = false">
+        @click="state.showAdd = false;">
         取消
       </nut-button>
       <nut-button
@@ -320,6 +314,7 @@ export default {
       ],
       value: false,
       filterCheckboxGroup: ['1', '3', '4', '5', '6'],
+      filterCheckboxTempGroup: ['1', '3', '4', '5', '6'],
       filterCheckboxSource: [
         {label: '1', value: '未完成'},
         {label: '2', value: '已完成'},
@@ -329,6 +324,32 @@ export default {
         {label: '6', value: '紧急'},
       ]
     })
+
+    Taro.getStorage({
+      key: "filterGroup",
+      success: (res) => {
+        menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
+      }
+    })
+
+    const onMenuChange = (group: string) => {
+      if (group.indexOf('1') == -1 && group.indexOf('2') == -1)
+        if (menu.filterCheckboxTempGroup.filter((x) => {
+          return group.indexOf(x) == -1
+        })[0] == '2') menu.filterCheckboxGroup.push('1')
+        else menu.filterCheckboxGroup.push('2')
+      if (group.indexOf('3') == -1 && group.indexOf('4') == -1)
+        if (menu.filterCheckboxTempGroup.filter((x) => {
+          return group.indexOf(x) == -1
+        })[0] == '4') menu.filterCheckboxGroup.push('3')
+        else menu.filterCheckboxGroup.push('4')
+      menu.filterCheckboxTempGroup = menu.filterCheckboxGroup.filter(() => true)
+      Taro.setStorage({
+        key: "filterGroup",
+        data: JSON.stringify(menu.filterCheckboxTempGroup)
+      })
+      listRefresh()
+    }
 
     const filterGroup = ref(null)
 
@@ -427,19 +448,21 @@ export default {
 
     // 获取 DDL 相关
     function fetchDdls(start: number, end: number, callback: Function) {
-      state.refreshing = true
+      let filter = {}
+      if (menu.filterCheckboxGroup.indexOf('1') == -1 || menu.filterCheckboxGroup.indexOf('2') == -1) {
+        filter['is_completed'] = menu.filterCheckboxGroup.indexOf('2') != -1;
+      }
+      if (menu.filterCheckboxGroup.indexOf('3') == -1 || menu.filterCheckboxGroup.indexOf('4') == -1) {
+        filter['is_overtime'] = menu.filterCheckboxGroup.indexOf('4') != -1;
+      }
+
       const r = request({
         path: "/ddl/list",
         method: "POST",
         data: {
           "start": start,
           "end": end,
-          "filter": {
-            "is_not_completed": menu.filterCheckboxGroup.indexOf('1') != -1,
-            "is_completed": menu.filterCheckboxGroup.indexOf('2') != -1,
-            "is_not_overtime": menu.filterCheckboxGroup.indexOf('3') != -1,
-            "is_overtime": menu.filterCheckboxGroup.indexOf('4') != -1
-          },
+          "filter": filter,
           "sorter": {
             "reversed": menu.value
           }
@@ -457,14 +480,15 @@ export default {
 
     // 刷新列表
     function listRefresh() {
-      console.log("ddl refresh.")
+      if (state.refreshing) return
       state.refreshing = true
+      console.log("ddl refresh.")
       state.offset = 10
       state.more = true
       fetchDdls(0, 10, (list: DDLData[]) => {
-        state.refreshing = false
         ddls.ddl_list = list
         console.log(list)
+        state.refreshing = false
       })
     }
 
@@ -554,6 +578,7 @@ export default {
     return {
       ...toRefs(ddls),
       menu,
+      onMenuChange,
       filterToggleAll,
       filterGroup,
       filterReverse,
