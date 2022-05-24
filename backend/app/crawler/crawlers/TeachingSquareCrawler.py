@@ -51,6 +51,17 @@ class TeachingSquareCrawler(Crawler):
         self.login_data = login_data
         self.renew_session_if_expired()
 
+    def fetch_course(self) -> list:
+        # 获取课程列表
+        r = requests.get(
+            f"https://teaching.applysquare.com/Api/Public/getIndexCourseList/token/{self.token}?type=1&usertype=1&uid={self.uid}").json()
+        logging.info(r)
+
+        if r['status'] != 70000:
+            raise UnknownCrawlerException("非成功返回值: " + json.dumps(r))
+
+        return [{course['name']: str(uuid.uuid3(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid']))} for course in r['message']]
+
     def fetch_ddl(self) -> list:
         # 获取课程列表
         r = requests.get(
