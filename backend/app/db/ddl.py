@@ -1,4 +1,7 @@
 from dataclasses import dataclass
+
+from torch import unique
+
 from db import db
 
 
@@ -31,7 +34,7 @@ class Ddl(db.Model):
     is_deleted = db.Column(db.Boolean)
     delete_time = db.Column(db.BigInteger)
     complete_time = db.Column(db.BigInteger)
-    source_ddl_id = db.Column(db.String(64), )
+    source_ddl_id = db.Column(db.String(64))
 
     def __init__(self, userid, title, ddl_time, create_time, content, tag, course_uuid, platform_uuid,
                  source_ddl_id=None, complete_time=None, delete_time=None, is_completed=False, is_deleted=False):
