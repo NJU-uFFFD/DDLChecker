@@ -9,7 +9,6 @@ class Account(db.Model):
     platform_uuid: str
     fields: str
 
-
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'))
     platform_uuid = db.Column(db.String(256))

@@ -98,4 +98,6 @@ def cron_work():
 
         db.session.commit()
 
+    # 分发 DDL
+
     return "success"
