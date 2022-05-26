@@ -1,4 +1,4 @@
-const USE_CONTAINER = true  // 使用容器服务
+const USE_CONTAINER = false  // 使用容器服务
 const SERVER_ADDR = "http://127.0.0.1:5000"  // 不使用容器服务时的(测试用)地址
 const TEST_WX_OPENID = "114514"  // 本地测试时模拟的 OPENID
 
