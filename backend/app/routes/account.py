@@ -9,6 +9,7 @@ bp = Blueprint("account", __name__, url_prefix="/account")
 
 @bp.route("/available", methods=['POST', 'GET'])
 def available_account_type():
+    data, open_id = get_context()
     tmp = []
     for c in list_crawlers():
         tmp.append({"name": c['name'], "uuid": c['uuid'], "fields": c['obj'].required_fields()})
