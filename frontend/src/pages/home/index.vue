@@ -527,7 +527,7 @@ export default {
       })
 
       r.then((res) => {
-        if (res.statusCode == 200 && res.data.code == 0) {
+        if (res.statusCode === 200 && res.data.code === 0) {
           openToast('success', "删除成功!")
         } else {
           throw JSON.stringify(res)

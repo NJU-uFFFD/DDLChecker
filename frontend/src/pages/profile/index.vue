@@ -7,6 +7,8 @@
 
     <nut-cell @click="addAccount"> + 添加账号</nut-cell>
 
+
+
     <nut-cell-group
       class="profile-account-group"
       title="账号管理"/>
@@ -20,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import Taro from '@tarojs/taro';
 import {ref, reactive, toRefs} from 'vue'
 import AccountCard from "../../components/card/ProfileAccountCard.vue";
 import ProfileCard from "../../components/card/ProfileProfileCard.vue";
@@ -54,7 +57,9 @@ export default {
     })
 
     function addAccount() {
-
+      Taro.navigateTo({
+        url: '/pages/accountadd/index'
+      })
     }
 
     return {

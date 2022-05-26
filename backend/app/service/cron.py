@@ -13,6 +13,7 @@ from util.encrypt import aes_decrypt
 
 already_done = set()
 
+
 def cron_work_daily():
     accounts = Account.query.all()
     for account in accounts:
@@ -29,10 +30,13 @@ def cron_work_daily():
             courses = crawler.fetch_course()
 
             for c in courses:
-                t = Course(c[0], c[1], account.platform_uuid)
-                db.session.add(t)
+                try:
+                    t = Course(c[0], c[1], account.platform_uuid)
+                    db.session.add(t)
+                    db.session.commit()
+                except Exception as e:
+                    logging.exception(e)
 
-            db.session.commit()
         except Exception as e:
             logging.exception(e)
 

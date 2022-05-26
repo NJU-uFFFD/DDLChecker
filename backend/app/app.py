@@ -48,8 +48,8 @@ def hello():
 def invoke():
     # assert request.get_json()['cron_token'] == INVOKE_PATH_TOKEN, "Invalid cron token."
 
-    # if "daily" in request.get_json():
-    #     return cron_work_daily()
+    if "daily" in request.get_json():
+        return cron_work_daily()
 
     return cron_work()
 
