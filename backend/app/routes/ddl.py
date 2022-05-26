@@ -1,5 +1,5 @@
 from flask import Blueprint
-from routes.utils import get_context, check_data, make_response
+from routes.utils import get_context_user, check_data, make_response
 from routes.rules.ddl_rules import *
 from db import db
 from db.ddl import Ddl
@@ -15,13 +15,9 @@ def add_ddl():
     :return: make_response()
     return_data = {"id" -> int(>=0)}
     """
-    openid, data = get_context()
+    user, data = get_context_user()
     check_data(AddDDLRules, data)
 
-    # 数据库操作
-    user = User.query.filter(User.openid == openid).first()
-    if user is None:
-        return make_response(-1, "User not registered", {})
     userid = user.id
     new_ddl = Ddl(userid, data['title'], data['ddl_time'], int(time.time() * 1000), data['content'], data.get('tag'),
                   data.get('course_uuid'), data.get('platform_uuid'))
@@ -56,16 +52,12 @@ def list_dll():
         "ddl_count" -> int
     }
     """
-    openid, data = get_context()
+    user, data = get_context_user()
     check_data(ListDDLsRules, data)
 
     if not 0 <= data['end'] - data['start'] <= 20:
         return make_response(400, "Invalid slice range.(nmsl)", {})
 
-    # 数据库操作
-    user = User.query.filter(User.openid == openid).first()
-    if user is None:
-        return make_response(-1, "User not registered.", {})
     userid = user.id
     filter_list = [Ddl.userid == userid]
     if 'filter' in data:
@@ -110,13 +102,10 @@ def update_ddl():
     :return: make_response()
     return_data = {"id" -> int(>=0)}
     """
-    openid, data = get_context()
+    user, data = get_context_user()
     check_data(UpdateDDLRules, data)
 
     # 数据库操作
-    user = User.query.filter(User.openid == openid).first()
-    if user is None:
-        return make_response(-1, "User not registered", {})
     userid = user.id
     ddl = Ddl.query.get(data['id'])
     if ddl is None:
