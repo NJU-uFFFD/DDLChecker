@@ -10,7 +10,8 @@ INVOKE_PATH_TOKEN = os.environ.get('CRON_TOKEN')
 
 OCR_API_URL = "https://dddd-ocr-ddddocr-dgszqoojqy.cn-shanghai.fcapp.run/ocr/b64/json"
 
-ENCRYPT_KEY = "eUDin9Qu135wsC2szsZcRSgGqYKDomlhxiF79HmIQs6nSNJGkzzkQTldsGfK7a9Jl5TRhnTVBUkurZ39WhwVLqkxco0v4sI6FJS"
+ENCRYPT_KEY = "eUDin9Qu135wsC2szsZcRSgGqYKDomQs".encode("utf-8")
+ENCRYPT_IV = "1145141919810520".encode("utf-8")
 
 APP_ID = ""
 APP_SECRET = ""
