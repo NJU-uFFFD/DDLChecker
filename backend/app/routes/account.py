@@ -36,9 +36,10 @@ def add_account():
 
 @bp.route("/list", methods=['POST', 'GET'])
 def list_account():
-    user, data = get_context_user()
+    user, data = get_context_user(data_required=False)
 
-    return
+    account_count = len(user.accounts.all())
+    return make_response(0, "OK", {"accounts_list": user.accounts.all(), "account_count": account_count})
 
 
 @bp.route("/update", methods=['POST', 'GET'])
