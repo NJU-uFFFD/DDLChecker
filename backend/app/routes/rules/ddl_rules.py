@@ -2,13 +2,6 @@ import time
 from marshmallow import Schema, fields, validate
 
 
-class DeleteDDLRules(Schema):
-    """
-        "id" -> int(>=0)
-    """
-    id = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
-
-
 class ListDDLsRules(Schema):
     """
         "start" -> int(>=0)
