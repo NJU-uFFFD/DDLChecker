@@ -1,5 +1,3 @@
-
-
 <template>
   <nut-cell>选择需要添加的账号</nut-cell>
 
@@ -13,15 +11,29 @@
   </div>
 
   <!-- 弹出层 -->
-  <nut-overlay v-model:visible="state.showPopup" :z-index="2000">
+  <nut-overlay
+    v-model:visible="state.showPopup"
+    :close-on-click-overlay="false">
     <div class="content">
       <nut-form>
-        <nut-form-item v-for="field in fields" :key="field" :label="field.title">
-          <input :id="field.key" class="nut-input-text" :placeholder="field.detail" type="text" />
+        <nut-form-item
+          v-for="field in fields"
+          :key="field"
+          :label="field.title">
+          <input
+            :id="field.key"
+            class="nut-input-text"
+            :placeholder="field.detail"
+            type="text"/>
         </nut-form-item>
       </nut-form>
 
-      <nut-button size="large" type="info" @click="submitAccount(field)">添加</nut-button>
+      <nut-button
+        size="large"
+        type="info"
+        @click="submitAccount(field)">
+        添加
+      </nut-button>
     </div>
   </nut-overlay>
 </template>
@@ -43,7 +55,7 @@ export default {
       accounts: []
     }
   },
-  setup () {
+  setup() {
     let form_fields = reactive({fields: []});
     let state = reactive({
       showPopup: false
@@ -71,7 +83,7 @@ export default {
       submitAccount
     }
   },
-  beforeMount () {
+  beforeMount() {
     const r = request({
       path: "/account/available",
       method: "POST"
