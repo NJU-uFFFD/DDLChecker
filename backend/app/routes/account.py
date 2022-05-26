@@ -41,9 +41,26 @@ def list_account():
     return
 
 
-@bp.route("/delete", methods=['POST', 'GET'])
-def delete_account():
+@bp.route("/update", methods=['POST', 'GET'])
+def update_account():
     user, data = get_context_user()
+    check_data(UpdateAccountRules, data)
 
-    return
+    account = Account.query.get(data['id'])
+    if account is None:
+        return make_response(404, "Id not found(nmsl)", {})
+    if account.userid != user.id:
+        return make_response(403, "Cannot delete others' account(nmsl).", {})
+
+    if 'fields' in data:
+        account.fields = data['fields']
+
+    if 'delete_account' in data and data['delete_account'] is True:
+        db.session.delete(account)
+
+    db.session.commit()
+
+    return make_response(0, "OK", {"id": account.id})
+
+
 

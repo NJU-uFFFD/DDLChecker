@@ -106,11 +106,10 @@ def update_ddl():
     check_data(UpdateDDLRules, data)
 
     # 数据库操作
-    userid = user.id
     ddl = Ddl.query.get(data['id'])
     if ddl is None:
         return make_response(404, "Id not found.(nmsl)", {})
-    if ddl.userid != userid:
+    if ddl.userid != user.id:
         return make_response(403, "Cannot delete others' ddl(nmsl).", {})
 
     if 'title' in data:
