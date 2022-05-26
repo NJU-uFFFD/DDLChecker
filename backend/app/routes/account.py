@@ -14,7 +14,7 @@ def available_account_type():
     tmp = []
     for c in list_crawlers():
         bound = True in [c['uuid'] == account.platform_uuid for account in current_accounts]
-        tmp.append({"name": c['name'], "uuid": c['uuid'], "fields": c['obj'].required_fields(), "bound": bound})
+        tmp.append({"name": c['name'], "platform_uuid": c['uuid'], "fields": c['obj'].required_fields(), "bound": bound})
     return make_response(0, "OK", {"available_account_type": tmp})
 
 
