@@ -23,9 +23,11 @@ function request(args) {
     if (args.header === undefined) {
       args.header = {
         'X-WX-OPENID': TEST_WX_OPENID,
+        'X-WX-SOURCE': "local_test"
       }
     } else {
       args.header['X-WX-OPENID'] = TEST_WX_OPENID
+      args.header['X-WX-SOURCE'] = "local_test"
     }
     return Taro.request(args)
   }
