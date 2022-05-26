@@ -51,7 +51,7 @@ def invoke():
     if "daily" in request.get_json():
         return cron_work_daily()
 
-    return cron_work()
+    # return cron_work()
 
 
 if __name__ == '__main__':
