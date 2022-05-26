@@ -1,9 +1,9 @@
 <template>
-  <view class="home">
+  <view class="page">
 
     <!--筛选与排序菜单-->
     <nut-menu
-      style="position: relative; z-index: 1; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)">
+      style="position: relative; z-index: 200; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)">
       <nut-menu-item
         title="筛选">
         <div style="display: flex; flex: 1; justify-content: space-between; align-items: center">
@@ -50,9 +50,9 @@
       :scroll-y="true"
       style="height: 93vh;"
       @scrolltolower="listLower"
-      @scroll="scroll"
       @refresherrefresh="listRefresh"
-      refresherEnabled="true">
+      refresherEnabled="true"
+      enableBackToTop="true">
 
       <nut-swipe
         v-for="data in ddl_list"
@@ -71,6 +71,10 @@
         </template>
       </nut-swipe>
 
+      <nut-divider
+        v-if="!state.more">
+        没有更多 DDL 了哦 ~
+      </nut-divider>
     </scroll-view>
 
     <!-- DDL 详情 -->
@@ -129,7 +133,7 @@
             style="height: auto;font-size: 20px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
             type="textarea"
             show-word-limit
-            rows=11
+            rows="6"
             maxLength="128"
             :border="false"
           />
@@ -244,7 +248,7 @@
       :type="toastInfo.type"
       @closed="toastInfo.onClosed"
       :cover="toastInfo.cover"
-      duration="1000"
+      :duration="1000"
       bg-color="rgba(0, 0, 0, 0.5)"
       :center="false"
       bottom="16%"
@@ -254,7 +258,7 @@
     <nut-button
       type="primary"
       class="add_button"
-      style="position: fixed;height: 8vh;width: 10vh;right: 30px;bottom: 30px;box-shadow: 0 4px 15px 0 rgba(237, 238, 241, 10)"
+      style="position: fixed;height: 8vh;width: 8vh;right: 30px;bottom: 30px;border-radius:4vh;box-shadow: 0 4px 15px 0 rgba(237, 238, 241, 10)"
       icon="uploader"
       @click="state.showAdd = true"/>
 
@@ -290,11 +294,11 @@ export default {
         // "date": new Date(),
         "content": ""
       },
-      deleteInfo: {},
+      "deleteInfo": {},
       "showDetails": false,
       "ddlDetailData": {},
       "pickerDate": new Date(),
-      "ddlEditSubmitting": false,
+      "ddlEditSubmitting": false
     })
 
     let toastInfo = reactive({
@@ -597,7 +601,8 @@ export default {
 </script>
 
 <style>
-.home {
+
+.page {
   background: #f9f9f9;
 }
 
