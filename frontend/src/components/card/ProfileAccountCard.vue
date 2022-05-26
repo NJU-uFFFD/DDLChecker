@@ -1,14 +1,14 @@
 <template>
   <nut-cell
     class="profile-account-card"
-    :title=accountData.title
-    desc="查看详情"
-    @click="testClick">
+    :title=getPlatformInfo(accountData.platform_uuid).name
+    :desc=description
+    @click="cardClick">
     <template
       #icon>
       <img
         class="profile-site-icon"
-        :src=accountData.from
+        :src=getPlatformInfo(accountData.platform_uuid).icon
       />
     </template>
   </nut-cell>
@@ -18,19 +18,25 @@
 import {Toast} from '@nutui/nutui-taro';
 import {AccountData} from "../../types/AccountData";
 import {defineComponent} from "vue";
+import {getPlatformInfo} from "../../util/ui";
+
+
 
 export default defineComponent({
   name: "ProfileAccountCard",
   props: {
-    accountData: Object as () => AccountData
+    accountData: Object as () => AccountData,
+    description: String
   },
-  setup() {
-    const testClick = (event) => {
-      Toast.text('click');
-    };
+  setup(props, {emit}) {
+    const cardClick = () => {
+      emit("onClick", props.accountData);
+    }
+
     return {
-      testClick,
-    };
+      cardClick,
+      getPlatformInfo
+    }
   }
 })
 </script>

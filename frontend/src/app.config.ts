@@ -2,7 +2,8 @@ export default defineAppConfig({
   pages: [
     'pages/home/index',
     'pages/history/index',
-    'pages/profile/index'
+    'pages/profile/index',
+    'pages/accountadd/index'
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -35,7 +36,7 @@ export default defineAppConfig({
         selectedIconPath: './assets/images/profile-selected.png',
         iconPath: './assets/images/profile.png',
         text: '我的'
-      },
+      }
     ],
   }
 })

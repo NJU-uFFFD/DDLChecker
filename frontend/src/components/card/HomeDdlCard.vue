@@ -8,7 +8,7 @@
       #icon>
       <img
         class="home-site-icon"
-        :src="getAccountIcon(ddlData.platform_uuid)"
+        :src="getPlatformInfo(ddlData.platform_uuid).icon"
       />
     </template>
     <template
@@ -32,7 +32,7 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {DDLData} from "../../types/DDLData";
-import {getAccountIcon} from "../../util/ui"
+import {getPlatformInfo} from "../../util/ui"
 
 export default defineComponent({
   name: "HomeDdlCard",
@@ -63,7 +63,7 @@ export default defineComponent({
     return {
       ddlCardClick,
       ddlTime,
-      getAccountIcon,
+      getPlatformInfo,
       completeDdl
     };
   }
