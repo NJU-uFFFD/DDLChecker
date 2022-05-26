@@ -24,7 +24,7 @@
             :id="field.key"
             class="nut-input-text"
             :placeholder="field.detail"
-            type="text"/>
+            :type="field.key !== 'password' ? 'text': 'password'"/>
         </nut-form-item>
       </nut-form>
 

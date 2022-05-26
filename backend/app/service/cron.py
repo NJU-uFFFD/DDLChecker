@@ -11,9 +11,6 @@ from db.sourceDdl import SourceDdl
 from util.encrypt import aes_decrypt
 
 
-already_done = set()
-
-
 def cron_work_daily():
     accounts = Account.query.all()
     for account in accounts:
@@ -36,6 +33,7 @@ def cron_work_daily():
                     db.session.commit()
                 except Exception as e:
                     logging.exception(e)
+                    db.session.rollback()
 
         except Exception as e:
             logging.exception(e)
@@ -45,9 +43,11 @@ def cron_work_daily():
 
 # 定时任务, 需要每过一定时间被触发
 def cron_work():
-    for c in Course.query.all():
+    already_done = set()
 
-        if c.platform_uuid in already_done:
+    for c in Course.query.all():
+        print(c)
+        if c.course_uuid in already_done:
             continue
 
         # 查找爬虫对象
@@ -60,9 +60,8 @@ def cron_work():
         crawler = crawler_obj()
 
         # 找一个幸运用户的账号爬数据
-        # todo: no sub?
-        # todo: changeable course uuid?
-        lucky_account = random.choice(c.subscriptions.all()).user.accounts.filter(Account.platform_uuid == c.platform_uuid).first()
+        lucky_account = random.choice(c.subscriptions.all()).user.accounts.filter(
+            Account.platform_uuid == c.platform_uuid).first()
 
         fields = json.loads(aes_decrypt(lucky_account.fields))
         crawler.login(fields)
@@ -70,21 +69,33 @@ def cron_work():
         ddls = crawler.fetch_ddl()
         logging.info(ddls)
 
-        # 保存 ddl
+        all_courses_got = set()
         for ddl in ddls:
-            already_done.add(ddl['course_uuid'])
+            all_courses_got.add(ddl['course_uuid'])
 
-            newest_ddl = SourceDdl.query.filter(SourceDdl.course_uuid == c.course_uuid).order_by(SourceDdl.create_time.desc()).first()
+        # 保存 ddl
+        for course_uuid in all_courses_got:
+            if not Course.query.filter(Course.course_uuid == course_uuid).first():
+                logging.warning("course uuid not found, pass: " + course_uuid)
+                continue
+
+            newest_ddl = SourceDdl.query.filter(SourceDdl.course_uuid == course_uuid).order_by(
+                SourceDdl.create_time.desc()).first()
 
             newest = -1
             if newest_ddl:
                 newest = newest_ddl.create_time
 
-            if ddl['create_time'] > newest:
-                t = SourceDdl(c.course_uuid, c.platform_uuid, ddl['title'], ddl['content'], "[]", ddl['ddl_time'], ddl['create_time'])
-                db.session.add(t)
+            for ddl in ddls:
+                if ddl['create_time'] > newest and ddl['course_uuid'] == course_uuid:
+                    if ddl['course_uuid'] in already_done:
+                        continue
+
+                    t = SourceDdl(ddl['course_uuid'], c.platform_uuid, ddl['title'], ddl['content'], "[]",
+                                  ddl['ddl_time'], ddl['create_time'])
+                    db.session.add(t)
+            already_done.add(course_uuid)
 
         db.session.commit()
-
 
     return "success"
