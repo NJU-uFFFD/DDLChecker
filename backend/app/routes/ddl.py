@@ -3,6 +3,7 @@ from routes.utils import get_context_user, check_data, make_response
 from routes.rules.ddl_rules import *
 from db import db
 from db.ddl import Ddl
+from db.course import Course
 from db.user import User
 
 bp = Blueprint("ddl", __name__, url_prefix="/ddl")
@@ -18,8 +19,10 @@ def add_ddl():
     user, data = get_context_user()
     check_data(AddDDLRules, data)
 
-    userid = user.id
-    new_ddl = Ddl(userid, data['title'], data['ddl_time'], int(time.time() * 1000), data['content'], data.get('tag'),
+    if 'course_uuid' in data and Course.query.get(data['course_uuid']) is None:
+        return make_response(-1, "Course does not exist", {})
+
+    new_ddl = Ddl(user.id, data['title'], data['ddl_time'], int(time.time() * 1000), data['content'], data.get('tag'),
                   data.get('course_uuid'), data.get('platform_uuid'))
     db.session.add(new_ddl)
     db.session.commit()
@@ -58,8 +61,7 @@ def list_dll():
     if not 0 <= data['end'] - data['start'] <= 20:
         return make_response(400, "Invalid slice range.(nmsl)", {})
 
-    userid = user.id
-    filter_list = [Ddl.userid == userid]
+    filter_list = []
     if 'filter' in data:
         if 'is_completed' in data['filter']:
             if data['filter']['is_completed']:
@@ -86,9 +88,9 @@ def list_dll():
                 filter_list.append(data['time_range']['start'] <= Ddl.ddl_time)
                 filter_list.append(data['time_range']['end'] >= Ddl.ddl_time)
     ddl_count = len(
-        Ddl.query.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
+        user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
                                                 else Ddl.ddl_time).all())
-    return make_response(0, "OK", {'ddl_list': (Ddl.query.filter(*filter_list).
+    return make_response(0, "OK", {'ddl_list': (user.ddls.filter(*filter_list).
                                                 order_by(
         Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
         else Ddl.ddl_time).slice(data['start'], data['end']).all()),
