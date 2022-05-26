@@ -2,6 +2,7 @@ export default defineAppConfig({
   pages: [
     'pages/home/index',
     'pages/history/index',
+    'pages/community/index',
     'pages/profile/index',
     'pages/accountadd/index'
   ],
@@ -29,7 +30,13 @@ export default defineAppConfig({
         pagePath: 'pages/history/index',
         selectedIconPath: './assets/images/time-selected.png',
         iconPath: './assets/images/time.png',
-        text: '历史'
+        text: '统计'
+      },
+      {
+        pagePath: 'pages/community/index',
+        selectedIconPath: './assets/images/friend-selected.png',
+        iconPath: './assets/images/friend.png',
+        text: '社区'
       },
       {
         pagePath: 'pages/profile/index',
