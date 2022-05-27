@@ -6,6 +6,7 @@ from db import db
 class SourceDdl(db.Model):
     id: int
     course_uuid: int
+    creator_id: int
     platform_uuid: int
     title: str
     content: str
@@ -14,6 +15,7 @@ class SourceDdl(db.Model):
     create_time: int
     id = db.Column(db.Integer, primary_key=True)
     course_uuid = db.Column(db.String(64), db.ForeignKey('course.course_uuid'))
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     platform_uuid = db.Column(db.String(64))
     title = db.Column(db.String(256))
     content = db.Column(db.String(4096))
@@ -22,8 +24,9 @@ class SourceDdl(db.Model):
     create_time = db.Column(db.BigInteger)
     ddls = db.relationship('Ddl', backref='source_ddl', lazy='dynamic')
 
-    def __init__(self, course_uuid, platform_uuid, title, content, tag, ddl_time, create_time):
+    def __init__(self, course_uuid, platform_uuid, title, content, tag, ddl_time, create_time, creator_id=None):
         self.course_uuid = course_uuid
+        self.creator_id = creator_id
         self.platform_uuid = platform_uuid
         self.title = title
         self.content = content
@@ -40,5 +43,6 @@ class SourceDdl(db.Model):
             "content": self.content,
             "tag": self.tag,
             "ddl_time": self.ddl_time,
-            "create_time": self.create_time
+            "create_time": self.create_time,
+            "creator_id": self.creator_id
         }
