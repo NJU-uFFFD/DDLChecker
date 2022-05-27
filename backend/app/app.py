@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask
 from routes import *
 from config import *
@@ -13,7 +15,8 @@ import service
 
 WX_APPID = ""
 
-logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s',
+                    level=logging.INFO)
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 app.register_blueprint(ddl.bp)
@@ -24,12 +27,10 @@ app.register_blueprint(community.bp)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{MYSQL_USERNAME}:{MYSQL_PASSWORD}@{MYSQL_ADDRESS}/{MYSQL_DATABASE}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
 db.init_app(app)
 with app.app_context():
     # db.drop_all()
     db.create_all()
-
 
 # 访问频率限制
 limiter = Limiter(
@@ -55,7 +56,7 @@ def invoke():
 
 
 if __name__ == '__main__':
-    # app.run()
+    app.run()
     # import crawler.crawlers.TeachingSquareCrawler
     # c = crawler.crawlers.TeachingSquareCrawler.TeachingSquareCrawler()
     # c.login({"account": "18015503001", "password": "98324364xue"})
@@ -64,11 +65,3 @@ if __name__ == '__main__':
     # c = crawler.crawlers.NjuSpocCrawler.NjuSpocCrawler()
     # c.login({"account": "211250076", "password": "Lyc_20030125"})
     # print(c.fetch_ddl())
-
-    from util.encrypt import aes_decrypt, aes_encrypt
-    text = "123"
-    a = aes_encrypt(text)
-    print(a)
-    a = aes_decrypt(a)
-    print(a)
-
