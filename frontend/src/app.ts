@@ -20,7 +20,15 @@ import {
   CountDown,
   Swipe,
   Checkbox,
-  CheckboxGroup
+  CheckboxGroup,
+  SearchBar,
+  Divider,
+  Grid,
+  GridItem,
+  CircleProgress,
+  Calendar,
+  Collapse,
+  CollapseItem
 } from "@nutui/nutui-taro";
 import './app.scss'
 import Taro from "@tarojs/taro";
@@ -92,5 +100,13 @@ App.use(Button)
   .use(Swipe)
   .use(Checkbox)
   .use(CheckboxGroup)
+  .use(SearchBar)
+  .use(Divider)
+  .use(Grid)
+  .use(GridItem)
+  .use(CircleProgress)
+  .use(Calendar)
+  .use(Collapse)
+  .use(CollapseItem)
 
 export default App
