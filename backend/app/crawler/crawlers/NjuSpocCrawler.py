@@ -129,7 +129,7 @@ class NjuSpocCrawler(Crawler):
                 "password": {"name": "密码", "detail": "南大统一认证登录密码"}}
 
     def fetch_course(self) -> list:
-        pass
+        return []
 
     def fetch_ddl(self) -> list:
         """
