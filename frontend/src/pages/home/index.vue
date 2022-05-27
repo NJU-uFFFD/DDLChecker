@@ -457,7 +457,9 @@ export default {
 
     // 获取 DDL 相关
     function fetchDdls(start: number, end: number, callback: Function) {
-      let filter = {}
+      let filter = {
+        'is_deleted': false
+      }
       if (menu.filterCheckboxGroup.indexOf('1') == -1 || menu.filterCheckboxGroup.indexOf('2') == -1) {
         filter['is_completed'] = menu.filterCheckboxGroup.indexOf('2') != -1;
       }
