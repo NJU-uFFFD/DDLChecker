@@ -186,8 +186,10 @@ class NjuSpocCrawler(Crawler):
                 date = re.findall("截止：(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2})", str(h))[0]
                 # print(date)
 
+                print()
+
                 temp.append({"platform_uuid": NJU_SPOC_UUID,
-                             "course_uuid": str(uuid.uuid3(uuid.UUID(NJU_SPOC_UUID), str(i))),
+                             "course_uuid": str(uuid.uuid3(uuid.UUID(NJU_SPOC_UUID), str(i[1]))),
                              "create_time": current_time,
                              "ddl_time": int(time.mktime(time.strptime(date, '%Y-%m-%d %H:%M')) * 1000),
                              "title": title,
