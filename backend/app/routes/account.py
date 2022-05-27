@@ -57,7 +57,7 @@ def add_account():
         return make_response(-1, str(e), {})
 
     for c in courses:
-        if not Course.query.filter(Course.platform_uuid == account.platform_uuid).first():
+        if not Course.query.filter(Course.course_uuid == c[1]).first():
             t = Course(c[0], c[1], account.platform_uuid)
             db.session.add(t)
 
