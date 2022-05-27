@@ -23,7 +23,7 @@
             label-align="center"
             body-align="center">
             <input
-              :id="field.key"
+              v-model="state.input[field.key]"
               class="nut-input-text"
               :placeholder="field.detail"
               :type="field.key !== 'password' ? 'text': 'password'"/>
@@ -36,7 +36,7 @@
           @click="state.showPopup = false">
           取消
         </nut-button>
-        <nut-button type="info"
+        <nut-button type="info" :loading="state.adding"
           style="height:6vh;width:40vw;right:6.6vw;bottom:35vh;position:fixed;"
           @click="submitAccount()">
           添加
@@ -136,8 +136,7 @@ export default {
       ...toRefs(form_fields),
       state,
       addAccountPopup,
-      submitAccount,
-      toastInfo
+      submitAccount
     }
   },
   beforeMount() {
