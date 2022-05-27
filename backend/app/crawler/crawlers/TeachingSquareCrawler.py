@@ -60,7 +60,7 @@ class TeachingSquareCrawler(Crawler):
         if r['status'] != 70000:
             raise UnknownCrawlerException("非成功返回值: " + json.dumps(r))
 
-        return [(course['name'], str(uuid.uuid3(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid']))) for course in r['message']]
+        return [(course['name'], str(uuid.uuid5(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid']))) for course in r['message']]
 
     def fetch_ddl(self) -> list:
         # 获取课程列表
@@ -91,7 +91,7 @@ class TeachingSquareCrawler(Crawler):
                         logging.info("获取具体内容出错: " + json.dumps(r))
 
                     temp.append({"platform_uuid": TEACHING_SQUARE_CRAWLER_UUID,
-                                 "course_uuid": str(uuid.uuid3(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid'])),
+                                 "course_uuid": str(uuid.uuid5(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid'])),
                                  "create_time": int(work['publish_at']) * 1000,
                                  "ddl_time": int(
                                      time.mktime(time.strptime(work['submit_at'], '%Y-%m-%d %H:%M')) * 1000),
