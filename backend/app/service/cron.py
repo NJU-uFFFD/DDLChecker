@@ -28,14 +28,10 @@ def cron_work_daily():
 
             # todo: add sub
             for c in courses:
-                try:
+                if not Course.query.filter(Course.platform_uuid == account.platform_uuid).first():
                     t = Course(c[0], c[1], account.platform_uuid)
                     db.session.add(t)
-                    db.session.commit()
-                except Exception as e:
-                    logging.exception(e)
-                    db.session.rollback()
-
+            db.session.commit()
         except Exception as e:
             logging.exception(e)
 
