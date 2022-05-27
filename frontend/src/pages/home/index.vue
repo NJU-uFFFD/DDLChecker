@@ -69,6 +69,15 @@
             删除
           </nut-button>
         </template>
+
+        <template #left>
+          <nut-button
+            style="height:100%; border-radius: 10px"
+            type="info"
+            @click="">
+            设置提醒
+          </nut-button>
+        </template>
       </nut-swipe>
 
       <nut-divider

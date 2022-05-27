@@ -4,8 +4,7 @@
     :title="accountData!=null?getPlatformInfo(accountData.platform_uuid).name:'添加账号'"
     :desc=description
     @click="cardClick">
-    <template
-      #icon>
+    <template #icon>
       <img
         class="profile-site-icon"
         :src="accountData!=null?getPlatformInfo(accountData.platform_uuid).icon:'/assets/images/add.png'"

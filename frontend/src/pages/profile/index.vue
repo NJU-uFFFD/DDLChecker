@@ -30,6 +30,7 @@ import {ref, reactive, toRefs} from 'vue'
 import AccountCard from "../../components/card/ProfileAccountCard.vue";
 import ProfileCard from "../../components/card/ProfileProfileCard.vue";
 import {AccountData} from "../../types/AccountData";
+import {request} from "../../util/request";
 
 export default {
   name: 'profile',
@@ -37,13 +38,15 @@ export default {
     ProfileCard,
     AccountCard
   },
+  data() {
+    return {
+      account_list: []
+    }
+  },
   setup() {
     const nickname = ref('Test Username')
     const avatarUrl = ref('../../assets/images/test_avatar.png')
-    const accounts = reactive<{ account_list: AccountData[] }>({
-      account_list: []
-      // [{id: 1, userid: 0, platform_uuid: "f15684f5-d870-4a9d-b859-e7eec3c6e3b5", fields: []}]
-    })
+
 
     function addAccount() {
       Taro.navigateTo({
@@ -54,9 +57,29 @@ export default {
     return {
       nickname,
       avatarUrl,
-      addAccount,
-      ...toRefs(accounts)
+      addAccount
     }
+  },
+  beforeMount() {
+    const r = request({
+      path: "/account/list",
+      method: "POST"
+    })
+
+    r.then((res) => {
+      if (res.statusCode === 200 && res.data.code === 0) {
+        this.account_list = res.data.data.account_list
+      } else {
+        throw JSON.stringify(res)
+      }
+    }).catch((reason) => {
+      console.error(reason)
+      Taro.showModal({
+        title: '错误',
+        content: '发生网络错误: ' + JSON.stringify(reason),
+        showCancel: false
+      })
+    })
   }
 }
 </script>

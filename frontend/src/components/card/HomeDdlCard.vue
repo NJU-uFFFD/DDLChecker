@@ -4,15 +4,13 @@
     :title=ddlData.title
     :sub-title=ddlTime
     @click="ddlCardClick">
-    <template
-      #icon>
+    <template #icon>
       <img
         class="home-site-icon"
         :src="getPlatformInfo(ddlData.platform_uuid).icon"
       />
     </template>
-    <template
-      #link>
+    <template #link>
       <nut-icon
         style="position: absolute;right: 7vw"
         name="check-normal"
