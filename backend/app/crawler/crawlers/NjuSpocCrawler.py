@@ -158,7 +158,7 @@ class NjuSpocCrawler(Crawler):
 
     def fetch_course(self) -> list:
         temp = self.__fetch_course()
-        temp = list(map(lambda x: (x[0], str(uuid.uuid3(uuid.UUID(NJU_SPOC_UUID), str(x[1])))), temp))
+        temp = list(map(lambda x: (x[0], str(uuid.uuid5(uuid.UUID(NJU_SPOC_UUID), str(x[1])))), temp))
         return temp
 
     def fetch_ddl(self) -> list:
@@ -189,7 +189,7 @@ class NjuSpocCrawler(Crawler):
                 print()
 
                 temp.append({"platform_uuid": NJU_SPOC_UUID,
-                             "course_uuid": str(uuid.uuid3(uuid.UUID(NJU_SPOC_UUID), str(i[1]))),
+                             "course_uuid": str(uuid.uuid5(uuid.UUID(NJU_SPOC_UUID), str(i[1]))),
                              "create_time": current_time,
                              "ddl_time": int(time.mktime(time.strptime(date, '%Y-%m-%d %H:%M')) * 1000),
                              "title": title,
