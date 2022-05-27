@@ -3,14 +3,17 @@ import logging
 import random
 import re
 import string
+import time
+import uuid
 
 import requests
 from Crypto.Cipher import AES
+from bs4 import BeautifulSoup
+
 from config import OCR_API_URL
 from crawler.Crawler import Crawler
 
 from crawler.CrawlerException import LoginException
-
 
 NJU_SPOC_UUID = "68dc1014-7bfe-4ea3-a000-5734303d9f59"
 
@@ -128,12 +131,66 @@ class NjuSpocCrawler(Crawler):
         return {"account": {"name": "账号", "detail": "南大统一认证登录账号"},
                 "password": {"name": "密码", "detail": "南大统一认证登录密码"}}
 
+    def __fetch_course(self) -> list:
+        r = self.session.post("https://study.nju.edu.cn/portal/ajaxMyCourseIndex.mooc", data={
+            "postoken": self.session.cookies.get("cpstk"),
+            "keyWord": "",
+            "tabIndex": 1,
+            "searchType": 0,
+            "schoolcourseType": 0,
+            "pageIndex": 1,
+        }, headers={
+            "Referer": "https://study.nju.edu.cn/portal/myCourseIndex/1.mooc?checkEmail=false"
+        })
+
+        result = re.findall('href="/portal/session/index/(\\d+).mooc"', r.text)
+
+        temp = []
+        for i in result:
+            r = self.session.post("https://study.nju.edu.cn/portal/share/course.mooc", data={
+                "postoken": self.session.cookies.get("cpstk"),
+                "courseOpenId": i
+            }, headers={
+                "Referer": "https://study.nju.edu.cn/portal/myCourseIndex/1.mooc?checkEmail=false"
+            })
+            temp.append((r.json()['title'], i))
+        return temp
+
     def fetch_course(self) -> list:
-        return []
+        temp = self.__fetch_course()
+        temp = list(map(lambda x: (x[0], str(uuid.uuid3(uuid.UUID(NJU_SPOC_UUID), str(x[1])))), temp))
+        return temp
 
     def fetch_ddl(self) -> list:
         """
         获取 ddl
         :return: ddl list
         """
-        return []
+
+        current_time = int(time.time() * 1000)
+
+        courses = self.__fetch_course()
+        temp = []
+        for i in courses:
+            r = self.session.get(f"https://study.nju.edu.cn/examTest/stuExamList/{i[1]}.mooc", headers={
+                "Referer": "https://study.nju.edu.cn/portal/myCourseIndex/1.mooc?checkEmail=false"
+            })
+
+            soup = BeautifulSoup(r.text, features="lxml")
+            homeworks = soup.find("table", attrs={"class": "homework-table"}).find_all("tr", attrs={
+                "class": "homework-toggle"})
+            for h in homeworks:
+                title = h.find("td", attrs={"class": "td1"}).attrs['title']
+                # print(title)
+
+                date = re.findall("截止：(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2})", str(h))[0]
+                # print(date)
+
+                temp.append({"platform_uuid": NJU_SPOC_UUID,
+                             "course_uuid": str(uuid.uuid3(uuid.UUID(NJU_SPOC_UUID), str(i))),
+                             "create_time": current_time,
+                             "ddl_time": int(time.mktime(time.strptime(date, '%Y-%m-%d %H:%M')) * 1000),
+                             "title": title,
+                             "content": "来自 SPOC 的 DDL"})
+
+        return temp
