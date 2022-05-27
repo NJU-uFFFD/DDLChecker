@@ -1,39 +1,8 @@
 <template>
-  <nut-cell>选择需要添加的账号</nut-cell>
-
-  <!-- 账号列表 -->
-  <div v-for="data in accounts" :key="data">
-    <AccountCard
-      :accountData=data
-      description="点击添加"
-      @onClick="addAccountPopup"
-    />
-  </div>
-
-  <!-- 弹出层 -->
-  <nut-overlay
-    v-model:visible="state.showPopup"
-    :close-on-click-overlay="false">
-    <div class="content">
-      <nut-form>
-        <nut-form-item
-          v-for="field in fields"
-          :key="field"
-          :label="field.title">
-          <input
-            v-model="state.input[field.key]"
-            class="nut-input-text"
-            :placeholder="field.detail"
-            :type="field.key !== 'password' ? 'text': 'password'"/>
-        </nut-form-item>
-      </nut-form>
   <view class="page">
     <!-- 账号列表 -->
-    <scroll-view
-      :scroll-y="true"
-      style="height: 100vh;">
-      <nut-cell-group
-        title="选择需要添加的账号"/>
+    <scroll-view :scroll-y="true" style="height: 100vh;">
+      <nut-cell-group title="选择需要添加的账号"/>
       <AccountCard
         v-for="data in accounts"
         :key="data"
@@ -42,15 +11,13 @@
         @onClick="addAccountPopup"
       />
     </scroll-view>
+
     <!-- 弹出层 -->
-    <nut-overlay
-      v-model:visible="state.showPopup"
-      :close-on-click-overlay="false">
+    <nut-overlay v-model:visible="state.showPopup" :close-on-click-overlay="false">
       <div class="content">
         <nut-form>
           <nut-form-item
-            v-for="field in fields"
-            :key="field"
+            v-for="field in fields" :key="field"
             :label="field.title"
             label-width="60px"
             label-align="center"
@@ -64,21 +31,19 @@
         </nut-form>
 
 
-        <nut-button
-          type="info"
-          plain
+        <nut-button type="info" plain
           style="height:6vh;width:40vw;left:6.6vw;bottom:35vh;position:fixed;"
           @click="state.showPopup = false">
           取消
         </nut-button>
-        <nut-button
-          type="info"
+        <nut-button type="info"
           style="height:6vh;width:40vw;right:6.6vw;bottom:35vh;position:fixed;"
           @click="submitAccount()">
           添加
         </nut-button>
-    </div>
-  </nut-overlay>
+      </div>
+    </nut-overlay>
+  </view>
 </template>
 
 <script>
@@ -117,7 +82,7 @@ export default {
       center: true,
     })
 
-    const openToast = (type, msg, cover=false, title="", bottom="", center=true) => {
+    const openToast = (type, msg, cover = false, title = "", bottom = "", center = true) => {
       toastInfo.show = true
       toastInfo.msg = msg
       toastInfo.type = type

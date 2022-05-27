@@ -26,6 +26,7 @@ def cron_work_daily():
             crawler.login(json.loads(aes_decrypt(account.fields)))
             courses = crawler.fetch_course()
 
+            # todo: add sub
             for c in courses:
                 try:
                     t = Course(c[0], c[1], account.platform_uuid)
