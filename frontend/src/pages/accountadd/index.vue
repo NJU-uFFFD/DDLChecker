@@ -105,7 +105,9 @@ export default {
             content: '账号添加成功!',
             showCancel: false,
             success: () => {
-              Taro.navigateBack()
+              Taro.reLaunch({
+                url:"/pages/profile/index"
+              })
             }
           })
         } else {
