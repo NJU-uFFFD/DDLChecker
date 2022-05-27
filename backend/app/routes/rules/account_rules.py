@@ -14,4 +14,4 @@ class DeleteAccountRules(Schema):
     """
         id: int
     """
-    id = fields.Int(required=True, validate=validate.Range(min=1))
+    id = fields.Int(required=True, strict=True, validate=validate.Range(min=1))
