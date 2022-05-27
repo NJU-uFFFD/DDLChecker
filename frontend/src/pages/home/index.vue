@@ -64,20 +64,18 @@
         <template #right>
           <nut-button
             style="height:100%; border-radius: 10px"
+            type="success"
+            @click="setNotification(data)">
+            提醒
+          </nut-button>
+          <nut-button
+            style="height:100%; border-radius: 10px"
             type="danger"
             @click="state.showDelete=true;state.deleteInfo=data">
             删除
           </nut-button>
         </template>
 
-        <template #left>
-          <nut-button
-            style="height:100%; border-radius: 10px"
-            type="info"
-            @click="">
-            设置提醒
-          </nut-button>
-        </template>
       </nut-swipe>
 
       <nut-divider
@@ -92,8 +90,7 @@
       close-on-click-overlay
       lock-scroll
       v-model:visible="state.showDetails">
-      <nut-countdown
-        #default
+      <nut-countdown #default
         style="display: flex;justify-content: center"
         :end-time="state.ddlDetailData.ddl_time"
         format="还剩 DD 天 HH 时 mm 分 ss 秒"
@@ -118,7 +115,6 @@
       v-model:visible="state.showEdit">
       <nut-cell-group
         style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
-        <!--TODO: 表单内容检验-->
         <nut-cell>
           <nut-input
             v-model="state.ddlDetailData.title"
@@ -338,12 +334,12 @@ export default {
       ]
     })
 
-    Taro.getStorage({
-      key: "filterGroup",
-      success: (res) => {
-        menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
-      }
-    })
+    // Taro.getStorage({
+    //   key: "filterGroup",
+    //   success: (res) => {
+    //     menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
+    //   }
+    // })
 
     const onMenuChange = (group: string) => {
       if (group.indexOf('1') == -1 && group.indexOf('2') == -1)
@@ -357,10 +353,10 @@ export default {
         })[0] == '4') menu.filterCheckboxGroup.push('3')
         else menu.filterCheckboxGroup.push('4')
       menu.filterCheckboxTempGroup = menu.filterCheckboxGroup.filter(() => true)
-      Taro.setStorage({
-        key: "filterGroup",
-        data: JSON.stringify(menu.filterCheckboxTempGroup)
-      })
+      // Taro.setStorage({
+      //   key: "filterGroup",
+      //   data: JSON.stringify(menu.filterCheckboxTempGroup)
+      // })
       listRefresh()
     }
 
@@ -528,6 +524,7 @@ export default {
 
     // 删除 DDL
     function deleteDdl(ddlData) {
+      state.showDelete = false
       console.log("删除 DDL ID: " + ddlData.id)
       ddlData.is_deleted = true
       const r = request({
@@ -585,6 +582,21 @@ export default {
       })
     }
 
+    function setNotification(ddlData) {
+      Taro.addPhoneCalendar({
+        title: ddlData.title,
+        startTime: ddlData.ddl_time / 1000,
+        endTime: ddlData.ddl_time / 1000,
+        description: ddlData.detail,
+        success: () => {
+          openToast("success", "设置日历提醒成功!")
+        },
+        fail: (reason) => {
+          console.error(reason)
+        }
+      })
+    }
+
     // 第一次加载列表
     listRefresh()
 
@@ -603,7 +615,8 @@ export default {
       toastInfo,
       deleteDdl,
       completeDdl,
-      editDdl
+      editDdl,
+      setNotification
     }
   }
 }
