@@ -4,7 +4,8 @@ export default defineAppConfig({
     'pages/history/index',
     'pages/community/index',
     'pages/profile/index',
-    'pages/accountadd/index'
+    'pages/accountadd/index',
+    'pages/courseddl/index'
   ],
   window: {
     backgroundTextStyle: 'light',
