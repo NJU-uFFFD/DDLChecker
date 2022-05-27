@@ -61,6 +61,9 @@ def add_account():
             t = Course(c[0], c[1], account.platform_uuid)
             db.session.add(t)
 
+    db.session.commit()
+
+    for c in courses:
         sub = UserSubscriptions(user.id, c[1], account.platform_uuid)
         db.session.add(sub)
 
