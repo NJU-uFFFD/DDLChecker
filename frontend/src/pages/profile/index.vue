@@ -33,7 +33,11 @@
         v-model:visible="state.showDelete">
         <template #footer>
           <nut-button plain type="danger" @click="state.showDelete = false">取消</nut-button>
-          <nut-button type="danger" @click="deleteAccount(state.deleteInfo)">删除</nut-button>
+          <nut-button
+            type="danger"
+            @click="deleteAccount(state.deleteInfo);account_list = account_list.filter((x) => {return x.id !== state.deleteInfo.id})">
+            删除
+          </nut-button>
         </template>
       </nut-dialog>
 
@@ -114,9 +118,6 @@ export default {
       r.then((res) => {
         if (res.statusCode === 200 && res.data.code === 0) {
           openToast('success', "删除成功!")
-          this.account_list = this.account_list.filter((x) => {
-            return x !== accountData
-          })
         } else {
           throw JSON.stringify(res)
         }
@@ -130,7 +131,7 @@ export default {
     }
 
     //消息通知
-    const openToast = (type, msg, cover = false, title = "", bottom = "", center = true) => {
+    const openToast = (type, msg, cover, title, bottom, center) => {
       toastInfo.show = true
       toastInfo.msg = msg
       toastInfo.type = type
@@ -146,7 +147,9 @@ export default {
       addAccount,
       deleteAccount,
       state,
-      toastInfo
+      toastInfo,
+      openToast,
+      console
     }
   },
   beforeMount() {
