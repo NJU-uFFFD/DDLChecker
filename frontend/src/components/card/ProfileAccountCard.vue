@@ -47,7 +47,7 @@ export default defineComponent({
   margin-bottom: 8px;
   height: 50px;
   width: 95%;
-  border-radius: 5px;
+  border-radius: 10px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 

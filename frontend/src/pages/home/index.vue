@@ -4,8 +4,7 @@
     <!--筛选与排序菜单-->
     <nut-menu
       style="position: relative; z-index: 200; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)">
-      <nut-menu-item
-        title="筛选">
+      <nut-menu-item title="筛选">
         <div style="display: flex; flex: 1; justify-content: space-between; align-items: center">
           <nut-checkboxgroup
             v-model="menu.filterCheckboxGroup"
@@ -20,8 +19,7 @@
               style="display: flex; height: 6vh; width:25vw">{{ item.value }}
             </nut-checkbox>
           </nut-checkboxgroup>
-          <div
-            style="width: 60vw">
+          <div style="width: 60vw">
             <nut-button
               type="primary"
               @click="filterToggleAll(true)"
@@ -35,7 +33,6 @@
               反选
             </nut-button>
           </div>
-
         </div>
       </nut-menu-item>
       <nut-menu-item
@@ -54,9 +51,7 @@
       refresherEnabled="true"
       enableBackToTop="true">
 
-      <nut-swipe
-        v-for="data in ddl_list"
-        :key="data">
+      <nut-swipe v-for="data in ddl_list" :key="data">
         <HomeDdlCard
           :ddlData="data"
           @onClick="state.ddlDetailData = data; state.showDetails = true"
@@ -78,10 +73,7 @@
 
       </nut-swipe>
 
-      <nut-divider
-        v-if="!state.more">
-        没有更多 DDL 了哦 ~
-      </nut-divider>
+      <nut-divider v-if="!state.more">没有更多 DDL 了哦 ~</nut-divider>
     </scroll-view>
 
     <!-- DDL 详情 -->
@@ -90,7 +82,8 @@
       close-on-click-overlay
       lock-scroll
       v-model:visible="state.showDetails">
-      <nut-countdown #default
+      <nut-countdown
+        #default
         style="display: flex;justify-content: center"
         :end-time="state.ddlDetailData.ddl_time"
         format="还剩 DD 天 HH 时 mm 分 ss 秒"
@@ -99,10 +92,7 @@
         style="box-shadow: 0 0 0 0"
         :title="state.ddlDetailData.content"/>
       <template #footer>
-        <nut-button
-          type="info"
-          @click="state.showEdit = true">修改
-        </nut-button>
+        <nut-button type="info" @click="state.showEdit = true">修改</nut-button>
       </template>
     </nut-dialog>
 
@@ -113,8 +103,7 @@
       round
       safe-area-inset-bottom
       v-model:visible="state.showEdit">
-      <nut-cell-group
-        style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+      <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
         <nut-cell>
           <nut-input
             v-model="state.ddlDetailData.title"
@@ -167,8 +156,7 @@
       round
       safe-area-inset-bottom
       v-model:visible="state.showAdd">
-      <nut-cell-group
-        style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+      <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
         <!--TODO: 表单内容检验-->
         <nut-cell>
           <nut-input
@@ -235,14 +223,8 @@
       lock-scroll
       v-model:visible="state.showDelete">
       <template #footer>
-        <nut-button
-          plain type="danger"
-          @click="state.showDelete = false">取消
-        </nut-button>
-        <nut-button
-          type="danger"
-          @click="deleteDdl(state.deleteInfo)">删除
-        </nut-button>
+        <nut-button plain type="danger" @click="state.showDelete = false">取消</nut-button>
+        <nut-button type="danger" @click="deleteDdl(state.deleteInfo)">删除</nut-button>
       </template>
     </nut-dialog>
 
@@ -296,7 +278,6 @@ export default {
       "more": true,
       "addInfo": {
         "title": "",
-        // "date": new Date(),
         "content": ""
       },
       "deleteInfo": {},
@@ -334,6 +315,7 @@ export default {
       ]
     })
 
+    // 保存上次筛选选项于本地
     // Taro.getStorage({
     //   key: "filterGroup",
     //   success: (res) => {
@@ -588,7 +570,7 @@ export default {
       Taro.addPhoneCalendar({
         title: ddlData.title,
         startTime: ddlData.ddl_time / 1000,
-        endTime: ddlData.ddl_time / 1000,
+        endTime: String(ddlData.ddl_time / 1000),
         description: ddlData.detail,
         success: () => {
           openToast("success", "设置日历提醒成功!")
