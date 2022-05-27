@@ -30,3 +30,15 @@ class SourceDdl(db.Model):
         self.tag = tag
         self.ddl_time = ddl_time
         self.create_time = create_time
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "course_uuid": self.course_uuid,
+            "platform_uuid": self.platform_uuid,
+            "title": self.title,
+            "content": self.content,
+            "tag": self.tag,
+            "ddl_time": self.ddl_time,
+            "create_time": self.create_time
+        }
