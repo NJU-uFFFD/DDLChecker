@@ -1,12 +1,15 @@
 import json
 import logging
 import random
+import time
 
 from db import db
 from db.account import Account
 from db.course import Course
 from crawler.util import list_crawlers
+from db.ddl import Ddl
 from db.sourceDdl import SourceDdl
+from db.userSubs import UserSubscriptions
 
 from util.encrypt import aes_decrypt
 
@@ -26,12 +29,18 @@ def cron_work_daily():
             crawler.login(json.loads(aes_decrypt(account.fields)))
             courses = crawler.fetch_course()
 
-            # todo: add sub
             for c in courses:
                 if not Course.query.filter(Course.course_uuid == c[1]).first():
                     t = Course(c[0], c[1], account.platform_uuid)
                     db.session.add(t)
             db.session.commit()
+
+            for c in courses:
+                if not UserSubscriptions.query.filter(UserSubscriptions.userid == account.userid, UserSubscriptions.course_uuid == c[1]).first():
+                    sub = UserSubscriptions(account.userid, c[1], account.platform_uuid)
+                    db.session.add(sub)
+            db.session.commit()
+
         except Exception as e:
             logging.exception(e)
             db.session.rollback()
@@ -42,6 +51,8 @@ def cron_work_daily():
 # 定时任务, 需要每过一定时间被触发
 def cron_work():
     already_done = set()
+
+    now_time = int(time.time() * 1000)
 
     for c in Course.query.all():
         try:
@@ -101,5 +112,14 @@ def cron_work():
             db.session.rollback()
 
     # 分发 DDL
+    for sub in UserSubscriptions.query.all():
+        updated = sub.last_updated
+        for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid).all():
+            if ddl.ddl_time > int(time.time() * 1000) and ddl.ddl_time > updated:
+                to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "[]",
+                             sub.course_uuid, sub.platform_uuid, ddl.id)
+                db.session.add(to_add)
+        sub.last_updated = now_time
+    db.session.commit()
 
     return "success"
