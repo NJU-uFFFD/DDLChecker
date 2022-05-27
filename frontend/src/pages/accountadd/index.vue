@@ -72,26 +72,6 @@ export default {
       adding: false
     })
 
-    let toastInfo = reactive({
-      msg: 'toast',
-      type: 'text',
-      show: false,
-      cover: false,
-      title: '',
-      bottom: '',
-      center: true,
-    })
-
-    const openToast = (type, msg, cover = false, title = "", bottom = "", center = true) => {
-      toastInfo.show = true
-      toastInfo.msg = msg
-      toastInfo.type = type
-      toastInfo.cover = cover
-      toastInfo.title = title
-      toastInfo.bottom = bottom
-      toastInfo.center = center
-    }
-
     function addAccountPopup(data) {
 
       if (data.bound) {
@@ -130,8 +110,14 @@ export default {
 
       r.then((res) => {
         if (res.statusCode === 200 && res.data.code === 0) {
-          openToast('success', "添加成功!")
-          Taro.navigateBack()
+          Taro.showModal({
+            title: '提示',
+            content: '账号添加成功!',
+            showCancel: false,
+            success: () => {
+              Taro.navigateBack()
+            }
+          })
         } else {
           throw JSON.stringify(res)
         }
