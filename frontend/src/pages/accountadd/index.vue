@@ -73,16 +73,6 @@ export default {
     })
 
     function addAccountPopup(data) {
-
-      if (data.bound) {
-        Taro.showModal({
-          title: '提示',
-          content: '每门课程只能绑定一个账号, 请取消绑定当前账号再试.',
-          showCancel: false
-        })
-        return
-      }
-
       state.showPopup = true
       state.platform_uuid = data.platform_uuid
       const d = data.fields
@@ -147,7 +137,7 @@ export default {
 
     r.then((res) => {
       if (res.statusCode === 200 && res.data.code === 0) {
-        this.accounts = res.data.data.available_account_type
+        this.accounts = res.data.data.available_account_type.filter((d) => !d.bound)
         console.log(this.accounts)
       } else {
         throw JSON.stringify(res)
