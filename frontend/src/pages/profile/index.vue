@@ -1,23 +1,26 @@
 <template>
-  <view class="profile">
-    <ProfileCard
-      :nickname=nickname
-      :avatarUrl=avatarUrl>
-    </ProfileCard>
+  <view class="page">
+    <scroll-view
+      :scroll-y="true"
+      style="height: 100vh;">
+      <ProfileCard
+        :nickname=nickname
+        :avatarUrl=avatarUrl>
+      </ProfileCard>
 
-    <nut-cell @click="addAccount"> + 添加账号</nut-cell>
 
+      <nut-cell-group
+        title="账号管理"/>
+      <AccountCard
+        v-for="data in account_list"
+        :key="data.id"
+        :accountData="data"/>
+      <AccountCard
+        @click="addAccount"/>
 
-
-    <nut-cell-group
-      class="profile-account-group"
-      title="账号管理"/>
-
-    <view
-      v-for="data in account_list"
-      :key="data.account_id">
-      <AccountCard :accountData="data"/>
-    </view>
+      <nut-cell-group
+        title="设置"/>
+    </scroll-view>
   </view>
 </template>
 
@@ -39,21 +42,7 @@ export default {
     const avatarUrl = ref('../../assets/images/test_avatar.png')
     const accounts = reactive<{ account_list: AccountData[] }>({
       account_list: []
-      // [{account_id: 1, title: "MOOC", from: "/assets/images/mooc.png"},
-      //   {account_id: 2, title: "SPOC", from: "/assets/images/spoc.png"},
-      //   {account_id: 3, title: "教学立方", from: "/assets/images/jxlf.png"},
-      //   {account_id: 4, title: "MOOC", from: "/assets/images/mooc.png"},
-      //   {account_id: 5, title: "SPOC", from: "/assets/images/spoc.png"},
-      //   {account_id: 6, title: "教学立方", from: "/assets/images/jxlf.png"},
-      //   {account_id: 7, title: "MOOC", from: "/assets/images/mooc.png"},
-      //   {account_id: 8, title: "SPOC", from: "/assets/images/spoc.png"},
-      //   {account_id: 9, title: "教学立方", from: "/assets/images/jxlf.png"},
-      //   {account_id: 10, title: "MOOC", from: "/assets/images/mooc.png"},
-      //   {account_id: 11, title: "SPOC", from: "/assets/images/spoc.png"},
-      //   {account_id: 12, title: "教学立方", from: "/assets/images/jxlf.png"},
-      //   {account_id: 13, title: "MOOC", from: "/assets/images/mooc.png"},
-      //   {account_id: 14, title: "SPOC", from: "/assets/images/spoc.png"},
-      //   {account_id: 15, title: "教学立方", from: "/assets/images/jxlf.png"},]
+      // [{id: 1, userid: 0, platform_uuid: "f15684f5-d870-4a9d-b859-e7eec3c6e3b5", fields: []}]
     })
 
     function addAccount() {
@@ -73,13 +62,17 @@ export default {
 </script>
 
 <style>
-.profile-account-group {
-  margin-top: -20px;
-  margin-bottom: -10px;
+
+.page {
+  background: #f9f9f9;
 }
 
-.profile {
-  background: #f9f9f9;
+.nut-cell-group__title {
+  margin-top: 15px;
+}
+
+.nut-cell-group {
+  height: 30px;
 }
 
 </style>

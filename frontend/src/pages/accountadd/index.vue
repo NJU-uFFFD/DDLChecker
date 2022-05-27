@@ -27,21 +27,56 @@
             :type="field.key !== 'password' ? 'text': 'password'"/>
         </nut-form-item>
       </nut-form>
+  <view class="page">
+    <!-- 账号列表 -->
+    <scroll-view
+      :scroll-y="true"
+      style="height: 100vh;">
+      <nut-cell-group
+        title="选择需要添加的账号"/>
+      <AccountCard
+        v-for="data in accounts"
+        :key="data"
+        :accountData=data
+        description="点击添加"
+        @onClick="addAccountPopup"
+      />
+    </scroll-view>
+    <!-- 弹出层 -->
+    <nut-overlay
+      v-model:visible="state.showPopup"
+      :close-on-click-overlay="false">
+      <div class="content">
+        <nut-form>
+          <nut-form-item
+            v-for="field in fields"
+            :key="field"
+            :label="field.title"
+            label-width="60px"
+            label-align="center"
+            body-align="center">
+            <input
+              :id="field.key"
+              class="nut-input-text"
+              :placeholder="field.detail"
+              :type="field.key !== 'password' ? 'text': 'password'"/>
+          </nut-form-item>
+        </nut-form>
 
-      <nut-button
-        size="large"
-        type="info"
-        :loading="state.adding"
-        @click="submitAccount()">
-        添加
-      </nut-button>
-      <nut-button
-        size="large"
-        type="info"
-        plain
-        @click="state.showPopup = false">
-        关闭
-      </nut-button>
+
+        <nut-button
+          type="info"
+          plain
+          style="height:6vh;width:40vw;left:6.6vw;bottom:35vh;position:fixed;"
+          @click="state.showPopup = false">
+          取消
+        </nut-button>
+        <nut-button
+          type="info"
+          style="height:6vh;width:40vw;right:6.6vw;bottom:35vh;position:fixed;"
+          @click="submitAccount()">
+          添加
+        </nut-button>
     </div>
   </nut-overlay>
 </template>
@@ -185,10 +220,28 @@ export default {
 </script>
 
 <style>
+.page {
+  background-color: #f9f9f9;
+}
+
 .content {
   position: fixed;
-  top: 30vh;
+  top: 35vh;
   right: 2vw;
   width: 96vw;
 }
+
+/*表单内行高设置*/
+.nut-cell {
+  line-height: normal;
+}
+
+.nut-cell-group__title {
+  margin-top: 15px;
+}
+
+.nut-cell-group {
+  height: 30px;
+}
+
 </style>

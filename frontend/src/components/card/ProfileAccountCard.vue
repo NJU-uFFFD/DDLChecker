@@ -1,14 +1,14 @@
 <template>
   <nut-cell
     class="profile-account-card"
-    :title=getPlatformInfo(accountData.platform_uuid).name
+    :title="accountData!=null?getPlatformInfo(accountData.platform_uuid).name:'添加账号'"
     :desc=description
     @click="cardClick">
     <template
       #icon>
       <img
         class="profile-site-icon"
-        :src=getPlatformInfo(accountData.platform_uuid).icon
+        :src="accountData!=null?getPlatformInfo(accountData.platform_uuid).icon:'/assets/images/add.png'"
       />
     </template>
   </nut-cell>
@@ -19,7 +19,6 @@ import {Toast} from '@nutui/nutui-taro';
 import {AccountData} from "../../types/AccountData";
 import {defineComponent} from "vue";
 import {getPlatformInfo} from "../../util/ui";
-
 
 
 export default defineComponent({
@@ -46,10 +45,10 @@ export default defineComponent({
   align-items: center;
   margin-left: 10px;
   margin-top: 0;
-  margin-bottom: 5px;
-  height: 40px;
+  margin-bottom: 8px;
+  height: 50px;
   width: 95%;
-  border-radius: 0;
+  border-radius: 5px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 

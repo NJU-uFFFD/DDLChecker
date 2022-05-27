@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '统计'
+  navigationBarTitleText: '社区'
 })

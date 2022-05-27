@@ -5,3 +5,4 @@ mysqlclient==2.1.0
 html2text==2020.1.16
 requests==2.27.1
 Flask-Limiter==2.4.5.1
+pycryptodome==3.14.1
