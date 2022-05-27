@@ -87,9 +87,8 @@ def list_dll():
             else:
                 filter_list.append(data['time_range']['start'] <= Ddl.ddl_time)
                 filter_list.append(data['time_range']['end'] >= Ddl.ddl_time)
-    ddl_count = len(
-        user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
-                                                else Ddl.ddl_time).all())
+    ddl_count = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
+                                                else Ddl.ddl_time).count()
     return make_response(0, "OK", {'ddl_list': (user.ddls.filter(*filter_list).
                                                 order_by(
         Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']

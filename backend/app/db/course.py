@@ -18,3 +18,10 @@ class Course(db.Model):
         self.course_name = course_name
         self.course_uuid = course_uuid
         self.platform_uuid = platform_uuid
+
+    def to_dict(self):
+        return {
+            "course_name": self.course_name,
+            "course_uuid": self.course_uuid,
+            "platform_uuid": self.platform_uuid
+        }
