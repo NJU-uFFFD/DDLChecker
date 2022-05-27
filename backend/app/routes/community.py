@@ -17,6 +17,7 @@ from routes.utils import get_context_user, make_response
 
 bp = Blueprint("community", __name__, url_prefix="/community")
 
+
 @bp.route("/course/list", methods=["GET", "POST"])
 def list_course():
     user, data = get_context_user(data_required=False)
@@ -29,6 +30,7 @@ def list_course():
 
     return make_response(0, "OK", {"courses": courses, "course_count": course_count})
 
+
 @bp.route("/ddl/list", methods=["GET", "POST"])
 def list_ddl():
     user, data = get_context_user(data_required=False)
@@ -39,6 +41,7 @@ def list_ddl():
         i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.all()) else False})
 
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls})
+
 
 @bp.route("/course/add", methods=["GET", "POST"])
 def add_course():
@@ -59,6 +62,7 @@ def add_course():
 
     return make_response(0, "OK", {"course_uuid": course.course_uuid})
 
+
 @bp.route("/ddl/add", methods=["GET", "POST"])
 def add_ddl():
     user, data = get_context_user()
@@ -77,6 +81,7 @@ def add_ddl():
     db.session.commit()
 
     return make_response(0, "OK", {"id": ddl.id})
+
 
 @bp.route("/course/subscribe", methods=["GET", "POST"])
 def subscribe_course():
@@ -99,6 +104,7 @@ def subscribe_course():
 
     return make_response(0, "OK", {"id": sub.id})
 
+
 @bp.route("/course/unsubscribe", methods=["GET", "POST"])
 def unsubscribe_course():
     user, data = get_context_user()
@@ -113,6 +119,7 @@ def unsubscribe_course():
     db.session.commit()
 
     return make_response(0, "OK", {"id": sub.id})
+
 
 @bp.route("/ddl/fetch")
 def fetch_ddl():
@@ -134,4 +141,3 @@ def fetch_ddl():
     db.session.commit()
 
     return make_response(0, "OK", {"id": ddl.id})
-
