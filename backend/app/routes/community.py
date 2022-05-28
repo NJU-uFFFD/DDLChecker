@@ -48,7 +48,7 @@ def list_ddl():
     total_pages = page.pages
     source_ddls = [i.to_dict() for i in page.items]
     for i in source_ddls:
-        i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.all()) else False})
+        i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.filter(Ddl.is_deleted == False).all()) else False})
 
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
 
@@ -107,7 +107,15 @@ def subscribe_course():
     if user.subscriptions.filter(UserSubscriptions.course_uuid == data['course_uuid']).first() is not None:
         return make_response(-1, "Subscription already exists.(nmsl)", {})
 
-    # todo: 马上为用户分配ddl
+    now_time = int(time.time() * 1000)
+
+    for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid, SourceDdl.creator_id == None).all():
+        if ddl.ddl_time > now_time:
+            to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "[]",
+                                 sub.course_uuid, sub.platform_uuid, ddl.id)
+            db.session.add(to_add)
+
+    sub.last_updated = now_time
 
     db.session.add(sub)
     db.session.commit()

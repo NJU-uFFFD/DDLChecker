@@ -2,7 +2,7 @@ import random
 
 from flask import Blueprint
 from db.user import User
-from routes.utils import get_context, make_response, check_data
+from routes.utils import get_context, make_response, check_data, get_context_user
 from routes.rules.user_rules import *
 from db import db
 
@@ -36,7 +36,23 @@ def rename():
     :return:make_response()
     """
 
-    openid, data = get_context()
+    user, data = get_context_user()
     check_data(RenameRules, data)
 
-    
+
+@bp.route("/username", methods=["GET", "POST"])
+def username():
+    """
+    通过userid查询username
+    :return: make_response()
+    """
+
+    user, data = get_context()
+    check_data(UsernameRules, data)
+
+    find_user = User.query.get(data["id"])
+
+    if find_user is None:
+        return make_response(-1, "User not found(nmsl).", {})
+
+    return make_response(0, "OK", {"username": find_user.username})
