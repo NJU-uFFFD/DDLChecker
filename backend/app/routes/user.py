@@ -27,3 +27,16 @@ def register():
         db.session.commit()
 
     return make_response(0, "OK", {"userid": user.id, "username": user.username, "new": new_user})
+
+
+@bp.route("/rename", methods=["GET", "POST"])
+def rename():
+    """
+    用户改名
+    :return:make_response()
+    """
+
+    openid, data = get_context()
+    check_data(RenameRules, data)
+
+    

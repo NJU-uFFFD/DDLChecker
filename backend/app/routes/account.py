@@ -69,6 +69,7 @@ def add_account():
         db.session.add(sub)
 
     db.session.add(account)
+    user.account_add_times += 1
 
     db.session.commit()
 
