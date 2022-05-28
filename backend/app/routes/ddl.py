@@ -58,9 +58,6 @@ def list_dll():
     user, data = get_context_user()
     check_data(ListDDLsRules, data)
 
-    if not 0 <= data['end'] - data['start'] <= 50:
-        return make_response(400, "Invalid slice range.(nmsl)", {})
-
     filter_list = []
     if 'filter' in data:
         if 'is_completed' in data['filter']:
@@ -108,13 +105,12 @@ def list_dll():
         else:
             return make_response(-1, "missing start or end.", {})
 
-    ddl_count = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
-                                                else Ddl.ddl_time).count()
-    return make_response(0, "OK", {'ddl_list': (user.ddls.filter(*filter_list).
-                                                order_by(
-        Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
-        else Ddl.ddl_time).slice(data['start'], data['end']).all()),
-                                   'ddl_count': ddl_count})
+    page = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
+                                                else Ddl.ddl_time).paginate()
+
+    ddl_count = page.total
+    total_pages = page.pages
+    return make_response(0, "OK", {'ddl_list': page.items, 'ddl_count': ddl_count, "total_page": total_pages})
 
 
 @bp.route("/update", methods=['POST', 'GET'])

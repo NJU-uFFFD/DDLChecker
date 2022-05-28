@@ -4,8 +4,8 @@ from marshmallow import Schema, fields, validate
 
 class ListDDLsRules(Schema):
     """
-        "start" -> int(>=0)
-        "end" -> int(>=0)
+        "page" -> int
+        "size" -> int
         "filter" -> dict(not necessary)
             "is_completed" -> bool
             "is_overtime" -> bool
@@ -23,8 +23,8 @@ class ListDDLsRules(Schema):
         "sorter" -> dict(not necessary)
             "reversed" -> bool
     """
-    start = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
-    end = fields.Integer(strict=True, required=True, validate=[validate.Range(min=0)])
+    page = fields.Integer(strict=True, required=True, validate=[validate.Range(min=1)])
+    size = fields.Integer(strict=True, required=True, validate=[validate.Range(min=1, max=50)])
     filter = fields.Dict(required=False,
                          keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "is_overtime", "is_deleted"])),
                          values=fields.Boolean(required=True))

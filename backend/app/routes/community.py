@@ -49,7 +49,6 @@ def list_ddl():
     for i in source_ddls:
         i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.all()) else False})
 
-
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
 
 
