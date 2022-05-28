@@ -36,8 +36,13 @@ def rename():
     :return:make_response()
     """
 
-    user, data = get_context_user()
+    user, data = get_context_user(RenameRules)
     check_data(RenameRules, data)
+
+    user.username = data["username"]
+    db.session.commit()
+
+    return make_response(0, "OK", {"id": user.id})
 
 
 @bp.route("/username", methods=["GET", "POST"])
