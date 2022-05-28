@@ -58,7 +58,7 @@
           @onCompleteStatusChange="completeDdl"/>
         <template #right>
           <nut-button
-            style="height:100%; border-radius: 10px"
+            style="height:100%; border-radius: 10px;margin-right: 5px"
             type="success"
             @click="setNotification(data)">
             提醒
@@ -438,7 +438,7 @@ export default {
     }
 
     // 获取 DDL 相关
-    function fetchDdls(start: number, end: number, callback: Function) {
+    function fetchDdls(page: number, size: number, callback: Function) {
       let filter = {
         'is_deleted': false
       }
@@ -453,8 +453,8 @@ export default {
         path: "/ddl/list",
         method: "POST",
         data: {
-          "start": start,
-          "end": end,
+          "page": page,
+          "size": size,
           "filter": filter,
           "sorter": {
             "reversed": menu.value
@@ -478,7 +478,7 @@ export default {
       console.log("ddl refresh.")
       state.offset = 10
       state.more = true
-      fetchDdls(0, 10, (list: DDLData[]) => {
+      fetchDdls(1, 10, (list: DDLData[]) => {
         ddls.ddl_list = list
         console.log(list)
         state.refreshing = false
@@ -490,14 +490,14 @@ export default {
         return
       }
       // 滑动到底部, 获取新的 ddl
-      fetchDdls(state.offset, state.offset + 10, (list) => {
+      fetchDdls(state.offset, 10, (list) => {
         if (list.length == 0) {
           console.log("无更多项目.")
           state.more = false
         }
         ddls.ddl_list.push.apply(ddls.ddl_list, list)
       })
-      state.offset += 10
+      state.offset += 1
     }
 
     // 获取 DDL 时间下限
