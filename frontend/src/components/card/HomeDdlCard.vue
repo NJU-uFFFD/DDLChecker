@@ -30,7 +30,7 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {DDLData} from "../../types/DDLData";
-import {getPlatformInfo} from "../../util/ui"
+import {formatTime, getPlatformInfo} from "../../util/ui"
 
 export default defineComponent({
   name: "HomeDdlCard",
@@ -47,13 +47,7 @@ export default defineComponent({
     // const ddlTime = (new Intl.DateTimeFormat("zh-CN", {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false}).format)(props.ddlData?.ddl_time);
     // 上述用法会出现上午12:40或者24:40这种离谱的情况,太难受啦!!
 
-    const weekdayZhCN = {"0": "日", "1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六"}
-
-    const t = new Date(ddlData.ddl_time);
-    const ddlTime = String(`${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日
-    星期${weekdayZhCN[t.getDay()]}
-    ${t.getHours() > 9 ? t.getHours() : "0" + t.getHours()}:
-    ${t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`);
+    const ddlTime = formatTime(ddlData.ddl_time)
 
     function completeDdl() {
       if (ddlData === undefined) return;

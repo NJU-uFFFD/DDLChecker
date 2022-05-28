@@ -17,23 +17,43 @@
 
     <scroll-view
       :scroll-y="true"
-      style="height: 100vh;">
-      <nut-cell-group
-        title="大家的课程"/>
-      <nut-cell/>
-      <nut-cell-group
-        title="大家的 DDL"/>
-      <nut-cell/>
+      style="height: 93vh;"
+      @scrolltolower="listLower"
+      enableBackToTop="true">
+
+      <nut-cell v-for="course in courses" :key="course" @click="openCourse(course)">
+        {{ JSON.stringify(course) }}
+      </nut-cell>
+
     </scroll-view>
   </view>
 </template>
 
-<script lang="ts">
+<script>
 import {reactive, ref} from 'vue'
 import Taro from "@tarojs/taro";
+import {request} from "../../util/request";
 
 export default {
   name: "community",
+
+  data() {
+    return {
+      courses: [],
+      page: 1
+    }
+  },
+
+  methods: {
+    listLower() {
+
+    },
+    openCourse(data) {
+      Taro.navigateTo({
+        url: '/pages/courseddl/index?course_uuid=' + data.course_uuid
+      })
+    }
+  },
   setup() {
     const state = reactive({
       searchValue: "",
@@ -48,6 +68,23 @@ export default {
       state,
       searchCourseOrDdl
     }
+  },
+  onTabItemTap() {
+    // 更新内容
+    this.page = 1
+
+    const r = request({
+      method: "POST",
+      path: "/community/course/list",
+      data: {
+        page: this.page,
+        size: 10
+      }
+    })
+
+    r.then((res) => {
+      this.courses = res.data.data.courses
+    })
   }
 }
 </script>
