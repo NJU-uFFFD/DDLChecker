@@ -33,13 +33,18 @@ def stat():
                 if i.is_completed:
                     total_complete_time += (i.complete_time - i.create_time)
         average_complete_time_percentage = total_complete_time / total_time if total_time != 0 else 0
+
+        safe = lambda value, attr, default: default if value is None else value[attr]
+
+        # if user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first() is not None:
+        #     first_time_compare_list.append()
         try:
-            first_time = min(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first().ddl_time,
-                             user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first().create_time,
-                             user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first().complete_time)
-            last_time = max(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time.desc()).first().ddl_time,
-                            user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time.desc()).first().create_time,
-                            user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time.desc()).first().complete_time)
+            first_time = min(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first(), 'ddl_time', -114514),
+                             safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first(), 'create_time', -114514),
+                             safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first(), 'complete_time', -114514))
+            last_time = max(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time.desc()).first(), 'ddl_time', 1919810810810810),
+                            safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time.desc()).first(), 'create_time', 1919810810810810),
+                            safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time.desc()).first(), 'complete_time', 1919810810810810))
         except (TypeError, AttributeError) as e:
             logging.error(e)
             first_time = int(time.time() * 1000)
