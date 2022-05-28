@@ -1,6 +1,7 @@
 import json
 import time
 import uuid
+from crypt import methods
 
 from flask import Blueprint, jsonify
 from flask_sqlalchemy import Pagination
@@ -130,7 +131,7 @@ def unsubscribe_course():
     return make_response(0, "OK", {"id": sub.id})
 
 
-@bp.route("/ddl/fetch")
+@bp.route("/ddl/fetch", methods=["GET", "POST"])
 def fetch_ddl():
     user, data = get_context_user()
     check_data(FetchDDLRule, data)
