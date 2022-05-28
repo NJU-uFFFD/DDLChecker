@@ -34,7 +34,7 @@ def stat():
                     total_complete_time += (i.complete_time - i.create_time)
         average_complete_time_percentage = total_complete_time / total_time if total_time != 0 else 0
 
-        safe = lambda value, attr, default: default if value is None else value[attr]
+        safe = lambda value, attr, default: default if value is None else value.__getattribute__(attr)
 
         # if user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first() is not None:
         #     first_time_compare_list.append()
