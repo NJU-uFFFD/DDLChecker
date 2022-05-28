@@ -5,10 +5,22 @@
     @scrolltolower="listLower"
     style="height: 96vh;">
     <nut-cell
+      title="添加 DDL 到此门课程"
+      @click="showAdd = true">
+      <template #icon>
+        <img
+          class="profile-site-icon"
+          src="/assets/images/add.png"
+        />
+      </template>
+    </nut-cell>
+
+    <nut-cell
       v-for="ddl in ddls"
       :key="ddl"
       :title=ddl.title
       :sub-title=formatTime(ddl.ddl_time)
+      @click="showDetail(ddl)"
     >
       <template #icon>
         <img
@@ -18,7 +30,7 @@
       </template>
 
       <template #link>
-        <nut-button type="info" plain :disabled="ddl.added" @click="fetchDdl(ddl)">
+        <nut-button type="info" plain :disabled="ddl.added" @click.stop="fetchDdl(ddl)">
           {{ ddl.added ? "已添加" : "添加" }}
         </nut-button>
       </template>
@@ -28,6 +40,101 @@
     <nut-divider v-if="!more">没有更多 DDL 了捏</nut-divider>
   </scroll-view>
 
+
+  <nut-dialog
+    :title=ddlDetailData.title
+    close-on-click-overlay
+    lock-scroll
+    v-model:visible="showDetails">
+    <nut-countdown
+      #default
+      style="display: flex;justify-content: center"
+      :end-time="ddlDetailData.ddl_time"
+      format="还剩 DD 天 HH 时 mm 分 ss 秒"
+    />
+    <nut-cell
+      style="box-shadow: 0 0 0 0"
+      :title="ddlDetailData.content"/>
+    <template #footer>
+      {{ detailUsername === "" ? "该 DDL 由系统自动获取": "该 DDL 由用户 `" + detailUsername + "` 创建"}}
+    </template>
+  </nut-dialog>
+
+  <!-- 手动添加 DDL 的弹出层 -->
+  <nut-popup
+    position="bottom"
+    style="height:80vh;"
+    round
+    safe-area-inset-bottom
+    v-model:visible="showAdd">
+    <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+      <nut-cell>
+        <nut-input
+          v-model="addInfo.title"
+          style="height: auto;font-size: 20px;padding-left: 0;"
+          maxLength="32"
+          :border="false"
+          placeholder="新建待办"
+        />
+      </nut-cell>
+      <nut-cell>
+        <nut-input
+          style="height: auto;font-size: 20px;padding-left: 0;"
+          :border="false"
+          disabled
+          :placeholder="addInfo.pickerDate.toLocaleString()"
+          @click.stop="addInfo.datePickerShow = true"
+        />
+      </nut-cell>
+      <nut-cell>
+        <nut-input
+          v-model="addInfo.content"
+          style="height: auto;font-size: 20px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
+          type="textarea"
+          show-word-limit
+          :rows="Math.floor(addInfo.content.length/20)+2<11?Math.floor(addInfo.content.length/20)+2:11"
+          maxLength="128"
+          :border="false"
+          placeholder="请输入待办详情"
+        />
+      </nut-cell>
+    </nut-cell-group>
+    <nut-button
+      type="info"
+      plain
+      style="height:8vh;width:40vw;left:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+      @click="showAdd = false">
+      取消
+    </nut-button>
+    <nut-button
+      type="info"
+      style="height:8vh;width:40vw;right:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+      @click="submitCourseDdl"
+      :loading="ddlAddSubmitting">
+      添加
+    </nut-button>
+  </nut-popup>
+
+  <nut-datepicker
+    v-model="addInfo.pickerDate"
+    type="datetime"
+    title="Deadline 选择"
+    v-model:visible="addInfo.datePickerShow"
+    @confirm="({selectedValue : t}) => addInfo.pickerDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4])"
+    :min-date="getMinDate()"
+  />
+
+  <nut-toast
+    :msg="toastInfo.msg"
+    v-model:visible="toastInfo.show"
+    :type="toastInfo.type"
+    @closed="toastInfo.onClosed"
+    :cover="toastInfo.cover"
+    :duration="1000"
+    bg-color="rgba(0, 0, 0, 0.5)"
+    :center="false"
+    bottom="16%"
+  />
 </template>
 
 <script>
@@ -35,6 +142,8 @@
 import Taro, {getCurrentInstance} from "@tarojs/taro";
 import {formatTime, getPlatformInfo} from "../../util/ui";
 import {request} from "../../util/request";
+import Toast from "@nutui/nutui-taro";
+import {reactive} from "vue/dist/vue";
 
 export default {
   name: "index",
@@ -56,7 +165,27 @@ export default {
       ddls: [],
       page: 1,
       more: true,
-      course_uuid: ""
+      course_uuid: "",
+      ddlDetailData: {},
+      showDetails: false,
+      detailUsername: "",
+      showAdd: false,
+      addInfo: {
+        title: "",
+        content: "",
+        pickerDate: new Date(),
+        datePickerShow: false
+      },
+      ddlAddSubmitting: false,
+      toastInfo: {
+        msg: 'toast',
+        type: 'text',
+        show: false,
+        cover: false,
+        title: '',
+        bottom: '',
+        center: true,
+      }
     }
   },
   methods: {
@@ -118,6 +247,95 @@ export default {
       }).catch((reason) => {
         console.error(reason)
       })
+    },
+
+    showDetail(ddl) {
+      this.showDetails = true;
+      this.ddlDetailData = ddl;
+
+      console.log(ddl)
+
+      if (ddl.creator_id !== null) {
+        const r = request({
+          method: "POST",
+          path: "/user/username",
+          data: {
+            id: ddl.creator_id
+          }
+        })
+
+        r.then((res) => {
+          if (res.statusCode === 200 && res.data.code === 0) {
+            this.detailUsername = res.data.data.username
+          } else {
+            console.error(res)
+          }
+        }).catch((reason) => {
+          console.error(reason)
+        })
+      } else {
+        this.detailUsername = ""
+      }
+    },
+    submitCourseDdl() {
+      console.log(this.addInfo)
+      if (this.addInfo.content.length === 0 || this.addInfo.title.length === 0) {
+        Taro.showModal({
+          title: '提示',
+          content: '添加的 DDL 标题和内容不得为空.',
+          showCancel: false
+        })
+        return
+      }
+
+      const r = request({
+        method: "POST",
+        path: "/community/ddl/add",
+        data: {
+          course_uuid: this.course_uuid,
+          title: this.addInfo.title,
+          content: this.addInfo.content,
+          tag: "[]",
+          ddl_time: this.addInfo.pickerDate.getTime()
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          this.showAdd = false
+          this.openToast('success', "添加成功!")
+
+          this.page = 1
+          this.more = true
+          this.ddls = []
+          this.listDdls(this.course_uuid, this.page, 10, (l) => {
+            this.ddls.push.apply(this.ddls, l)
+            this.page += 1
+          })
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: '添加代办出错: ' + JSON.stringify(reason),
+          showCancel: false
+        })
+      })
+    },
+    // 获取 DDL 时间下限
+    getMinDate() {
+      let now = new Date()
+      return new Date(now.setDate(now.getDate() - 30))
+    },
+    openToast(type, msg, cover = false, title = "", bottom = "", center = true) {
+      this.toastInfo.show = true
+      this.toastInfo.msg = msg
+      this.toastInfo.type = type
+      this.toastInfo.cover = cover
+      this.toastInfo.title = title
+      this.toastInfo.bottom = bottom
+      this.toastInfo.center = center
     }
   },
   created() {
