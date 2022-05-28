@@ -89,7 +89,7 @@ def cron_work():
                     logging.warning("course uuid not found, pass: " + course_uuid)
                     continue
 
-                newest_ddl = SourceDdl.query.filter(SourceDdl.course_uuid == course_uuid, SourceDdl.creatorid == None).order_by(
+                newest_ddl = SourceDdl.query.filter(SourceDdl.course_uuid == course_uuid, SourceDdl.creator_id == None).order_by(
                     SourceDdl.create_time.desc()).first()
 
                 newest = -1
@@ -114,7 +114,7 @@ def cron_work():
     # 分发 DDL
     for sub in UserSubscriptions.query.all():
         updated = sub.last_updated
-        for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid, SourceDdl.creatorid == None).all():
+        for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid, SourceDdl.creator_id == None).all():
             if ddl.ddl_time > int(time.time() * 1000) and ddl.ddl_time > updated:
                 to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "[]",
                              sub.course_uuid, sub.platform_uuid, ddl.id)
