@@ -1,27 +1,33 @@
 <template>
-  <nut-cell
-    v-for="ddl in ddls"
-    :key="ddl"
-    :title=ddl.title
-    :sub-title=formatTime(ddl.ddl_time)
-    @click="ddlCardClick">
 
+  <scroll-view
+    :scroll-y="true"
+    @scrolltolower="listLower"
+    style="height: 96vh;">
+    <nut-cell
+      v-for="ddl in ddls"
+      :key="ddl"
+      :title=ddl.title
+      :sub-title=formatTime(ddl.ddl_time)
+    >
+      <template #icon>
+        <img
+          class="home-site-icon"
+          :src="getPlatformInfo(ddl.platform_uuid).icon"
+        />
+      </template>
 
-    <template #icon>
-      <img
-        class="home-site-icon"
-        :src="getPlatformInfo(ddl.platform_uuid).icon"
-      />
-    </template>
+      <template #link>
+        <nut-button type="info" plain :disabled="ddl.added" @click="fetchDdl(ddl)">
+          {{ ddl.added ? "已添加" : "添加" }}
+        </nut-button>
+      </template>
 
-    <template #link>
-      <nut-button type="info" plain :disabled="ddl.added">
-        添加
-      </nut-button>
-    </template>
+    </nut-cell>
 
+    <nut-divider v-if="!more">没有更多 DDL 了捏</nut-divider>
+  </scroll-view>
 
-  </nut-cell>
 </template>
 
 <script>
@@ -29,7 +35,6 @@
 import Taro, {getCurrentInstance} from "@tarojs/taro";
 import {formatTime, getPlatformInfo} from "../../util/ui";
 import {request} from "../../util/request";
-import {DDLData} from "../../types/DDLData";
 
 export default {
   name: "index",
@@ -48,32 +53,82 @@ export default {
 
   data() {
     return {
-      ddls: []
+      ddls: [],
+      page: 1,
+      more: true,
+      course_uuid: ""
     }
   },
-  methods: {},
-  created() {
-    let course_uuid = getCurrentInstance().router.params['course_uuid']
-    console.log(course_uuid)
-    const r = request({
-      method: "POST",
-      path: "/community/ddl/list",
-      data: {
-        page: 1,
-        size: 10,
-        course_uuid: course_uuid
+  methods: {
+    listDdls(cid, page, size, callback) {
+      const r = request({
+        method: "POST",
+        path: "/community/ddl/list",
+        data: {
+          page: this.page,
+          size: 10,
+          course_uuid: cid
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          if (page >= res.data.data.total_pages) {
+            this.more = false
+          }
+          callback(res.data.data.source_ddls)
+        } else {
+          console.error(res)
+        }
+      }).catch((reason) => {
+        console.error(reason)
+      })
+    },
+
+    listLower() {
+      if (!this.more) {
+        return
       }
-    })
 
-    r.then((res) => {
-      this.ddls = res.data.data.source_ddls
-    }).catch((reason) => {
-      console.log(reason)
-    })
+      this.listDdls(this.course_uuid, this.page, 10, (l) => {
+        this.ddls.push.apply(this.ddls, l)
+        this.page += 1
+      })
+    },
 
+    fetchDdl(data) {
+      const r = request({
+        method: "POST",
+        path: "/community/ddl/fetch",
+        data: {
+          id: data.id
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          for (let i = 0; i < this.ddls.length; i++) {
+            if (this.ddls[i].id === data.id) {
+              this.ddls[i].added = true
+            }
+          }
+        } else {
+          console.error(res)
+        }
+      }).catch((reason) => {
+        console.error(reason)
+      })
+    }
+  },
+  created() {
+    this.course_uuid = getCurrentInstance().router.params['course_uuid']
+    console.log(this.course_uuid)
+    this.listDdls(this.course_uuid, this.page, 10, (l) => {
+      this.ddls.push.apply(this.ddls, l)
+      this.page += 1
+    })
   }
 }
-
 
 </script>
 
