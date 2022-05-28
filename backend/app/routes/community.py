@@ -42,7 +42,7 @@ def list_ddl():
     user, data = get_context_user()
     check_data(ListDDLRulesForCommunity, data)
 
-    page = SourceDdl.query.paginate(data["page"], data["size"])
+    page = SourceDdl.query.filter(SourceDdl.course_uuid == data['course_uuid']).order_by(SourceDdl.ddl_time.desc()).paginate(data["page"], data["size"])
     source_ddl_count = page.total
     total_pages = page.pages
     source_ddls = [i.to_dict() for i in page.items]

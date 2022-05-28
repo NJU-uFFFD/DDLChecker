@@ -7,9 +7,11 @@ class ListDDLRulesForCommunity(Schema):
     """
         "page" -> int
         "size" -> int
+        "course_uuid" -> str
     """
     page = fields.Integer(required=True, strict=True, validate=validate.Range(min=1))
     size = fields.Integer(required=True, strict=True, validate=validate.Range(min=1, max=20))
+    course_uuid = fields.UUID(required=True)
 
 
 class ListCourseRulesForCommunity(Schema):
