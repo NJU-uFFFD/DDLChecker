@@ -1,9 +1,11 @@
+import json
 import logging
 
 import requests
 from flask import abort
 from flask import request, Response, jsonify
 from marshmallow import ValidationError
+from util.sensitive_words_blocking.words_blocking import DFA
 
 from db.user import User
 
@@ -14,7 +16,12 @@ def get_context(data_required=True):
     :return: open_id, data(json)
     """
     if data_required:
-        data = request.get_json()
+        data = request.get_data().decode('utf-8')
+        # 屏蔽词检查
+        dfa = DFA()
+        data = dfa.filter_all(data)
+        data = json.loads(data)
+
     else:
         data = None
 
@@ -40,13 +47,13 @@ def get_context_user(data_required=True):
     return user, data
 
 
-
 def make_response(status: int, msg: str, return_data: dict) -> Response:
     """
     标准请求返回
     :return: Response
     """
     return jsonify({"code": status, "msg": msg, "data": return_data})
+
 
 def check_data(schema, data):
     """
