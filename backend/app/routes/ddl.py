@@ -106,11 +106,11 @@ def list_dll():
             return make_response(-1, "missing start or end.", {})
 
     page = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
-                                                else Ddl.ddl_time).paginate()
+                                                else Ddl.ddl_time).paginate(data['page'], data['size'])
 
     ddl_count = page.total
     total_pages = page.pages
-    return make_response(0, "OK", {'ddl_list': page.items, 'ddl_count': ddl_count, "total_page": total_pages})
+    return make_response(0, "OK", {'ddl_list': page.items, 'ddl_count': ddl_count, "total_pages": total_pages})
 
 
 @bp.route("/update", methods=['POST', 'GET'])
