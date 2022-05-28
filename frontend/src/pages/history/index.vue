@@ -193,6 +193,9 @@ export default {
       let data = {
         "page": 1,
         "size": 50,
+        "filter": {
+          'is_deleted': false
+        }
       }
       switch (mode) {
         case "ddl":
