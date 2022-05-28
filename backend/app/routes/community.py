@@ -150,7 +150,7 @@ def fetch_ddl():
     if source_ddl is None:
         return make_response(-1, "SourceDdl not exists.(nmsl)", {})
 
-    if Ddl.query.filter(Ddl.source_ddl_id == data['id']).first() is not None:
+    if Ddl.query.filter(Ddl.source_ddl_id == data['id'], Ddl.is_deleted == False).first() is not None:
         return make_response(-1, "SourceDdl already added.(nmsl)", {})
 
     ddl = Ddl(user.id, source_ddl.title, source_ddl.ddl_time, int(time.time() * 1000), source_ddl.content,
@@ -167,4 +167,9 @@ def delete_ddl():
     user, data = get_context_user()
     check_data(DeleteDDlRuleForCommunity, data)
 
-    pass
+    source_ddl = SourceDdl.query.get(data["id"])
+
+    if source_ddl is None:
+        return make_response(-1, "Ddl not found.(nmsl)", {})
+
+
