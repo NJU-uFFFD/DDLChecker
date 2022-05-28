@@ -73,7 +73,7 @@
 
       </nut-swipe>
 
-      <nut-divider v-if="!state.more">没有更多 DDL 了哦 ~</nut-divider>
+      <nut-divider v-if="!state.more">没有更多 DDL 了捏</nut-divider>
     </scroll-view>
 
     <!-- DDL 详情 -->
@@ -463,6 +463,9 @@ export default {
       })
 
       r.then((res) => {
+        if (res.data.data.total_pages <= page) {
+          state.more = false
+        }
         callback(res.data.data.ddl_list)
       }).catch((reason) => {
         console.error("DDL fetch error: " + JSON.stringify(reason))
@@ -476,7 +479,7 @@ export default {
       if (state.refreshing) return
       state.refreshing = true
       console.log("ddl refresh.")
-      state.offset = 10
+      state.offset = 1
       state.more = true
       fetchDdls(1, 10, (list: DDLData[]) => {
         ddls.ddl_list = list
@@ -491,10 +494,6 @@ export default {
       }
       // 滑动到底部, 获取新的 ddl
       fetchDdls(state.offset, 10, (list) => {
-        if (list.length == 0) {
-          console.log("无更多项目.")
-          state.more = false
-        }
         ddls.ddl_list.push.apply(ddls.ddl_list, list)
       })
       state.offset += 1
