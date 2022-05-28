@@ -9,7 +9,7 @@ from sqlalchemy.orm import Query
 
 from db import db
 from routes.rules.community_rules import AddCourseRulesForCommunity, AddDDLRulesForCommunity, SubscribeCourseRules, \
-    FetchDDLRule, ListCourseRulesForCommunity, ListDDLRulesForCommunity
+    FetchDDLRuleForCommunity, ListCourseRulesForCommunity, ListDDLRulesForCommunity, DeleteDDlRuleForCommunity
 from routes.rules.ddl_rules import ListDDLsRules
 from routes.utils import get_context, check_data, make_response
 from db.userSubs import UserSubscriptions
@@ -49,6 +49,7 @@ def list_ddl():
     source_ddls = [i.to_dict() for i in page.items]
     for i in source_ddls:
         i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.filter(Ddl.is_deleted == False).all()) else False})
+        i.update({"self": True if i["creator_id"] == user.id else False})
 
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
 
@@ -84,7 +85,7 @@ def add_ddl():
     if SourceDdl.query.filter(SourceDdl.title == data['title'], SourceDdl.ddl_time == data['ddl_time']).count() >= 1:
         return make_response(-1, "Why do you add so many fucking same ddls! (nmsl)", {})
 
-    ddl = SourceDdl(data["course_uuid"], data["platform_uuid"], data["title"], data["content"], data["tag"],
+    ddl = SourceDdl(data["course_uuid"], Course.query.get(data["course_uuid"]).platform_uuid, data["title"], data["content"], data["tag"],
                     data["ddl_time"], time.time() * 1000, creator_id=user.id)
     db.session.add(ddl)
 
@@ -142,7 +143,7 @@ def unsubscribe_course():
 @bp.route("/ddl/fetch", methods=["GET", "POST"])
 def fetch_ddl():
     user, data = get_context_user()
-    check_data(FetchDDLRule, data)
+    check_data(FetchDDLRuleForCommunity, data)
 
     source_ddl = SourceDdl.query.get(data['id'])
 
@@ -159,3 +160,11 @@ def fetch_ddl():
     db.session.commit()
 
     return make_response(0, "OK", {"id": ddl.id})
+
+
+@bp.route("ddl/delete", methods=["GET", "POST"])
+def delete_ddl():
+    user, data = get_context_user()
+    check_data(DeleteDDlRuleForCommunity, data)
+
+    pass
