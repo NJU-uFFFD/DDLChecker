@@ -42,31 +42,34 @@ def add_account():
     account = Account(user.id, data['platform_uuid'], aes_encrypt(json.dumps(data['fields'])))
 
     crawler_obj = None
+    check_required = False
     for i in list_crawlers():
         if i['uuid'] == account.platform_uuid:
             crawler_obj = i['obj']
+            check_required = i['check']
     if crawler_obj is None:
         return make_response(-1, "Invalid platform_uuid", {})
     crawler = crawler_obj()
 
-    try:
-        crawler.login(data['fields'])
-        courses = crawler.fetch_course()
-        logging.info(courses)
-    except Exception as e:
-        logging.exception(e)
-        return make_response(-1, str(e), {})
+    if check_required:
+        try:
+            crawler.login(data['fields'])
+            courses = crawler.fetch_course()
+            logging.info(courses)
+        except Exception as e:
+            logging.exception(e)
+            return make_response(-1, str(e), {})
 
-    for c in courses:
-        if not Course.query.filter(Course.course_uuid == c[1]).first():
-            t = Course(c[0], c[1], account.platform_uuid)
-            db.session.add(t)
+        for c in courses:
+            if not Course.query.filter(Course.course_uuid == c[1]).first():
+                t = Course(c[0], c[1], account.platform_uuid)
+                db.session.add(t)
 
-    db.session.commit()
+        db.session.commit()
 
-    for c in courses:
-        sub = UserSubscriptions(user.id, c[1], account.platform_uuid)
-        db.session.add(sub)
+        for c in courses:
+            sub = UserSubscriptions(user.id, c[1], account.platform_uuid)
+            db.session.add(sub)
 
     db.session.add(account)
     user.account_add_times += 1
