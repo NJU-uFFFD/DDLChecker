@@ -23,11 +23,14 @@ def stat():
     last_time = time.time()
     average_complete_time_percentage = 0
     if ddls is not None:
-        total = 0
+        total_time = 0
+        total_complete_time = 0
         for i in ddls:
-            if i.is_completed and i.complete_time - i.create_time > 0:
-                total += (i.complete_time - i.create_time)
-        average_complete_time_percentage = total / ddl_count
+            if i.ddl_time - i.create_time > 0:
+                total_time += (i.ddl_time - i.create_time)
+                if i.is_completed:
+                    total_complete_time += (i.complete_time - i.create_time)
+        average_complete_time_percentage = total_complete_time / total_time
         first_time = min(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first().ddl_time,
                          user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first().create_time,
                          user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first().complete_time)
