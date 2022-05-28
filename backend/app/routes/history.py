@@ -1,3 +1,4 @@
+import logging
 import time
 
 from flask import Blueprint
@@ -19,10 +20,11 @@ def stat():
 
     complete_rate = 1 if ddl_count == 0 else completed_count / ddl_count
 
-    first_time = time.time()
-    last_time = time.time()
     average_complete_time_percentage = 0
-    if ddls is not None:
+
+    first_time = int(time.time() * 1000)
+    last_time = int(time.time() * 1000)
+    if len(ddls) > 0:
         total_time = 0
         total_complete_time = 0
         for i in ddls:
@@ -31,12 +33,17 @@ def stat():
                 if i.is_completed:
                     total_complete_time += (i.complete_time - i.create_time)
         average_complete_time_percentage = total_complete_time / total_time if total_time != 0 else 0
-        first_time = min(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first().ddl_time,
-                         user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first().create_time,
-                         user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first().complete_time)
-        last_time = max(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time.desc()).first().ddl_time,
-                        user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time.desc()).first().create_time,
-                        user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time.desc()).first().complete_time)
+        try:
+            first_time = min(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first().ddl_time,
+                             user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first().create_time,
+                             user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first().complete_time)
+            last_time = max(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time.desc()).first().ddl_time,
+                            user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time.desc()).first().create_time,
+                            user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time.desc()).first().complete_time)
+        except (TypeError, AttributeError) as e:
+            logging.error(e)
+            first_time = int(time.time() * 1000)
+            last_time = int(time.time() * 1000)
 
     return make_response(0, "OK", {"completed_count": completed_count, "urgent_count": urgent_count,
                                    "overtime_count": overtime_count, "completed_rate": complete_rate,
