@@ -60,7 +60,7 @@
   </view>
 </template>
 
-<script>
+<script lang="ts">
 import Taro from '@tarojs/taro';
 import {ref, reactive, toRefs} from 'vue'
 import AccountCard from "../../components/card/ProfileAccountCard.vue";
@@ -104,7 +104,7 @@ export default {
       })
     }
 
-    function deleteAccount(accountData) {
+    function deleteAccount(accountData: AccountData) {
       state.showDelete = false
       console.log("删除账号 ID: " + accountData.id)
       const r = request({
@@ -131,7 +131,7 @@ export default {
     }
 
     //消息通知
-    const openToast = (type, msg, cover, title, bottom, center) => {
+    const openToast = (type: string, msg: string, cover: boolean = false, title: string = "", bottom: string = "", center: boolean = true) => {
       toastInfo.show = true
       toastInfo.msg = msg
       toastInfo.type = type
@@ -160,6 +160,7 @@ export default {
 
     r.then((res) => {
       if (res.statusCode === 200 && res.data.code === 0) {
+        //请无视这个ts的报错
         this.account_list = res.data.data.account_list
       } else {
         throw JSON.stringify(res)
