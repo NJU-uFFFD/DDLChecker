@@ -30,7 +30,6 @@
           </nut-form-item>
         </nut-form>
 
-
         <nut-button type="info" plain
           style="height:6vh;width:40vw;left:6.6vw;bottom:35vh;position:fixed;"
           @click="state.showPopup = false">
