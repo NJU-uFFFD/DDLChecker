@@ -56,13 +56,12 @@
       <!-- 下面这个双向绑定有bug,没法回收,最新测试版已经修了,就看什么时候发布正式版 -->
       <nut-collapse
         v-model:active="state.activeName"
-        icon="down-arrow"
-        accordion>
+        icon="down-arrow">
         <nut-collapse-item
           :title="getDateZhCNString()+' 的日程'"
           :name="1">
           <nut-calendar
-            style="display: flex;left:2vw;width: 96%;height:40vh;overflow: hidden;border-radius: 10px;background-color: #f9f9f9"
+            style="display: flex;left:2vw;width: 96%;height:40vh;overflow: hidden;border-radius: 10px"
             :poppable="false"
             :start-date="getDateFormatString(state.startDate)"
             :end-date="getDateFormatString(state.endDate)"
@@ -72,38 +71,39 @@
             @choose="chooseDate"
           />
         </nut-collapse-item>
-        <nut-collapse-item
-          title="到期的 DDL"
-          :name="2">
-          <HistoryDdlCard
-            v-for="data in ddls.ddl_list" :key="data"
-            :ddlData="data"
-            @onClick="state.ddlDetailData = data; state.showDetails = true"
-          />
-          <nut-divider v-if="!state.more">没有更多 DDL 了捏</nut-divider>
-        </nut-collapse-item>
-        <nut-collapse-item
-          title="完成的 DDL"
-          :name="3">
-          <HistoryDdlCard
-            v-for="data in ddls.complete_list" :key="data"
-            :ddlData="data"
-            @onClick="state.ddlDetailData = data; state.showDetails = true"
-          />
-          <nut-divider v-if="!state.more">没有更多 DDL 了捏</nut-divider>
-        </nut-collapse-item>
-        <nut-collapse-item
-          title="创建的 DDL"
-          :name="4">
-          <HistoryDdlCard
-            v-for="data in ddls.create_list" :key="data"
-            :ddlData="data"
-            @onClick="state.ddlDetailData = data; state.showDetails = true"
-          />
-          <nut-divider v-if="!state.more">没有更多 DDL 了捏</nut-divider>
-        </nut-collapse-item>
       </nut-collapse>
 
+      <nut-cell-group
+        v-if="ddls.ddl_list.length!==0"
+        :title="getDateZhCNString()+' 到期的DDL'"/>
+      <HistoryDdlCard
+        v-if="ddls.ddl_list.length!==0"
+        v-for="data in ddls.ddl_list" :key="data"
+        :ddlData="data"
+        @onClick="state.ddlDetailData = data; state.showDetails = true"
+      />
+
+      <nut-cell-group
+        v-if="ddls.complete_list.length!==0"
+        :title="getDateZhCNString()+' 完成的DDL'"/>
+      <HistoryDdlCard
+        v-if="ddls.complete_list.length!==0"
+        v-for="data in ddls.complete_list" :key="data"
+        :ddlData="data"
+        @onClick="state.ddlDetailData = data; state.showDetails = true"
+      />
+
+      <nut-cell-group
+        v-if="ddls.create_list.length!==0"
+        :title="getDateZhCNString()+' 创建的DDL'"/>
+      <HistoryDdlCard
+        v-if="ddls.create_list.length!==0"
+        v-for="data in ddls.create_list" :key="data"
+        :ddlData="data"
+        @onClick="state.ddlDetailData = data; state.showDetails = true"
+      />
+
+      <nut-divider>没有更多 DDL 了捏</nut-divider>
 
     </scroll-view>
 
@@ -148,7 +148,7 @@ export default {
   },
   setup() {
     const state = reactive({
-      "activeName": 0,
+      "activeName": [],
       "calendarDate": new Date(),
       "startDate": new Date(),
       "endDate": new Date(),
@@ -181,7 +181,7 @@ export default {
 
     const chooseDate = (param) => {
       state.calendarDate = new Date(param[0], param[1] - 1, param[2])
-      state.activeName = 0
+      state.activeName = []
       fetchDdls(state.calendarDate, "ddl")
       fetchDdls(state.calendarDate, "create")
       fetchDdls(state.calendarDate, "complete")
@@ -258,7 +258,6 @@ export default {
       path: "/history/stat",
       method: "POST",
     })
-
     r.then((res) => {
       this.completedRate = Math.round((res.data.data.completed_rate) * 1000) / 10;
       this.completedNumber = res.data.data.completed_count;
@@ -296,6 +295,10 @@ export default {
 
 .nut-collapse-item .collapse-wrapper .collapse-content, .nut-collapse-item .collapse-wrapper .collapse-extraRender, .nut-collapse-item .collapse-extraWrapper .collapse-content, .nut-collapse-item .collapse-extraWrapper .collapse-extraRender {
   background-color: #f9f9f9;
+}
+
+.nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day-active {
+  border-radius: 12px;
 }
 
 .nut-collapse-item .collapse-wrapper .collapse-content, .nut-collapse-item .collapse-wrapper .collapse-extraRender, .nut-collapse-item .collapse-extraWrapper .collapse-content, .nut-collapse-item .collapse-extraWrapper .collapse-extraRender {

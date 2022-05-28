@@ -56,6 +56,8 @@ export default {
   margin-top: 6px;
   margin-bottom: 6px;
   align-items: center;
+  margin-left: 2vw;
+  width: 96vw;
   height: 50px;
   border-radius: 10px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
