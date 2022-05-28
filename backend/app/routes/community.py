@@ -172,4 +172,6 @@ def delete_ddl():
     if source_ddl is None:
         return make_response(-1, "Ddl not found.(nmsl)", {})
 
+    # todo: remake is_deleted
+
 
