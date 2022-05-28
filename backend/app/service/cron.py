@@ -9,12 +9,19 @@ from db.course import Course
 from crawler.util import list_crawlers
 from db.ddl import Ddl
 from db.sourceDdl import SourceDdl
+from db.user import User
 from db.userSubs import UserSubscriptions
 
 from util.encrypt import aes_decrypt
 
 
 def cron_work_daily():
+    users = User.query.all()
+    for u in users:
+        u.account_add_times = 0
+
+    db.session.commit()
+
     accounts = Account.query.all()
     for account in accounts:
         try:
