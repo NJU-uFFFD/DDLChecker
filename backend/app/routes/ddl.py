@@ -58,7 +58,7 @@ def list_dll():
     user, data = get_context_user()
     check_data(ListDDLsRules, data)
 
-    if not 0 <= data['end'] - data['start'] <= 20:
+    if not 0 <= data['end'] - data['start'] <= 50:
         return make_response(400, "Invalid slice range.(nmsl)", {})
 
     filter_list = []
@@ -80,13 +80,34 @@ def list_dll():
                 filter_list.append(Ddl.is_deleted == False)
     if 'tag' in data:
         filter_list.append(Ddl.tag == data['tag'])
-    if 'time_range' in data:
-        if 'start' in data['time_range'] and 'end' in data['time_range']:
-            if data['time_range']['start'] > data['time_range']['end']:
+    if 'ddl_time_range' in data:
+        if 'start' in data['ddl_time_range'] and 'end' in data['ddl_time_range']:
+            if data['ddl_time_range']['start'] > data['ddl_time_range']['end']:
                 return make_response(400, "Invalid time range.(nmsl)", {})
             else:
-                filter_list.append(data['time_range']['start'] <= Ddl.ddl_time)
-                filter_list.append(data['time_range']['end'] >= Ddl.ddl_time)
+                filter_list.append(data['ddl_time_range']['start'] <= Ddl.ddl_time)
+                filter_list.append(data['ddl_time_range']['end'] >= Ddl.ddl_time)
+        else:
+            return make_response(-1, "missing start or end.", {})
+    if 'create_time_range' in data:
+        if 'start' in data['create_time_range'] and 'end' in data['create_time_range']:
+            if data['create_time_range']['start'] > data['create_time_range']['end']:
+                return make_response(400, "Invalid time range.(nmsl)", {})
+            else:
+                filter_list.append(data['create_time_range']['start'] <= Ddl.create_time)
+                filter_list.append(data['create_time_range']['end'] >= Ddl.create_time)
+        else:
+            return make_response(-1, "missing start or end.", {})
+    if 'complete_time_range' in data:
+        if 'start' in data['complete_time_range'] and 'end' in data['complete_time_range']:
+            if data['complete_time_range']['start'] > data['complete_time_range']['end']:
+                return make_response(400, "Invalid time range.(nmsl)", {})
+            else:
+                filter_list.append(data['complete_time_range']['start'] <= Ddl.complete_time)
+                filter_list.append(data['complete_time_range']['end'] >= Ddl.complete_time)
+        else:
+            return make_response(-1, "missing start or end.", {})
+
     ddl_count = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
                                                 else Ddl.ddl_time).count()
     return make_response(0, "OK", {'ddl_list': (user.ddls.filter(*filter_list).

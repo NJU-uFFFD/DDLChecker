@@ -10,7 +10,13 @@ class ListDDLsRules(Schema):
             "is_completed" -> bool
             "is_overtime" -> bool
             “is_deleted” -> bool
-        "time_range" -> dict(not necessary)
+        "ddl_time_range" -> dict(not necessary)
+            "start" -> int
+            "end" -> int
+        "create_time_range" -> dict(not necessary)
+            "start" -> int
+            "end" -> int
+        "complete_time_range" -> dict(not necessary)
             "start" -> int
             "end" -> int
         "tag" -> str(not necessary)
@@ -22,9 +28,15 @@ class ListDDLsRules(Schema):
     filter = fields.Dict(required=False,
                          keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "is_overtime", "is_deleted"])),
                          values=fields.Boolean(required=True))
-    time_range = fields.Dict(required=False,
+    ddl_time_range = fields.Dict(required=False,
                              keys=fields.Str(required=True, validate=validate.OneOf(["start", "end"])),
-                             values=fields.Integer(strict=True, required=True, validate=validate.Range(min=round(time.time() * 1000) - 2_592_000_000)))
+                             values=fields.Integer(strict=True, required=True, validate=validate.Range(min=0)))
+    create_time_range = fields.Dict(required=False,
+                                 keys=fields.Str(required=True, validate=validate.OneOf(["start", "end"])),
+                                 values=fields.Integer(strict=True, required=True, validate=validate.Range(min=0)))
+    complete_time_range = fields.Dict(required=False,
+                                    keys=fields.Str(required=True, validate=validate.OneOf(["start", "end"])),
+                                    values=fields.Integer(strict=True, required=True, validate=validate.Range(min=0)))
     tag = fields.Str(required=False, validate=validate.Length(min=1, max=4096))
     sorter = fields.Dict(required=False,
                          keys=fields.Str(required=True, validate=validate.OneOf(["reversed"])),
