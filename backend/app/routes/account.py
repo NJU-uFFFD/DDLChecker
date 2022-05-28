@@ -36,6 +36,10 @@ def add_account():
     """
     user, data = get_context_user()
     check_data(AddAccountRules, data)
+
+    if user.account_add_times >= 50:
+        return make_response(-1, "Reaching add account times limitation", {})
+
     # 检查 account 是否存在
     if user.accounts.filter(Account.platform_uuid == data['platform_uuid']).all():
         return make_response(-1, "Cannot add more than one account for each platform", {})
