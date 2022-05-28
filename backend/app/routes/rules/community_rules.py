@@ -3,10 +3,28 @@ import time
 from marshmallow import Schema, fields, validate
 
 
+class ListDDLRulesForCommunity(Schema):
+    """
+        "page" -> int
+        "size" -> int
+    """
+    page = fields.Integer(required=True, strict=True, validate=validate.Range(min=1))
+    size = fields.Integer(required=True, strict=True, validate=validate.Range(min=1, max=20))
+
+
+class ListCourseRulesForCommunity(Schema):
+    """
+        "page" -> int
+        "size" -> int
+    """
+    page = fields.Integer(required=True, strict=True, validate=validate.Range(min=1))
+    size = fields.Integer(required=True, strict=True, validate=validate.Range(min=1, max=20))
+
+
 class AddCourseRulesForCommunity(Schema):
     """
-        course_name: str
-        platform_uuid: str
+        "course_name": str
+        "platform_uuid": str
     """
     course_name = fields.String(required=True, validate=validate.Length(min=1, max=512))
     platform_uuid = fields.UUID(required=True)
@@ -32,7 +50,7 @@ class AddDDLRulesForCommunity(Schema):
 
 class SubscribeCourseRules(Schema):
     """
-        course_uuid -> str
+        "course_uuid" -> str
     """
     course_uuid = fields.UUID(required=True)
 

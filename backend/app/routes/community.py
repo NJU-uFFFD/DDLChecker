@@ -3,10 +3,13 @@ import time
 import uuid
 
 from flask import Blueprint, jsonify
+from flask_sqlalchemy import Pagination
+from sqlalchemy.orm import Query
 
 from db import db
 from routes.rules.community_rules import AddCourseRulesForCommunity, AddDDLRulesForCommunity, SubscribeCourseRules, \
-    FetchDDLRule
+    FetchDDLRule, ListCourseRulesForCommunity, ListDDLRulesForCommunity
+from routes.rules.ddl_rules import ListDDLsRules
 from routes.utils import get_context, check_data, make_response
 from db.userSubs import UserSubscriptions
 from db.ddl import Ddl
@@ -20,27 +23,34 @@ bp = Blueprint("community", __name__, url_prefix="/community")
 
 @bp.route("/course/list", methods=["GET", "POST"])
 def list_course():
-    user, data = get_context_user(data_required=False)
+    user, data = get_context_user()
+    check_data(ListCourseRulesForCommunity, data)
 
-    course_count = Course.query.count()
-    courses = [i.to_dict() for i in Course.query.all()]
+    page = Course.query.paginate(data["page"], data["size"])
+    course_count = page.total
+    total_pages = page.pages
+    courses = [i.to_dict() for i in page.items]
     for i in courses:
         i.update({"subscribed": True if i["course_uuid"] in map(lambda x: x.course_uuid,
                                                                 user.subscriptions.all()) else False})
 
-    return make_response(0, "OK", {"courses": courses, "course_count": course_count})
+    return make_response(0, "OK", {"courses": courses, "course_count": course_count, "total_pages": total_pages})
 
 
 @bp.route("/ddl/list", methods=["GET", "POST"])
 def list_ddl():
-    user, data = get_context_user(data_required=False)
+    user, data = get_context_user()
+    check_data(ListDDLRulesForCommunity, data)
 
-    source_ddl_count = SourceDdl.query.count()
-    source_ddls = [i.to_dict() for i in SourceDdl.query.all()]
+    page = SourceDdl.query.paginate(data["page"], data["size"])
+    source_ddl_count = page.total
+    total_pages = page.pages
+    source_ddls = [i.to_dict() for i in page.items]
     for i in source_ddls:
         i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.all()) else False})
 
-    return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls})
+
+    return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
 
 
 @bp.route("/course/add", methods=["GET", "POST"])
