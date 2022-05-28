@@ -61,10 +61,10 @@
           :title="getDateZhCNString()+' 的日程'"
           :name="1">
           <nut-calendar
-            style="display: flex;left:2vw;width: 96%;height:40vh;overflow: hidden;border-radius: 10px"
+            style="display: flex;left:2vw;width: 96%;height:50vh;overflow: hidden;border-radius: 10px"
             :poppable="false"
-            :start-date="getDateFormatString(state.startDate)"
-            :end-date="getDateFormatString(state.endDate)"
+            :start-date="startDateStr"
+            :end-date="endDateStr"
             :is-auto-back-fill="true"
             :show-title="false"
             :show-sub-title="false"
@@ -74,30 +74,30 @@
       </nut-collapse>
 
       <nut-cell-group
-        v-if="ddls.ddl_list.length!==0"
+        v-if="ddls.ddl_list!==undefined&&ddls.ddl_list.length!==0"
         :title="getDateZhCNString()+' 到期的DDL'"/>
       <HistoryDdlCard
-        v-if="ddls.ddl_list.length!==0"
+        v-if="ddls.ddl_list!==undefined&&ddls.ddl_list.length!==0"
         v-for="data in ddls.ddl_list" :key="data"
         :ddlData="data"
         @onClick="state.ddlDetailData = data; state.showDetails = true"
       />
 
       <nut-cell-group
-        v-if="ddls.complete_list.length!==0"
+        v-if="ddls.complete_list!==undefined&&ddls.complete_list.length!==0"
         :title="getDateZhCNString()+' 完成的DDL'"/>
       <HistoryDdlCard
-        v-if="ddls.complete_list.length!==0"
+        v-if="ddls.complete_list!==undefined&&ddls.complete_list.length!==0"
         v-for="data in ddls.complete_list" :key="data"
         :ddlData="data"
         @onClick="state.ddlDetailData = data; state.showDetails = true"
       />
 
       <nut-cell-group
-        v-if="ddls.create_list.length!==0"
+        v-if="ddls.create_list!==undefined&&ddls.create_list.length!==0"
         :title="getDateZhCNString()+' 创建的DDL'"/>
       <HistoryDdlCard
-        v-if="ddls.create_list.length!==0"
+        v-if="ddls.create_list!==undefined&&ddls.create_list.length!==0"
         v-for="data in ddls.create_list" :key="data"
         :ddlData="data"
         @onClick="state.ddlDetailData = data; state.showDetails = true"
@@ -128,7 +128,7 @@
 
 <script lang="ts">
 import {reactive, ref} from 'vue'
-import Taro from "@tarojs/taro"
+import Taro, {getCurrentInstance} from "@tarojs/taro"
 import {request} from "../../util/request";
 import {DDLData} from "../../types/DDLData";
 import HistoryDdlCard from "../../components/card/HistoryDdlCard.vue";
@@ -144,14 +144,16 @@ export default {
       completedNumber: 0,
       urgentNumber: 0,
       overtimeNumber: 0,
+      startDateStr: "2012-1-1",
+      endDateStr: "2032-12-31"
     }
   },
   setup() {
+
+    console.log(getCurrentInstance())
     const state = reactive({
       "activeName": [],
       "calendarDate": new Date(),
-      "startDate": new Date(),
-      "endDate": new Date(),
       "showDetails": false,
       "ddlDetailData": {},
     })
@@ -163,21 +165,13 @@ export default {
       complete_list: []
     });
 
-    //应由后端传入
-    const now = new Date()
     state.calendarDate.setHours(0)
     state.calendarDate.setMinutes(0)
     state.calendarDate.setSeconds(0)
     state.calendarDate.setMilliseconds(0)
-    state.startDate = new Date(now.setDate(now.getDate() - 30))
-    state.endDate = new Date(now.setDate(now.getDate() + 120))
     fetchDdls(state.calendarDate, "ddl")
     fetchDdls(state.calendarDate, "create")
     fetchDdls(state.calendarDate, "complete")
-
-    const getDateFormatString = (date: Date) => {
-      return String(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate())
-    }
 
     const chooseDate = (param) => {
       state.calendarDate = new Date(param[0], param[1] - 1, param[2])
@@ -248,21 +242,27 @@ export default {
     return {
       state,
       ddls,
-      getDateFormatString,
       chooseDate,
       getDateZhCNString
     }
   },
   onTabItemTap() {
+    const getDateFormatString = (date: Date) => {
+      console.log(String(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()))
+      return String(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate())
+    }
+
     const r = request({
       path: "/history/stat",
       method: "POST",
     })
     r.then((res) => {
-      this.completedRate = Math.round((res.data.data.completed_rate) * 1000) / 10;
-      this.completedNumber = res.data.data.completed_count;
-      this.urgentNumber = res.data.data.urgent_count;
-      this.overtimeNumber = res.data.data.overtime_count;
+      this.completedRate = Math.round((res.data.data.completed_rate) * 1000) / 10
+      this.completedNumber = res.data.data.completed_count
+      this.urgentNumber = res.data.data.urgent_count
+      this.overtimeNumber = res.data.data.overtime_count
+      this.startDateStr = getDateFormatString(new Date(res.data.data.first_time))
+      this.endDateStr = getDateFormatString(new Date(res.data.data.last_time))
     }).catch((reason) => {
       console.error("History fetch error: " + JSON.stringify(reason))
     }).finally(() => {
@@ -297,16 +297,16 @@ export default {
   background-color: #f9f9f9;
 }
 
-.nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day-active {
-  border-radius: 12px;
-}
-
 .nut-collapse-item .collapse-wrapper .collapse-content, .nut-collapse-item .collapse-wrapper .collapse-extraRender, .nut-collapse-item .collapse-extraWrapper .collapse-content, .nut-collapse-item .collapse-extraWrapper .collapse-extraRender {
   padding: 8px 10px;
 }
 
+.nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day-active {
+  border-radius: 12px;
+}
+
 .nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day {
-  height: 6vh;
+  height: 50px;
 }
 
 .nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day .calendar-curr-tip-curr {
