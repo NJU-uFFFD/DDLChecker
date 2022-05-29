@@ -13,8 +13,6 @@ from service.cron import cron_work, cron_work_daily
 from flask import request
 import service
 
-WX_APPID = ""
-
 logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s',
                     level=logging.INFO)
 app = Flask(__name__)
