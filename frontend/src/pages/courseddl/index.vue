@@ -15,27 +15,29 @@
       </template>
     </nut-cell>
 
-    <nut-cell
-      v-for="ddl in ddls"
-      :key="ddl"
-      :title=ddl.title
-      :sub-title=formatTime(ddl.ddl_time)
-      @click="showDetail(ddl)"
-    >
-      <template #icon>
-        <img
-          class="home-site-icon"
-          :src="getPlatformInfo(ddl.platform_uuid).icon"
-        />
-      </template>
+    <nut-swipe v-for="ddl in ddls" :key="ddl">
 
-      <template #link>
-        <nut-button type="info" plain :disabled="ddl.added" @click.stop="fetchDdl(ddl)">
-          {{ ddl.added ? "已添加" : "添加" }}
+      <nut-cell :title=ddl.title :sub-title=formatTime(ddl.ddl_time) @click="showDetail(ddl)">
+        <template #icon>
+          <img class="home-site-icon" :src="getPlatformInfo(ddl.platform_uuid).icon"/>
+        </template>
+
+        <template #link>
+          <nut-button type="info" plain :disabled="ddl.added" @click.stop="fetchDdl(ddl)">
+            {{ ddl.added ? "已添加" : "添加" }}
+          </nut-button>
+        </template>
+      </nut-cell>
+
+      <template #right>
+        <nut-button
+          style="height:100%; border-radius: 10px"
+          type="danger"
+          @click="showDelete=true;deleteInfo=ddl">
+          删除
         </nut-button>
       </template>
-
-    </nut-cell>
+    </nut-swipe>
 
     <nut-divider v-if="!more">没有更多 DDL 了捏</nut-divider>
   </scroll-view>
@@ -46,17 +48,29 @@
     close-on-click-overlay
     lock-scroll
     v-model:visible="showDetails">
-    <nut-countdown
-      #default
-      style="display: flex;justify-content: center"
-      :end-time="ddlDetailData.ddl_time"
-      format="还剩 DD 天 HH 时 mm 分 ss 秒"
+    <nut-countdown #default
+                   style="display: flex;justify-content: center"
+                   :end-time="ddlDetailData.ddl_time"
+                   format="还剩 DD 天 HH 时 mm 分 ss 秒"
     />
     <nut-cell
       style="box-shadow: 0 0 0 0"
       :title="ddlDetailData.content"/>
     <template #footer>
-      {{ detailUsername === "" ? "该 DDL 由系统自动获取": "该 DDL 由用户 `" + detailUsername + "` 创建"}}
+      {{ detailUsername === "" ? "该 DDL 由系统自动获取" : "该 DDL 由用户 `" + detailUsername + "` 创建" }}
+    </template>
+  </nut-dialog>
+
+  <!-- 删除 ddl 弹窗  -->
+  <nut-dialog
+    title="删除 DDL"
+    content="真的要从社区中删除这个 DDL 吗?"
+    close-on-click-overlay
+    lock-scroll
+    v-model:visible="showDelete">
+    <template #footer>
+      <nut-button plain type="danger" @click="showDelete = false">取消</nut-button>
+      <nut-button type="danger" @click="deleteCourseDdl(deleteInfo)">删除</nut-button>
     </template>
   </nut-dialog>
 
@@ -67,7 +81,8 @@
     round
     safe-area-inset-bottom
     v-model:visible="showAdd">
-    <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+    <nut-cell-group
+      style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
       <nut-cell>
         <nut-input
           v-model="addInfo.title"
@@ -185,7 +200,9 @@ export default {
         title: '',
         bottom: '',
         center: true,
-      }
+      },
+      showDelete: false,
+      deleteInfo: {}
     }
   },
   methods: {
@@ -287,7 +304,7 @@ export default {
         })
         return
       }
-
+      this.ddlAddSubmitting = true
       const r = request({
         method: "POST",
         path: "/community/ddl/add",
@@ -305,13 +322,7 @@ export default {
           this.showAdd = false
           this.openToast('success', "添加成功!")
 
-          this.page = 1
-          this.more = true
-          this.ddls = []
-          this.listDdls(this.course_uuid, this.page, 10, (l) => {
-            this.ddls.push.apply(this.ddls, l)
-            this.page += 1
-          })
+          this.refreshList()
         } else {
           throw JSON.stringify(res)
         }
@@ -321,6 +332,8 @@ export default {
           content: '添加代办出错: ' + JSON.stringify(reason),
           showCancel: false
         })
+      }).finally(() => {
+        this.ddlAddSubmitting = false
       })
     },
     // 获取 DDL 时间下限
@@ -336,6 +349,47 @@ export default {
       this.toastInfo.title = title
       this.toastInfo.bottom = bottom
       this.toastInfo.center = center
+    },
+    deleteCourseDdl(ddl) {
+      this.showDelete = false
+
+      const r = request({
+        method: "POST",
+        path: "/community/ddl/delete",
+        data: {
+          id: ddl.id
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode !== 200) {
+          console.error(res)
+          return
+        }
+
+        if (res.data.code !== 0) {
+          Taro.showModal({
+            title: '提示',
+            content: "删除失败: " + res.data.msg,
+            showCancel: false
+          })
+          return
+        }
+
+        this.openToast("success", "删除成功!")
+        this.refreshList()
+      }).catch((reason) => {
+        console.error(reason)
+      })
+    },
+    refreshList() {
+      this.page = 1
+      this.more = true
+      this.ddls = []
+      this.listDdls(this.course_uuid, this.page, 10, (l) => {
+        this.ddls.push.apply(this.ddls, l)
+        this.page += 1
+      })
     }
   },
   created() {
