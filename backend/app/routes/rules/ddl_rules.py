@@ -9,7 +9,6 @@ class ListDDLsRules(Schema):
         "filter" -> dict(not necessary)
             "is_completed" -> bool
             "is_overtime" -> bool
-            “is_deleted” -> bool
         "ddl_time_range" -> dict(not necessary)
             "start" -> int
             "end" -> int
@@ -26,7 +25,7 @@ class ListDDLsRules(Schema):
     page = fields.Integer(strict=True, required=True, validate=[validate.Range(min=1)])
     size = fields.Integer(strict=True, required=True, validate=[validate.Range(min=1, max=50)])
     filter = fields.Dict(required=False,
-                         keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "is_overtime", "is_deleted"])),
+                         keys=fields.Str(required=True, validate=validate.OneOf(["is_completed", "is_overtime"])),
                          values=fields.Boolean(required=True))
     ddl_time_range = fields.Dict(required=False,
                              keys=fields.Str(required=True, validate=validate.OneOf(["start", "end"])),

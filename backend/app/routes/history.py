@@ -12,11 +12,11 @@ bp = Blueprint("history", __name__, url_prefix="/history")
 def stat():
     user, data = get_context_user(data_required=False)
 
-    ddls = user.ddls.filter(Ddl.is_deleted == False).all()
-    completed_count = user.ddls.filter(Ddl.is_completed == True, Ddl.is_deleted == False).count()
-    ddl_count = user.ddls.filter(Ddl.is_deleted == False).count()
-    urgent_count = user.ddls.filter(Ddl.tag == "紧急", Ddl.is_deleted == False).count()
-    overtime_count = user.ddls.filter(Ddl.ddl_time < round(time.time() * 1000), Ddl.is_deleted == False).count()
+    ddls = user.ddls.filter().all()
+    completed_count = user.ddls.filter(Ddl.is_completed == True).count()
+    ddl_count = user.ddls.filter().count()
+    urgent_count = user.ddls.filter(Ddl.tag == "紧急").count()
+    overtime_count = user.ddls.filter(Ddl.ddl_time < round(time.time() * 1000)).count()
 
     complete_rate = 1 if ddl_count == 0 else completed_count / ddl_count
 
@@ -24,7 +24,7 @@ def stat():
 
     first_time = int(time.time() * 1000)
     last_time = int(time.time() * 1000)
-    if len(ddls) > 0:
+    if ddl_count > 0:
         total_time = 0
         total_complete_time = 0
         for i in ddls:
@@ -39,12 +39,12 @@ def stat():
         # if user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first() is not None:
         #     first_time_compare_list.append()
         try:
-            first_time = min(safe(user.ddls.filter(Ddl.ddl_time != None, Ddl.is_deleted == False).order_by(Ddl.ddl_time).first(), 'ddl_time', 1919810810810810810810),
-                             safe(user.ddls.filter(Ddl.create_time != None, Ddl.is_deleted == False).order_by(Ddl.create_time).first(), 'create_time', 1919810810810810810810),
-                             safe(user.ddls.filter(Ddl.complete_time != None, Ddl.is_deleted == False).order_by(Ddl.complete_time).first(), 'complete_time', 1919810810810810810810))
-            last_time = max(safe(user.ddls.filter(Ddl.ddl_time != None, Ddl.is_deleted == False).order_by(Ddl.ddl_time.desc()).first(), 'ddl_time', -114514),
-                            safe(user.ddls.filter(Ddl.create_time != None, Ddl.is_deleted == False).order_by(Ddl.create_time.desc()).first(), 'create_time', -114514),
-                            safe(user.ddls.filter(Ddl.complete_time != None, Ddl.is_deleted == False).order_by(Ddl.complete_time.desc()).first(), 'complete_time', -114514))
+            first_time = min(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first(), 'ddl_time', 1919810810810810810810),
+                             safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first(), 'create_time', 1919810810810810810810),
+                             safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first(), 'complete_time', 1919810810810810810810))
+            last_time = max(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time.desc()).first(), 'ddl_time', -114514),
+                            safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time.desc()).first(), 'create_time', -114514),
+                            safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time.desc()).first(), 'complete_time', -114514))
             assert first_time != 1919810810810810810810, "nmsl"
             assert last_time != -114514, "nmsl"
         except (TypeError, AttributeError) as e:
