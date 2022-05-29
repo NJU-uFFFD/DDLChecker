@@ -7,7 +7,8 @@
       clearable
       max-length="32"
       @search="searchCourseOrDdl">
-      <template #leftin>
+      <template
+        v-slot:leftin>
         <nut-icon
           size="14"
           name="search2"/>
@@ -24,7 +25,9 @@
         {{ JSON.stringify(course) }}
       </nut-cell>
 
+      <nut-divider v-if="!more">没有更多 DDL 了捏</nut-divider>
     </scroll-view>
+
   </view>
 </template>
 
@@ -39,13 +42,44 @@ export default {
   data() {
     return {
       courses: [],
-      page: 1
+      page: 1,
+      more: true
     }
   },
 
   methods: {
-    listLower() {
+    fetchCourses(page, size, callback) {
+      const r = request({
+        method: "POST",
+        path: "/community/course/list",
+        data: {
+          page: this.page,
+          size: size
+        }
+      })
 
+      r.then((res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          if (page >= res.data.data.total_pages) {
+            this.more = false
+          }
+          callback(res.data.data.courses)
+        } else {
+          console.error(res)
+        }
+      }).catch((reason) => {
+        console.error(reason)
+      })
+    },
+    listLower() {
+      if (!this.more) {
+        return
+      }
+
+      this.fetchCourses(this.page, 10, (data) => {
+        this.courses.push.apply(this.courses, data)
+        this.page += 1
+      })
     },
     openCourse(data) {
       Taro.navigateTo({
@@ -71,18 +105,12 @@ export default {
   onTabItemTap() {
     // 更新内容
     this.page = 1
+    this.more = true
+    this.courses = []
 
-    const r = request({
-      method: "POST",
-      path: "/community/course/list",
-      data: {
-        page: this.page,
-        size: 10
-      }
-    })
-
-    r.then((res) => {
-      this.courses = res.data.data.courses
+    this.fetchCourses(1, 10, (d) => {
+      this.courses = d
+      this.page += 1
     })
   }
 }

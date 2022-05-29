@@ -24,20 +24,17 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Setup MySQL
-        uses: shogo82148/actions-setup-mysql@v1
+        uses: mirromutth/mysql-action@v1.1
         with:
-          database: DDLCheckertest
-          user: test
-          password: "1145141919810"
+          mysql database: DDLCheckertest
+          mysql user: test
+          mysql password: 1145141919810
       
-      - name: Setup MySQL Lib
-        run: sudo apt-get install python3-dev default-libmysqlclient-dev build-essential mysql-server mysql-client
+      - name: Install Requirements
+        run: pip3 install -r backend/src/requirements.txt
       
-      - name: Python Unit Test
-        # You may pin to the exact commit or the version.
-        # uses: onichandame/python-test-action@6a1d618300de7ea0b753e50819e093a7e5a5f60b
-        uses: onichandame/python-test-action@0.0.0
-        with:
-          deps_list: backend/src/requirements.txt
-          test_dir:: backend/
-          pattern: test/*.py
+      - name: Run unittests
+        run: export MYSQL_DATABASE=DDLCheckertest; export MYSQL_USERNAME=test; export MYSQL_PASSWORD=1145141919810; export MYSQL_ADDRESS=127.0.0.1; cd backend; python3 -m unittest discover
+        
+      
+      
