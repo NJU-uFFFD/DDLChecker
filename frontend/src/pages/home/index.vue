@@ -365,6 +365,14 @@ export default {
 
     // 添加 DDL 相关
     function submitDdl() {
+      if (state.addInfo.title.length > 32) {
+        openToast('fail', "待办标题过长!")
+        return
+      }
+      if (state.addInfo.content.length > 128) {
+        openToast('fail', "待办详情过长!")
+        return
+      }
       state.ddlAddSubmitting = true
       const r = request({
         "method": "POST",
@@ -403,6 +411,14 @@ export default {
 
     //修改 DDL 相关
     function editDdl(ddlData) {
+      if (ddlData.title.length > 32) {
+        openToast('fail', "待办标题过长!")
+        return
+      }
+      if (ddlData.content.length > 128) {
+        openToast('fail', "待办详情过长!")
+        return
+      }
       state.ddlEditSubmitting = true
       const r = request({
         method: "POST",

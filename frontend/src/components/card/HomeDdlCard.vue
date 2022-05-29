@@ -84,4 +84,9 @@ export default defineComponent({
   margin-right: 20px;
 }
 
+/*以下样式对于有副标题的 Cell 没有作用*/
+.nut-cell__title {
+  width: 64vw;
+  flex: inherit;
+}
 </style>
