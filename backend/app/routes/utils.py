@@ -20,6 +20,7 @@ def get_context(data_required=True):
         # 屏蔽词检查
         dfa = DFA()
         data = dfa.filter_all(data)
+        print(data)
         data = json.loads(data)
 
     else:
