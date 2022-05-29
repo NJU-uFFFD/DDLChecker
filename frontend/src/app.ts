@@ -28,7 +28,9 @@ import {
   CircleProgress,
   Calendar,
   Collapse,
-  CollapseItem
+  CollapseItem,
+  Radio,
+  RadioGroup
 } from "@nutui/nutui-taro"
 import './app.scss'
 import Taro from "@tarojs/taro"
@@ -108,5 +110,7 @@ App.use(Button)
   .use(Calendar)
   .use(Collapse)
   .use(CollapseItem)
+  .use(Radio)
+  .use(RadioGroup)
 
 export default App

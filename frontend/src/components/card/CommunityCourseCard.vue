@@ -18,7 +18,7 @@
       <nut-icon
         style="position: absolute;right:2vw;padding-top: 4vw;padding-bottom: 4vw;padding-left: 4vw;padding-right: 4vw;"
         :name="course.subscribed?'heart-fill':''"
-        color="#ff0000"
+        color="#ff4e4e"
         size="32"
         @click.stop="subscribeCourse"/>
     </template>

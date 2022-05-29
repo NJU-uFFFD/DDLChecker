@@ -1,6 +1,7 @@
 <template>
   <nut-cell
     class="history-ddl-card"
+    :style="{color:(ddlData.ddl_time<now.valueOf()&&!ddlData.is_completed)?'#cd0f0f':(ddlData.tag==='紧急'&&!ddlData.is_completed)?'#ffb12a':'#676767'}"
     :title=ddlData.title
     @click="ddlCardClick">
     <template #icon>
@@ -38,11 +39,14 @@ export default {
   setup({ddlData}, {emit}) {
     if (ddlData === undefined) return;
 
+    const now = new Date()
+
     const ddlCardClick = () => {
       emit("onClick", ddlData)
     };
 
     return {
+      now,
       ddlCardClick,
       getPlatformInfo
     };
@@ -57,6 +61,7 @@ export default {
   margin-bottom: 6px;
   align-items: center;
   margin-left: 2vw;
+  color: #676767;
   width: 96vw;
   height: 50px;
   border-radius: 10px;
@@ -72,6 +77,7 @@ export default {
 .nut-cell__title {
   width: 64vw;
   flex: inherit;
+  line-height: 20px;
 }
 
 </style>
