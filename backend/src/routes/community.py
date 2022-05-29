@@ -208,16 +208,6 @@ def delete_course():
     return make_response(0, "OK", {"id": course.course_uuid})
 
 
-@bp.route("/course/search", methods=["GET", "POST"])
-def search_course():
-    user, data = get_context_user()
-    check_data(SearchCourseForCommunity, data)
-
-    courses = Course.query.filter(Course.course_name.contains(data['key_word'])).all()
-
-    search_count = Course.query.filter(Course.course_name.contains(data['key_word'])).count()
-
-    return make_response(0, "OK", {"search_count": search_count, "courses": courses})
 
 
 
