@@ -9,7 +9,8 @@ from sqlalchemy.orm import Query
 
 from db import db
 from routes.rules.community_rules import AddCourseRulesForCommunity, AddDDLRulesForCommunity, SubscribeCourseRules, \
-    FetchDDLRuleForCommunity, ListCourseRulesForCommunity, ListDDLRulesForCommunity, DeleteDDlRuleForCommunity
+    FetchDDLRuleForCommunity, ListCourseRulesForCommunity, ListDDLRulesForCommunity, DeleteDDlRuleForCommunity, \
+    DeleteCourseRuleForCommunity
 from routes.rules.ddl_rules import ListDDLsRules
 from routes.utils import get_context, check_data, make_response
 from db.userSubs import UserSubscriptions
@@ -48,8 +49,8 @@ def list_ddl():
     total_pages = page.pages
     source_ddls = [i.to_dict() for i in page.items]
     for i in source_ddls:
-        i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.filter().all()) else False})
-        i.update({"self": True if i["creator_id"] == user.id else False})
+        i.update({"added": i["id"] in list(map(lambda x: x.source_ddl_id, user.ddls.filter(Ddl.source_ddl_id != None).all()))})
+        i.update({"self": i["creator_id"] == user.id})
 
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
 
@@ -150,7 +151,7 @@ def fetch_ddl():
     if source_ddl is None:
         return make_response(-1, "SourceDdl not exists.(nmsl)", {})
 
-    if Ddl.query.filter(Ddl.source_ddl_id == data['id']).first() is not None:
+    if user.ddls.filter(Ddl.source_ddl_id == data['id']).first() is not None:
         return make_response(-1, "SourceDdl already added.(nmsl)", {})
 
     ddl = Ddl(user.id, source_ddl.title, source_ddl.ddl_time, int(time.time() * 1000), source_ddl.content,
@@ -162,7 +163,7 @@ def fetch_ddl():
     return make_response(0, "OK", {"id": ddl.id})
 
 
-@bp.route("ddl/delete", methods=["GET", "POST"])
+@bp.route("/ddl/delete", methods=["GET", "POST"])
 def delete_ddl():
     user, data = get_context_user()
     check_data(DeleteDDlRuleForCommunity, data)
@@ -173,12 +174,35 @@ def delete_ddl():
         return make_response(-1, "Ddl not found.(nmsl)", {})
 
     if source_ddl.creator_id != user.id:
-        return make_response(-1, "Can only delete your own ddl", {})
+        return make_response(-1, "Can only delete ddls created by your own", {})
 
     db.session.delete(source_ddl)
 
     db.session.commit()
     return make_response(0, "OK", {"id": source_ddl.id})
+
+
+@bp.route("/course/delete", methods=["GET", "POST"])
+def delete_course():
+    user, data = get_context_user()
+    check_data(DeleteCourseRuleForCommunity, data)
+
+    course = Course.query.get(data["course_uuid"])
+
+    if course is None:
+        return make_response(-1, "Course not found.(nmsl)", {})
+
+    if course.creator_id != user.id:
+        return make_response(-1, "Can only delete course created by your own", {})
+
+    if course.source_ddls.count() > 0:
+        return make_response(-1, "Others have already created ddls in the course you created.", {})
+
+    db.session.delete(course)
+
+    db.session.commit()
+    return make_response(0, "OK", {"id": course.course_uuid})
+
 
 
 
