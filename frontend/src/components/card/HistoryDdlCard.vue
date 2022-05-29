@@ -69,4 +69,9 @@ export default {
   margin-right: 20px;
 }
 
+.nut-cell__title {
+  width: 64vw;
+  flex: inherit;
+}
+
 </style>
