@@ -7,6 +7,10 @@ function getPlatformInfo(uuid: string): string {
     "68dc1014-7bfe-4ea3-a000-5734303d9f59": {
       "icon": "/assets/images/spoc.png",
       "name": "南大SPOC"
+    },
+    "00000000-0000-0000-0000-000000000000": {
+      "icon": "/assets/images/hand.png",
+      "name": "手动添加"
     }
   }
   return table[uuid] || {"icon": "/assets/images/hand.png", "name": "手动添加"}
