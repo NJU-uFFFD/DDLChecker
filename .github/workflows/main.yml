@@ -30,9 +30,12 @@ jobs:
           user: test
           password: "1145141919810"
       
-      - name: Setup MySQL Lib
-        run: sudo apt-get install python3-dev default-libmysqlclient-dev build-essential mysql-server mysql-client
-      
       - name: Install Requirements
         run: pip3 install -r backend/src/requirements.txt
+      
+      - name: Run unittests
+        run: cd backend && python3 -m unittest discover
+        
+        
+      
       
