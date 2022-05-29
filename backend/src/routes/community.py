@@ -151,7 +151,7 @@ def fetch_ddl():
     if source_ddl is None:
         return make_response(-1, "SourceDdl not exists.(nmsl)", {})
 
-    if Ddl.query.filter(Ddl.source_ddl_id == data['id']).first() is not None:
+    if user.ddls.filter(Ddl.source_ddl_id == data['id']).first() is not None:
         return make_response(-1, "SourceDdl already added.(nmsl)", {})
 
     ddl = Ddl(user.id, source_ddl.title, source_ddl.ddl_time, int(time.time() * 1000), source_ddl.content,
