@@ -48,12 +48,14 @@ def get_context_user(data_required=True):
     return user, data
 
 
-def make_response(status: int, msg: str, return_data: dict) -> Response:
+def make_response(status: int, msg: str, return_data: dict, http_status_code=200) -> Response:
     """
     标准请求返回
     :return: Response
     """
-    return jsonify({"code": status, "msg": msg, "data": return_data})
+    ret = jsonify({"code": status, "msg": msg, "data": return_data})
+    ret.status_code = http_status_code
+    return ret
 
 
 def check_data(schema, data):
@@ -66,6 +68,6 @@ def check_data(schema, data):
     try:
         return schema().load(data)
     except ValidationError as e:
-        abort(make_response(status=-1, msg=str(e.messages), return_data={}), 400)
+        abort(make_response(status=-1, msg=str(e.messages), return_data={}, http_status_code=400))
 
 
