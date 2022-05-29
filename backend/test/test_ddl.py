@@ -9,7 +9,6 @@ from db.course import Course
 import json
 import time
 import uuid
-import copy
 
 
 class TestDdl(unittest.TestCase):
@@ -190,5 +189,35 @@ class TestDdl(unittest.TestCase):
             self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.tag,ddl.course_uuid,ddl.platform_uuid,ddl.is_completed),
                 (title,content,ddl_time,tag,course_uuid,platform_uuid,False))
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_update_nonexist_ddl(self):
+        with self.app.app_context():
+            title = 'title'
+            ddl_time = (int(time.time())+3600)*1000
+            create_time = (int(time.time()))*1000
+            content = 'content'*100
+            tag = 'tag'
+            course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
+            platform_uuid = str(uuid.uuid4())
+            ddl = Ddl(1,title,ddl_time,create_time,content,tag,course_uuid,platform_uuid)
+            db.session.add(ddl)
+            db.session.commit()
+            ret = self.client.post('/ddl/update', headers={
+                'x-wx-source': 'test',
+                'x-wx-openid': '114514'
+            }, json={
+                'id': ddl.id+1,
+                'title': 'newtitle',
+                'content': 'newcontent',
+                'is_completed': True
+            })
+            self.assertEqual(404, ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(-1, ret['code'])
+            ddl = Ddl.query.get(ddl.id)
+            self.assertIsNotNone(ddl)
+            self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.tag,ddl.course_uuid,ddl.platform_uuid,ddl.is_completed),
+                (title,content,ddl_time,tag,course_uuid,platform_uuid,False))
+
+    def test_update_nonexist_ddl(self):
+        with self.app.app_context():
+

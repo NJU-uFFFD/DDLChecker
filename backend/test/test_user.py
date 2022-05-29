@@ -133,6 +133,3 @@ class TestUser(unittest.TestCase):
             self.assertEqual(-1,ret['code'])
             self.assertEqual(user.username,'田所浩二')
 
-
-if __name__ == '__main__':
-    unittest.main()
