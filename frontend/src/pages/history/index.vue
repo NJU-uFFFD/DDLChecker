@@ -9,57 +9,65 @@
         :column-num="2"
         :gutter="10">
         <nut-grid-item>
-          <nut-circleprogress
-            :progress="completedRate"
-            radius="70"
-            strokeWidth="10"
-            :clockwise="false"
-            color="#2e6aff">
-            <div style="color:#2e6aff">
-              <div class="number_title">{{ completedRate }}</div>
-              %
-              <div>总完成率</div>
-            </div>
-          </nut-circleprogress>
+          <custom-wrapper>
+            <nut-circleprogress
+              :progress="completedRate"
+              radius="70"
+              strokeWidth="10"
+              :clockwise="false"
+              color="#2e6aff">
+              <div style="color:#2e6aff">
+                <div class="number_title">{{ completedRate }}</div>
+                %
+                <div>总完成率</div>
+              </div>
+            </nut-circleprogress>
+          </custom-wrapper>
         </nut-grid-item>
         <nut-grid-item>
-          <nut-circleprogress
-            progress="100"
-            radius="70"
-            strokeWidth="10"
-            color="#29b877">
-            <div style="color:#29b877">
-              <div class="number_title">{{ completedNumber }}</div>
-              件
-              <div>已完成</div>
-            </div>
-          </nut-circleprogress>
+          <custom-wrapper>
+            <nut-circleprogress
+              progress="100"
+              radius="70"
+              strokeWidth="10"
+              color="#29b877">
+              <div style="color:#29b877">
+                <div class="number_title">{{ completedNumber }}</div>
+                件
+                <div>已完成</div>
+              </div>
+            </nut-circleprogress>
+          </custom-wrapper>
         </nut-grid-item>
         <nut-grid-item>
-          <nut-circleprogress
-            progress="100"
-            radius="70"
-            strokeWidth="10"
-            color="#e7a231">
-            <div style="color:#e7a231">
-              <div class="number_title">{{ urgentNumber }}</div>
-              件
-              <div>剩余紧急</div>
-            </div>
-          </nut-circleprogress>
+          <custom-wrapper>
+            <nut-circleprogress
+              progress="100"
+              radius="70"
+              strokeWidth="10"
+              color="#e7a231">
+              <div style="color:#e7a231">
+                <div class="number_title">{{ urgentNumber }}</div>
+                件
+                <div>剩余紧急</div>
+              </div>
+            </nut-circleprogress>
+          </custom-wrapper>
         </nut-grid-item>
         <nut-grid-item>
-          <nut-circleprogress
-            progress="100"
-            radius="70"
-            strokeWidth="10"
-            color="#cd0f0f">
-            <div style="color:#cd0f0f">
-              <div class="number_title">{{ overtimeNumber }}</div>
-              件
-              <div>已超时</div>
-            </div>
-          </nut-circleprogress>
+          <custom-wrapper>
+            <nut-circleprogress
+              progress="100"
+              radius="70"
+              strokeWidth="10"
+              color="#cd0f0f">
+              <div style="color:#cd0f0f">
+                <div class="number_title">{{ overtimeNumber }}</div>
+                件
+                <div>已超时</div>
+              </div>
+            </nut-circleprogress>
+          </custom-wrapper>
         </nut-grid-item>
       </nut-grid>
 
