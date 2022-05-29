@@ -1,1 +1,240 @@
-@import "taro-ui-vue3/dist/style/components/calendar.scss";
+/* Calendar */
+$at-calendar-day-size: 40px !default;
+$at-calendar-mark-size: 6px !default;
+$at-calendar-header-color: #7b7b7b !default;
+$at-calendar-main-color: $primary-color !default;
+$at-calendar-day-color: #484d5d !default;
+
+@mixin display-flex {
+  display: flex;
+}
+
+@mixin flex-wrap($value: nowrap) {
+  flex-wrap: $value;
+}
+
+@mixin align-items($value: stretch) {
+  align-items: $value;
+  @if $value == flex-start {
+    -webkit-box-align: start;
+  } @else if $value == flex-end {
+    -webkit-box-align: end;
+  } @else {
+    -webkit-box-align: $value;
+  }
+}
+
+@mixin align-content($value: flex-start) {
+  align-content: $value;
+}
+
+@mixin justify-content($value: flex-start) {
+  justify-content: $value;
+  @if $value == flex-start {
+    -webkit-box-pack: start;
+  } @else if $value == flex-end {
+    -webkit-box-pack: end;
+  } @else if $value == space-between {
+    -webkit-box-pack: justify;
+  } @else {
+    -webkit-box-pack: $value;
+  }
+}
+
+/* Flex Item */
+@mixin flex($fg: 1, $fs: null, $fb: null) {
+  flex: $fg $fs $fb;
+  -webkit-box-flex: $fg;
+}
+
+@mixin flex-order($n) {
+  order: $n;
+  -webkit-box-ordinal-group: $n;
+}
+
+@mixin align-self($value: auto) {
+  align-self: $value;
+}
+
+.at-calendar {
+  overflow: hidden;
+
+  /* elements */
+  &__header {
+    position: relative;
+    z-index: 10;
+    background-color: white;
+
+    .header__flex {
+      @include display-flex;
+      @include align-items(center);
+      border-radius: 5px;
+      height: 40px;
+      color: $at-calendar-header-color;
+      text-align: center;
+
+      &-item {
+        @include flex(0 0 calc(100% / 7));
+
+        font-size: 16px;
+      }
+    }
+  }
+
+  &__list {
+    &.flex {
+      @include display-flex;
+      @include align-items();
+      @include flex-wrap(wrap);
+
+      color: $at-calendar-day-color;
+
+      .flex__item {
+        @include flex(0 0 calc(100% / 7));
+
+        font-size: 16px;
+        text-align: center;
+        position: relative;
+        margin: 5px 0;
+
+        &-container {
+          @include align-items(center);
+          @include display-flex;
+
+          width: $at-calendar-day-size;
+          height: $at-calendar-day-size;
+          margin-left: auto;
+          margin-right: auto;
+          border-radius: 50%;
+
+          .container-text {
+            @include flex;
+          }
+        }
+
+        &-extra {
+          .extra-marks {
+            position: absolute;
+            bottom: 5px;
+            line-height: 0;
+            left: 50%;
+            transform: translateX(-50%);
+
+            .mark {
+              width: $at-calendar-mark-size;
+              height: $at-calendar-mark-size;
+              margin-right: 4px;
+              display: inline-block;
+              background-color: $primary-color;
+              border-radius: 50%;
+              overflow: hidden;
+
+              &:last-child {
+                margin-right: 0;
+              }
+            }
+          }
+        }
+
+        &--today {
+          color: $primary-color;
+          font-weight: bolder;
+        }
+
+        &--blur {
+          color: #e1e4e7;
+        }
+
+        &--selected {
+          color: white;
+          background-color: $primary-color;
+
+          &-head {
+            border-top-left-radius: 40px;
+            border-bottom-left-radius: 40px;
+          }
+
+          &-tail {
+            border-top-right-radius: 40px;
+            border-bottom-right-radius: 40px;
+          }
+
+          /* stylelint-disable-next-line */
+          .extra-marks .mark {
+            background-color: white;
+          }
+
+          &-head.flex__item--selected-tail {
+            background-color: transparent;
+
+            .flex__item-container {
+              background-color: $primary-color;
+              width: 40px;
+              height: 40px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &__controller {
+    @include display-flex;
+    @include align-items(center);
+    @include justify-content(center);
+
+    height: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    position: relative;
+    z-index: 10;
+    background-color: white;
+    border-radius: 10px;
+
+    .controller__arrow {
+      @include flex(0 0 30px);
+
+      height: 24px;
+      border-radius: 8px;
+      display: inline-block;
+      background-size: 12px 18px;
+      background-position: center;
+      background-color: #f1efef;
+      background-repeat: no-repeat;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAYCAYAAADzoH0MAAAAAXNSR0IArs4c6QAAAnFJREFUOBGVVF1rE0EUnXt3tzFtWmqjKYKfqIhVa1L8FQVRWtwnXwRhidXGDwQf81oCUQMioZRCHwNSgiD4lD9QSYVKsA8KbaW1jbamX8adnWsmMnESbYz7cs6ee8/ZnZm7y9h/Xk/Gs70TE9lOZQNFWsGx1IvDJoozxNDttNpmHOfyTssBj59PHxceP6keREDlYPvBGUMJzTD5LHuKhHtC70EEQe72atMAIoLu0MWzRPxInZnEdxZib2I37L2XEI/HsSvYd44AQrqZIW5b3J8fHR0sS/2ve5DJZIzFFexnSD262QAs+c1js45zyVU6KqIwnU5bS58x0mhGhusbaz153Sw9dW+QSr3yCdwJe4wCKlCigbAWiw7PAYDQdclrAclkxk8+iDBifr3JMq3lO86VQsVMuq549RQSU687mOcNANE+VfiFxuLd6NX3e5llD8qjskqb54E8n24mk5Yf3B6ab2auBsgGC8Q7QOJ1AS6ExrSZ12s6r57CyIi99cNgswywtkkIzDB2eSSdftmuGxp57RgfOfY38HlvRWVNqgmYsDb57sDkZK5hb1RHZQ9+U8bu37S/MtOc0zUg8G2U1yOV4WrTdcXrAqT4MDq0yokXVINEwb32pS9WOJfLmboueW0OGgtP05mj3IXTum6iuXHogDtr27an9D/eQBVijr2AiB/VvUQuePenNXZBfmhKrxEl6Hjv1vAHA2lJ1wRBcH9vf5+cH6k3DZANsei1eWCwIrm6uOf1Jsenq8v7Z4ActFJxrsBMo6gC0GAebPHq/Z6bqJoVyn/EQpGFK08MmF2B/Oj1wZKqtYzxeM5MJKY6dMNPQnnePR8FubkAAAAASUVORK5CYII=");
+
+      &--right {
+        transform: rotate(180deg);
+      }
+
+      &--disabled {
+        opacity: 0.5;
+      }
+    }
+
+    .controller__info {
+      @include flex(0 0 auto);
+
+      font-size: 16px;
+      margin-left: 30px;
+      margin-right: 30px;
+    }
+  }
+}
+
+.at-calendar-slider__main {
+  .main__body {
+    @include display-flex;
+
+    width: 100%;
+    height: 300px;
+
+    &--animate {
+      transition: transform 300ms cubic-bezier(0.36, 0.66, 0.04, 1);
+    }
+
+    .body__slider {
+      @include flex(0 0 100%);
+    }
+  }
+}

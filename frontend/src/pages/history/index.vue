@@ -80,7 +80,11 @@
         <nut-collapse-item
           :title="getDateZhCNString()+' 的日程'"
           :name="1">
-          <AtCalendar/>
+          <AtCalendar
+            :minDate="firstTime"
+            :maxDate="lastTime"
+            @day-click="changeDate"
+          />
           <!--            <nut-calendar-->
           <!--              style="display: flex;left:2vw;width: 96%;height:50vh;overflow: hidden;border-radius: 10px"-->
           <!--              :poppable="false"-->
@@ -167,8 +171,8 @@ export default {
       completedNumber: 0,
       urgentNumber: 0,
       overtimeNumber: 0,
-      firstTime: new Date(1328025600000),
-      lastTime: new Date(1959177600000)
+      firstTime: new Date(),
+      lastTime: new Date()
     }
   },
   setup() {
@@ -195,11 +199,10 @@ export default {
     fetchDdls(state.calendarDate, "create")
     fetchDdls(state.calendarDate, "complete")
 
-    const changeDate = (date: string) => {
-      console.log(date)
-      const year = Number(date.substring(0, 4))
-      const month = Number(date.substring(5, 7)) - 1
-      const day = Number(date.substring(8, 10))
+    const changeDate = (item: { value: string }) => {
+      const year = Number(item.value.substring(0, 4))
+      const month = Number(item.value.substring(5, 7)) - 1
+      const day = Number(item.value.substring(8, 10))
       state.calendarDate = new Date(year, month, day)
       state.activeName = []
       fetchDdls(state.calendarDate, "ddl")
