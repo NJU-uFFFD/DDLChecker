@@ -8,8 +8,6 @@ from sqlalchemy import MetaData
 import json
 
 
-
-
 class TestUser(unittest.TestCase):
 
     def setUp(self):
