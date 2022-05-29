@@ -49,7 +49,7 @@ def list_ddl():
     total_pages = page.pages
     source_ddls = [i.to_dict() for i in page.items]
     for i in source_ddls:
-        i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.filter().all()) else False})
+        i.update({"added": True if i["id"] in list(map(lambda x: x.source_ddl_id, user.ddls.filter().all())) else False})
         i.update({"self": True if i["creator_id"] == user.id else False})
 
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
