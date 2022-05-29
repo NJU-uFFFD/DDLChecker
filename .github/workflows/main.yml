@@ -23,19 +23,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
       - name: Setup MySQL
-        # You may pin to the exact commit or the version.
-        # uses: mirromutth/mysql-action@de1fba8b3f90ce8db80f663a7043be3cf3231248
-        uses: mirromutth/mysql-action@v1.1
+        uses: shogo82148/actions-setup-mysql@v1
         with:
-          mysql database: DDLCheckertest
-          mysql user: test
-          mysql password: 1145141919810
-          
-      - name: Setup MySQL Lib
-        run: sudo apt-get install libmysqlclient-dev python3-dev mysql-server
-        
+          database: DDLCheckertest
+          user: test
+          password: "1145141919810"
       
       - name: Python Unit Test
         # You may pin to the exact commit or the version.
