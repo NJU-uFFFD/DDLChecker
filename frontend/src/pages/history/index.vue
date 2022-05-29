@@ -80,18 +80,17 @@
         <nut-collapse-item
           :title="getDateZhCNString()+' 的日程'"
           :name="1">
-          <custom-wrapper>
-            <nut-calendar
-              style="display: flex;left:2vw;width: 96%;height:50vh;overflow: hidden;border-radius: 10px"
-              :poppable="false"
-              :start-date="startDateStr"
-              :end-date="endDateStr"
-              :is-auto-back-fill="true"
-              :show-title="false"
-              :show-sub-title="false"
-              @choose="chooseDate"
-            />
-          </custom-wrapper>
+          <AtCalendar/>
+          <!--            <nut-calendar-->
+          <!--              style="display: flex;left:2vw;width: 96%;height:50vh;overflow: hidden;border-radius: 10px"-->
+          <!--              :poppable="false"-->
+          <!--              :start-date="startDateStr"-->
+          <!--              :end-date="endDateStr"-->
+          <!--              :is-auto-back-fill="true"-->
+          <!--              :show-title="false"-->
+          <!--              :show-sub-title="false"-->
+          <!--              @choose="chooseDate"-->
+          <!--            />-->
         </nut-collapse-item>
       </nut-collapse>
 
@@ -151,14 +150,16 @@
 <script lang="ts">
 import {reactive, ref} from 'vue'
 import Taro, {getCurrentInstance} from "@tarojs/taro"
-import {request} from "../../util/request";
-import {DDLData} from "../../types/DDLData";
-import HistoryDdlCard from "../../components/card/HistoryDdlCard.vue";
+import {request} from "../../util/request"
+import {DDLData} from "../../types/DDLData"
+import HistoryDdlCard from "../../components/card/HistoryDdlCard.vue"
+import {AtCalendar} from "taro-ui-vue3"
 
 export default {
   name: "history",
   components: {
-    HistoryDdlCard
+    HistoryDdlCard,
+    AtCalendar
   },
   data() {
     return {
@@ -166,8 +167,8 @@ export default {
       completedNumber: 0,
       urgentNumber: 0,
       overtimeNumber: 0,
-      startDateStr: "2012-1-1",
-      endDateStr: "2032-12-31"
+      firstTime: new Date(1328025600000),
+      lastTime: new Date(1959177600000)
     }
   },
   setup() {
@@ -194,8 +195,12 @@ export default {
     fetchDdls(state.calendarDate, "create")
     fetchDdls(state.calendarDate, "complete")
 
-    const chooseDate = (param) => {
-      state.calendarDate = new Date(param[0], param[1] - 1, param[2])
+    const changeDate = (date: string) => {
+      console.log(date)
+      const year = Number(date.substring(0, 4))
+      const month = Number(date.substring(5, 7)) - 1
+      const day = Number(date.substring(8, 10))
+      state.calendarDate = new Date(year, month, day)
       state.activeName = []
       fetchDdls(state.calendarDate, "ddl")
       fetchDdls(state.calendarDate, "create")
@@ -263,16 +268,18 @@ export default {
     return {
       state,
       ddls,
-      chooseDate,
+      changeDate,
       getDateZhCNString
     }
   },
   onTabItemTap() {
-    const getDateFormatString = (date: Date) => {
-      console.log(String(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()))
-      return String(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate())
+    const setDateStartAndEnd = (date: Date, mode: string) => {
+      date.setHours(mode == 'start' ? 0 : 23)
+      date.setMinutes(mode == 'start' ? 0 : 59)
+      date.setSeconds(mode == 'start' ? 0 : 59)
+      date.setMilliseconds(mode == 'start' ? 0 : 999)
+      return date
     }
-
     const r = request({
       path: "/history/stat",
       method: "POST",
@@ -282,8 +289,8 @@ export default {
       this.completedNumber = res.data.data.completed_count
       this.urgentNumber = res.data.data.urgent_count
       this.overtimeNumber = res.data.data.overtime_count
-      this.startDateStr = getDateFormatString(new Date(res.data.data.first_time))
-      this.endDateStr = getDateFormatString(new Date(res.data.data.last_time))
+      this.firstTime = setDateStartAndEnd(new Date(res.data.data.first_time), 'start')
+      this.lastTime = setDateStartAndEnd(new Date(res.data.data.last_time), 'end')
     }).catch((reason) => {
       console.error("History fetch error: " + JSON.stringify(reason))
     }).finally(() => {

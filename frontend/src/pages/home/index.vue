@@ -204,18 +204,15 @@
         添加
       </nut-button>
     </nut-popup>
-
     <!-- 选择 DDL 时间 -->
-    <custom-wrapper>
-      <nut-datepicker
-        v-model="state.pickerDate"
-        type="datetime"
-        title="Deadline 选择"
-        v-model:visible="state.datePickerShow"
-        @confirm="({selectedValue : t}) =>state.pickerDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4])"
-        :min-date="getMinDate()"
-      />
-    </custom-wrapper>
+    <nut-datepicker
+      v-model="state.pickerDate"
+      type="datetime"
+      title="Deadline 选择"
+      v-model:visible="state.datePickerShow"
+      @confirm="({selectedValue : t}) =>state.pickerDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4])"
+      :min-date="getMinDate()"
+    />
     <!--  删除 DDL 相关  -->
     <nut-dialog
       title="删除 DDL"

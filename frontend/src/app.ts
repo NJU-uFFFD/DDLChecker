@@ -29,11 +29,11 @@ import {
   Calendar,
   Collapse,
   CollapseItem
-} from "@nutui/nutui-taro";
+} from "@nutui/nutui-taro"
 import './app.scss'
-import Taro from "@tarojs/taro";
-import {request} from "./util/request";
-import {ENV_ID, USE_CONTAINER} from "./config";
+import Taro from "@tarojs/taro"
+import {request} from "./util/request"
+import {ENV_ID, USE_CONTAINER} from "./config"
 
 
 const App = createApp({
