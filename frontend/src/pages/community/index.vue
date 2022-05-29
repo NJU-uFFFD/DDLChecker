@@ -7,8 +7,7 @@
       clearable
       max-length="32"
       @search="searchCourseOrDdl">
-      <template
-        v-slot:leftin>
+      <template #leftin>
         <nut-icon
           size="14"
           name="search2"/>
