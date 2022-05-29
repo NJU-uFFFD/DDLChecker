@@ -48,7 +48,7 @@ def list_ddl():
     total_pages = page.pages
     source_ddls = [i.to_dict() for i in page.items]
     for i in source_ddls:
-        i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.filter(Ddl.is_deleted == False).all()) else False})
+        i.update({"added": True if i["id"] in map(lambda x: x.source_ddl_id, user.ddls.filter().all()) else False})
         i.update({"self": True if i["creator_id"] == user.id else False})
 
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
@@ -83,7 +83,7 @@ def add_ddl():
         return make_response(-1, "Course not found.(nmsl)", {})
 
     if SourceDdl.query.filter(SourceDdl.title == data['title'], SourceDdl.ddl_time == data['ddl_time']).count() >= 1:
-        return make_response(-1, "Why do you add so many fucking same ddls! (nmsl)", {})
+        return make_response(-1, "Ddl already existed! (nmsl)", {})
 
     ddl = SourceDdl(data["course_uuid"], Course.query.get(data["course_uuid"]).platform_uuid, data["title"], data["content"], data["tag"],
                     data["ddl_time"], time.time() * 1000, creator_id=user.id)
@@ -150,7 +150,7 @@ def fetch_ddl():
     if source_ddl is None:
         return make_response(-1, "SourceDdl not exists.(nmsl)", {})
 
-    if Ddl.query.filter(Ddl.source_ddl_id == data['id'], Ddl.is_deleted == False).first() is not None:
+    if Ddl.query.filter(Ddl.source_ddl_id == data['id']).first() is not None:
         return make_response(-1, "SourceDdl already added.(nmsl)", {})
 
     ddl = Ddl(user.id, source_ddl.title, source_ddl.ddl_time, int(time.time() * 1000), source_ddl.content,
@@ -172,6 +172,14 @@ def delete_ddl():
     if source_ddl is None:
         return make_response(-1, "Ddl not found.(nmsl)", {})
 
-    # todo: remake is_deleted
+    if source_ddl.creator_id != user.id:
+        return make_response(-1, "Can only delete your own ddl", {})
+
+    db.session.delete(source_ddl)
+
+    db.session.commit()
+    return make_response(0, "OK", {"id": source_ddl.id})
+
+
 
 

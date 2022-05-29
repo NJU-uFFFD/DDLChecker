@@ -124,7 +124,7 @@ def delete_account():
 
     db.session.delete(account)
 
-    subs = account.user.subscriptions.filter(UserSubscriptions.platform_uuid == account.platform_uuid)
+    subs = account.user.subscriptions.filter(UserSubscriptions.platform_uuid == account.platform_uuid).all()
 
     for sub in subs:
         db.session.delete(sub)
