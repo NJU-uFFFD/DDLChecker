@@ -20,9 +20,12 @@ def get_context(data_required=True):
         # 屏蔽词检查
         dfa = DFA()
         data = dfa.filter_all(data)
-        print(data)
-        data = json.loads(data)
-
+        try:
+            data = json.loads(data)
+        except Exception as e:
+            logging.error(e)
+            logging.error(data)
+            abort(make_response(status=-1, msg="sensitive_words_blocking failed.", return_data={}), 451)
     else:
         data = None
 
