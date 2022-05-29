@@ -20,7 +20,7 @@ def add_ddl():
     check_data(AddDDLRules, data)
 
     if 'course_uuid' in data and Course.query.get(data['course_uuid']) is None:
-        return make_response(-1, "Course does not exist", {})
+        return make_response(-1, "Course does not exist", {}, 400)
 
     new_ddl = Ddl(user.id, data['title'], data['ddl_time'], int(time.time() * 1000), data['content'], data.get('tag'),
                   data.get('course_uuid'), data.get('platform_uuid'))
@@ -31,7 +31,7 @@ def add_ddl():
 
 
 @bp.route("/list", methods=['POST', 'GET'])
-def list_dll():
+def list_ddl():
     """
     接受ddl查询请求，返回用户查询的ddl(默认按照时间顺序排序， filter可选)
     :return: make_response()
@@ -120,9 +120,9 @@ def update_ddl():
     # 数据库操作
     ddl = Ddl.query.get(data['id'])
     if ddl is None:
-        return make_response(404, "Id not found.(nmsl)", {})
+        return make_response(-1, "Id not found.(nmsl)", {}, 404)
     if ddl.userid != user.id:
-        return make_response(403, "Cannot delete others' ddl(nmsl).", {})
+        return make_response(-1, "Cannot update others' ddl(nmsl).", {}, 403)
 
     if 'title' in data:
         ddl.title = data['title']
@@ -133,6 +133,8 @@ def update_ddl():
     if 'tag' in data:
         ddl.tag = data['tag']
     if 'course_uuid' in data:
+        if Course.query.get(data['course_uuid']) is None:
+            return make_response(-1, "Course does not exist.", {}, 400)
         ddl.course_uuid = data['course_uuid']
     if 'platform_uuid' in data:
         ddl.platform_uuid = data['platform_uuid']

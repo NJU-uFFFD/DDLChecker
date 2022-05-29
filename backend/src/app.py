@@ -38,6 +38,9 @@ limiter = Limiter(
     default_limits=["60 per minute", "3 per second"]
 )
 
+@limiter.request_filter
+def ip_whitelist():
+    return request.remote_addr == '127.0.0.1'
 
 @app.route("/")
 def hello():
