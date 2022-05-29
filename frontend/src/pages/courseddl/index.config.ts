@@ -1,3 +1,3 @@
 export default definePageConfig({
-  navigationBarTitleText: '课程'
+  navigationBarTitleText: '课程的 DDL'
 })

@@ -1,29 +1,41 @@
 <template>
-
+<view class="page">
   <scroll-view
     :scroll-y="true"
     @scrolltolower="listLower"
     style="height: 96vh;">
+    <nut-cell-group
+    :title="course_title"/>
     <nut-cell
+      class="add-ddl-card"
       title="添加 DDL 到此门课程"
       @click="showAdd = true">
       <template #icon>
         <img
-          class="profile-site-icon"
+          class="add-icon"
           src="/assets/images/add.png"
         />
       </template>
     </nut-cell>
 
     <nut-swipe v-for="ddl in ddls" :key="ddl">
-
-      <nut-cell :title=ddl.title :sub-title=formatTime(ddl.ddl_time) @click="showDetail(ddl)">
+      <nut-cell
+        class="course-ddl-card"
+        :title=ddl.title
+        :sub-title=formatTime(ddl.ddl_time)
+        @click="showDetail(ddl)">
         <template #icon>
-          <img class="home-site-icon" :src="getPlatformInfo(ddl.platform_uuid).icon"/>
+          <img
+            class="course-ddl-site-icon"
+            :src="getPlatformInfo(ddl.platform_uuid).icon"/>
         </template>
 
         <template #link>
-          <nut-button type="info" plain :disabled="ddl.added" @click.stop="fetchDdl(ddl)">
+          <nut-button
+            type="info"
+            :plain="ddl.added"
+            :disabled="ddl.added"
+            @click.stop="fetchDdl(ddl)">
             {{ ddl.added ? "已添加" : "添加" }}
           </nut-button>
         </template>
@@ -151,6 +163,7 @@
     :center="false"
     bottom="16%"
   />
+</view>
 </template>
 
 <script>
@@ -163,11 +176,6 @@ import {reactive} from "vue/dist/vue";
 
 export default {
   name: "index",
-
-  props: {
-    course_data: Object
-  },
-
   setup() {
 
     return {
@@ -182,6 +190,7 @@ export default {
       page: 1,
       more: true,
       course_uuid: "",
+      course_title: "",
       ddlDetailData: {},
       showDetails: false,
       detailUsername: "",
@@ -395,6 +404,7 @@ export default {
   },
   created() {
     this.course_uuid = getCurrentInstance().router.params['course_uuid']
+    this.course_title = getCurrentInstance().router.params['course_title']
     console.log(this.course_uuid)
     this.listDdls(this.course_uuid, this.page, 10, (l) => {
       this.ddls.push.apply(this.ddls, l)
@@ -406,8 +416,11 @@ export default {
 </script>
 
 <style>
+.page{
+  background: #f9f9f9;
+}
 
-.home-ddl-card {
+.course-ddl-card {
   margin-top: 6px;
   margin-bottom: 6px;
   align-items: center;
@@ -418,7 +431,7 @@ export default {
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
-.home-site-icon {
+.course-ddl-site-icon {
   width: 30px;
   height: 30px;
   margin-top: 0;
@@ -426,4 +439,29 @@ export default {
   margin-right: 20px;
 }
 
+.add-ddl-card {
+  align-items: center;
+  margin-left: 2vw;
+  margin-top: 0;
+  margin-bottom: 8px;
+  height: 50px;
+  width: 96%;
+  border-radius: 10px;
+  box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
+}
+
+.add-icon {
+  width: 30px;
+  height: 30px;
+  margin-top: 2px;
+  margin-right: 16px;
+}
+
+.nut-cell-group__title {
+  margin-top: 15px;
+}
+
+.nut-cell-group {
+  height: 30px;
+}
 </style>

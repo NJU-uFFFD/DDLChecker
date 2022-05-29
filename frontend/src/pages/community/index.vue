@@ -83,7 +83,7 @@ export default {
     },
     openCourse(data) {
       Taro.navigateTo({
-        url: '/pages/courseddl/index?course_uuid=' + data.course_uuid
+        url: '/pages/courseddl/index?course_uuid=' + data.course_uuid + "&course_title=" + data.course_name
       })
     }
   },
