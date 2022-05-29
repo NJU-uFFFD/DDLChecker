@@ -178,7 +178,6 @@ export default {
       "ddlDetailData": {},
     })
 
-
     let ddls = reactive<{ ddl_list: DDLData [], create_list: DDLData[], complete_list: DDLData[] }>({
       ddl_list: [],
       create_list: [],
@@ -212,10 +211,7 @@ export default {
     function fetchDdls(chooseDate: Date, mode: string) {
       let data = {
         "page": 1,
-        "size": 50,
-        "filter": {
-          'is_deleted': false
-        }
+        "size": 50
       }
       switch (mode) {
         case "ddl":

@@ -440,9 +440,7 @@ export default {
 
     // 获取 DDL 相关
     function fetchDdls(page: number, size: number, callback: Function) {
-      let filter = {
-        'is_deleted': false
-      }
+      let filter = {}
       if (menu.filterCheckboxGroup.indexOf('1') == -1 || menu.filterCheckboxGroup.indexOf('2') == -1) {
         filter['is_completed'] = menu.filterCheckboxGroup.indexOf('2') != -1;
       }
@@ -507,16 +505,15 @@ export default {
     })
 
     // 删除 DDL
-    function deleteDdl(ddlData) {
+    function deleteDdl(ddlData: DDLData) {
       state.showDelete = false
       console.log("删除 DDL ID: " + ddlData.id)
-      ddlData.is_deleted = true
       const r = request({
         method: "POST",
         path: "/ddl/update",
         data: {
           "id": ddlData.id,
-          "is_deleted": ddlData.is_deleted
+          "is_deleted": true
         }
       })
 

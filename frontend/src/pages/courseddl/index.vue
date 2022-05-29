@@ -48,10 +48,11 @@
     close-on-click-overlay
     lock-scroll
     v-model:visible="showDetails">
-    <nut-countdown #default
-                   style="display: flex;justify-content: center"
-                   :end-time="ddlDetailData.ddl_time"
-                   format="还剩 DD 天 HH 时 mm 分 ss 秒"
+    <nut-countdown
+      #default
+      style="display: flex;justify-content: center"
+      :end-time="ddlDetailData.ddl_time"
+      format="还剩 DD 天 HH 时 mm 分 ss 秒"
     />
     <nut-cell
       style="box-shadow: 0 0 0 0"
