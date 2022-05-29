@@ -28,7 +28,11 @@ def list_course():
     user, data = get_context_user()
     check_data(ListCourseRulesForCommunity, data)
 
-    page = Course.query.paginate(data["page"], data["size"])
+    filter_list = []
+    if "key_word" in data:
+        filter_list.append(Course.course_name.contains(data["key_word"]))
+
+    page = Course.query.filter(*filter_list).paginate(data["page"], data["size"])
     course_count = page.total
     total_pages = page.pages
     courses = [i.to_dict() for i in page.items]
@@ -204,6 +208,16 @@ def delete_course():
     return make_response(0, "OK", {"id": course.course_uuid})
 
 
+@bp.route("/course/search", methods=["GET", "POST"])
+def search_course():
+    user, data = get_context_user()
+    check_data(SearchCourseForCommunity, data)
+
+    courses = Course.query.filter(Course.course_name.contains(data['key_word'])).all()
+
+    search_count = Course.query.filter(Course.course_name.contains(data['key_word'])).count()
+
+    return make_response(0, "OK", {"search_count": search_count, "courses": courses})
 
 
 

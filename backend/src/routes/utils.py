@@ -8,6 +8,7 @@ from marshmallow import ValidationError
 from util.sensitive_words_blocking.words_blocking import DFA
 
 from db.user import User
+from db import db
 
 
 def get_context(data_required=True):
@@ -42,8 +43,11 @@ def get_context_user(data_required=True):
     获取 user 和 http 请求内容
     :return: user, data(json)
     """
+    scoped_session = db.create_scoped_session()
     openid, data = get_context(data_required)
-    user = User.query.filter(User.openid == openid).first()
+    user = scoped_session.query(User).filter(User.openid == openid).first()
+    # user = User.query.filter(User.openid == openid).first()
+    # scoped_session.remove()
 
     if not user:
         abort(make_response(status=-1, msg="Unauthorized or not registered.", return_data={}), 403)

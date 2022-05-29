@@ -1,4 +1,6 @@
 from flask import Blueprint
+from sqlalchemy.orm import Session
+
 from routes.utils import get_context_user, check_data, make_response
 from routes.rules.ddl_rules import *
 from db import db
@@ -54,6 +56,9 @@ def list_ddl():
         "ddl_count" -> int
     }
     """
+
+    scoped_session = db.create_scoped_session()
+
     user, data = get_context_user()
     check_data(ListDDLsRules, data)
 
@@ -101,7 +106,8 @@ def list_ddl():
 
     page = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
                                                 else Ddl.ddl_time).paginate(data['page'], data['size'])
-
+    session = Session.object_session(user)
+    session.close()
     ddl_count = page.total
     total_pages = page.pages
     return make_response(0, "OK", {'ddl_list': page.items, 'ddl_count': ddl_count, "total_pages": total_pages})
