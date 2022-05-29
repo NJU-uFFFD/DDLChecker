@@ -117,6 +117,22 @@ class TestUser(unittest.TestCase):
             self.assertEqual(0, ret['code'])
             self.assertEqual(user.username, '田所浩三')
 
+    def test_rename_with_too_long_name(self):
+        with self.app.app_context():
+            user = User('114514', '田所浩二')
+            db.session.add(user)
+            db.session.commit()
+            ret = self.client.post('/user/rename',headers={
+                'x-wx-source':'test',
+                'x-wx-openid':'114514'
+                },json={
+                'username':'田所浩三'*27
+                })
+            self.assertEqual(400,ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(-1,ret['code'])
+            self.assertEqual(user.username,'田所浩二')
+
 
 if __name__ == '__main__':
     unittest.main()
