@@ -34,7 +34,7 @@ jobs:
         run: pip3 install -r backend/src/requirements.txt
       
       - name: Run unittests
-        run: MYSQL_DATABASE=DDLCheckertest MYSQL_USERNAME=test MYSQL_PASSWORD=1145141919810 MYSQL_ADDRESS=127.0.0.1 cd backend && python3 -m unittest discover
+        run: export MYSQL_DATABASE=DDLCheckertest; export MYSQL_USERNAME=test; export MYSQL_PASSWORD=1145141919810; export MYSQL_ADDRESS=127.0.0.1; cd backend; python3 -m unittest discover
         
       
       
