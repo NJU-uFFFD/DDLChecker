@@ -2,7 +2,6 @@ import time
 
 from marshmallow import Schema, fields, validate
 
-
 class ListDDLRulesForCommunity(Schema):
     """
         "page" -> int
@@ -68,3 +67,9 @@ class DeleteDDlRuleForCommunity(Schema):
     """
     id = fields.Integer(required=True, strict=True, validate=validate.Range(min=1))
 
+
+class DeleteCourseRuleForCommunity(Schema):
+    """
+        "course_uuid" -> str
+    """
+    course_uuid = fields.UUID(required=True)
