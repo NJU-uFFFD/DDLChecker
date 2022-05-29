@@ -47,9 +47,8 @@ def list_dll():
                 "course_uuid" -> str
                 "platform_uuid" -> str
                 "is_completed" -> bool
-                "is_deleted" -> bool
                 "complete_time" -> int
-                "delete_time" -> int
+                "source_ddl_id" -> int
             }
         ]
         "ddl_count" -> int
@@ -70,11 +69,6 @@ def list_dll():
                 filter_list.append(Ddl.ddl_time < round(time.time() * 1000))
             else:
                 filter_list.append(Ddl.ddl_time >= round(time.time() * 1000))
-        if 'is_deleted' in data['filter']:
-            if data['filter']['is_deleted']:
-                filter_list.append(Ddl.is_deleted == True)
-            else:
-                filter_list.append(Ddl.is_deleted == False)
     if 'tag' in data:
         filter_list.append(Ddl.tag == data['tag'])
     if 'ddl_time_range' in data:
@@ -148,12 +142,9 @@ def update_ddl():
             ddl.complete_time = round(time.time() * 1000)
         else:
             ddl.complete_time = None
-    if 'is_deleted' in data:
-        ddl.is_deleted = data['is_deleted']
-        if data['is_deleted']:
-            ddl.delete_time = round(time.time() * 1000)
-        else:
-            ddl.delete_time = None
+    if 'is_deleted' in data and data['is_deleted'] is True:
+        db.session.delete(ddl)
+
     db.session.commit()
 
     return make_response(0, "OK", {"id": ddl.id})
