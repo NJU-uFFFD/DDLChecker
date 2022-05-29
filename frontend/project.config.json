@@ -6,8 +6,10 @@
   "setting": {
     "urlCheck": true,
     "es6": false,
-    "postcss": false,
-    "minified": false
+    "postcss": true,
+    "minified": true,
+    "minifyWXSS": true,
+    "minifyWXML": true
   },
   "compileType": "miniprogram"
 }
