@@ -21,6 +21,7 @@
       <nut-swipe v-for="ddl in ddls" :key="ddl">
         <nut-cell
           class="course-ddl-card"
+          :style="{color:(ddl.ddl_time<now.valueOf())?'#cd0f0f':(ddl.tag==='紧急')?'#ffb12a':'#676767'}"
           :title=ddl.title
           :sub-title=formatTime(ddl.ddl_time)
           @click="showDetail(ddl)">
@@ -56,21 +57,23 @@
 
 
     <nut-dialog
-      :title=ddlDetailData.title
+      :title="(ddlDetailData.tag===''?'':'【'+ddlDetailData.tag+'】 ')+ddlDetailData.title"
       close-on-click-overlay
       lock-scroll
       v-model:visible="showDetails">
       <nut-countdown
         #default
-        style="display: flex;justify-content: center"
+        :style="{display: 'flex',justifyContent:'center',color:(ddlDetailData.ddl_time<now.valueOf()&&!ddlDetailData.is_completed)?'#cd0f0f':'#676767'}"
         :end-time="ddlDetailData.ddl_time"
-        format="还剩 DD 天 HH 时 mm 分 ss 秒"
+        :format="ddlDetailData.ddl_time>now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />
       <nut-cell
         style="box-shadow: 0 0 0 0"
         :title="ddlDetailData.content"/>
       <template #footer>
-        {{ detailUsername === "" ? "该 DDL 由系统自动获取" : "该 DDL 由用户 `" + detailUsername + "` 创建" }}
+        <div style="color: #676767">
+          {{ detailUsername === "" ? "该 DDL 由系统自动获取" : "该 DDL 由用户 `" + detailUsername + "` 创建" }}
+        </div>
       </template>
     </nut-dialog>
 
@@ -125,6 +128,13 @@
             :border="false"
             placeholder="请输入待办详情"
           />
+        </nut-cell>
+        <nut-cell>
+          <nut-radiogroup v-model="addInfo.tag" direction="horizontal">
+            <nut-radio shape="button" label="">无Tag</nut-radio>
+            <nut-radio shape="button" label="宽松">宽松</nut-radio>
+            <nut-radio shape="button" label="紧急">紧急</nut-radio>
+          </nut-radiogroup>
         </nut-cell>
       </nut-cell-group>
       <nut-button
@@ -199,7 +209,8 @@ export default {
         title: "",
         content: "",
         pickerDate: new Date(),
-        datePickerShow: false
+        datePickerShow: false,
+        tag: ""
       },
       ddlAddSubmitting: false,
       toastInfo: {
@@ -212,7 +223,8 @@ export default {
         center: true,
       },
       showDelete: false,
-      deleteInfo: {}
+      deleteInfo: {},
+      now: new Date
     }
   },
   methods: {
@@ -322,7 +334,7 @@ export default {
           course_uuid: this.course_uuid,
           title: this.addInfo.title,
           content: this.addInfo.content,
-          tag: "[]",
+          tag: this.addInfo.tag,
           ddl_time: this.addInfo.pickerDate.getTime()
         }
       })
