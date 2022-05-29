@@ -35,6 +35,11 @@ jobs:
       
       - name: Run unittests
         run: cd backend && python3 -m unittest discover
+        with:
+          MYSQL_DATABASE: DDLCheckertest
+          MYSQL_USERNAME: test
+          MYSQL_PASSWORD: "1145141919810"
+          MYSQL_ADDRESS: "127.0.0.1"
         
         
       
