@@ -34,7 +34,7 @@ jobs:
           mysql password: 1145141919810
           
       - name: Setup MySQL Lib
-        run: sudo apt-get install libmysqlclient-dev python3-dev
+        run: sudo apt-get install libmysqlclient-dev python3-dev mysql-server
         
       
       - name: Python Unit Test
