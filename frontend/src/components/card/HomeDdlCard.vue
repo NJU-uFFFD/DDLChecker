@@ -68,7 +68,7 @@ export default defineComponent({
 <style>
 
 .home-ddl-card {
-  margin-top: 6px;
+  margin-top: 10px;
   margin-bottom: 6px;
   align-items: center;
   margin-left: 2vw;
@@ -81,8 +81,6 @@ export default defineComponent({
 .home-site-icon {
   width: 30px;
   height: 30px;
-  margin-top: 0;
-  margin-left: 0;
   margin-right: 20px;
 }
 

@@ -17,15 +17,24 @@
 
     <scroll-view
       :scroll-y="true"
-      style="height: 93vh;"
+      style="height: 94vh;"
       @scrolltolower="listLower"
       enableBackToTop="true">
 
-      <nut-cell v-for="course in courses" :key="course" @click="openCourse(course)">
-        {{ JSON.stringify(course) }}
-      </nut-cell>
-
-      <nut-divider v-if="!more">没有更多 DDL 了捏</nut-divider>
+      <nut-swipe v-for="course in courses" :key="course">
+        <CommunityCourseCard
+          :course="course"
+          @onClick="openCourse(course)"/>
+        <template #right>
+          <nut-button
+            style="height:100%; border-radius: 10px;margin-right: 5px"
+            type="primary"
+            @click="subscribe(course)">
+            订阅
+          </nut-button>
+        </template>
+      </nut-swipe>
+      <nut-divider v-if="!more">没有更多课程了捏</nut-divider>
     </scroll-view>
 
   </view>
@@ -35,10 +44,13 @@
 import {reactive, ref} from 'vue'
 import Taro from "@tarojs/taro";
 import {request} from "../../util/request";
+import CommunityCourseCard from "../../components/card/CommunityCourseCard.vue";
 
 export default {
   name: "community",
-
+  components: {
+    CommunityCourseCard
+  },
   data() {
     return {
       courses: [],
@@ -85,6 +97,9 @@ export default {
       Taro.navigateTo({
         url: '/pages/courseddl/index?course_uuid=' + data.course_uuid + "&course_title=" + data.course_name
       })
+    },
+    subscribe(data) {
+
     }
   },
   setup() {

@@ -66,8 +66,6 @@ export default {
 .history-site-icon {
   width: 20px;
   height: 20px;
-  margin-top: 0;
-  margin-left: 0;
   margin-right: 20px;
 }
 

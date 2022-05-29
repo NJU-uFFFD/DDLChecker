@@ -54,7 +54,6 @@ export default defineComponent({
 .profile-site-icon {
   width: 30px;
   height: 30px;
-  margin-top: 2px;
   margin-right: 16px;
 }
 

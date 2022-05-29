@@ -314,12 +314,12 @@ export default {
     })
 
     // 保存上次筛选选项于本地
-    // Taro.getStorage({
-    //   key: "filterGroup",
-    //   success: (res) => {
-    //     menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
-    //   }
-    // })
+    Taro.getStorage({
+      key: "filterGroup",
+      success: (res) => {
+        menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
+      }
+    })
 
     const onMenuChange = (group: string) => {
       if (group.indexOf('1') == -1 && group.indexOf('2') == -1)
@@ -333,10 +333,10 @@ export default {
         })[0] == '4') menu.filterCheckboxGroup.push('3')
         else menu.filterCheckboxGroup.push('4')
       menu.filterCheckboxTempGroup = menu.filterCheckboxGroup.filter(() => true)
-      // Taro.setStorage({
-      //   key: "filterGroup",
-      //   data: JSON.stringify(menu.filterCheckboxTempGroup)
-      // })
+      Taro.setStorage({
+        key: "filterGroup",
+        data: JSON.stringify(menu.filterCheckboxTempGroup)
+      })
       listRefresh()
     }
 
