@@ -80,16 +80,18 @@
         <nut-collapse-item
           :title="getDateZhCNString()+' 的日程'"
           :name="1">
-          <nut-calendar
-            style="display: flex;left:2vw;width: 96%;height:50vh;overflow: hidden;border-radius: 10px"
-            :poppable="false"
-            :start-date="startDateStr"
-            :end-date="endDateStr"
-            :is-auto-back-fill="true"
-            :show-title="false"
-            :show-sub-title="false"
-            @choose="chooseDate"
-          />
+          <custom-wrapper>
+            <nut-calendar
+              style="display: flex;left:2vw;width: 96%;height:50vh;overflow: hidden;border-radius: 10px"
+              :poppable="false"
+              :start-date="startDateStr"
+              :end-date="endDateStr"
+              :is-auto-back-fill="true"
+              :show-title="false"
+              :show-sub-title="false"
+              @choose="chooseDate"
+            />
+          </custom-wrapper>
         </nut-collapse-item>
       </nut-collapse>
 
