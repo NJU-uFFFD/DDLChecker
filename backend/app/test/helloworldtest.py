@@ -26,4 +26,34 @@ class HelloWorldTest(unittest.TestCase):
 				'x-wx-source':'test',
 				'x-wx-openid':'114514'
 				},json={})
-			self.assertIsNotNone(User.query.get(json.loads(ret.data.decode('utf-8'))['data']['userid']))
+			ret = json.loads(ret.data.decode('utf-8'))
+			self.assertEqual(0,ret['code'])
+			self.assertIsNotNone(User.query.get(ret['data']['userid']))
+
+	def test_register_with_name(self):
+		with self.app.app_context():
+			ret = self.client.post('/user/register',headers={
+				'x-wx-source':'test',
+				'x-wx-openid':'114514'
+				},json={
+				'username':'田所浩二'*20
+				})
+			ret = json.loads(ret.data.decode('utf-8'))
+			self.assertEqual(0,ret['code'])
+			self.assertIsNotNone(User.query.get(ret['data']['userid']))
+			self.assertEqual('田所浩二'*20,User.query.get(ret['data']['userid']).username)
+
+	def test_register_with_too_long_name(self):
+		with self.app.app_context():
+			ret = self.client.post('/user/register',headers={
+				'x-wx-source':'test',
+				'x-wx-openid':'114514'
+				},json={
+				'username':'田所浩二'*27
+				})
+			#print(ret.data)
+			self.assertEqual(400,ret.status_code)
+			ret = json.loads(ret.data.decode('utf-8'))
+			self.assertIsNone(User.query.first())
+	
+
