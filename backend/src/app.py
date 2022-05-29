@@ -1,6 +1,8 @@
 import json
 
 from flask import Flask
+
+
 from routes import *
 from config import *
 from db import db
@@ -25,6 +27,7 @@ app.register_blueprint(history.bp)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{MYSQL_USERNAME}:{MYSQL_PASSWORD}@{MYSQL_ADDRESS}/{MYSQL_DATABASE}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 db.init_app(app)
 with app.app_context():
