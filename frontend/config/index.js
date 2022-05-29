@@ -29,6 +29,16 @@ const config = {
   },
   framework: 'vue3',
   mini: {
+    baseLevel: 8,
+    prerender: {
+      include: [
+        'pages/home/index',
+        'pages/history/index',
+        'pages/community/index',
+        'pages/profile/index',
+        'pages/accountadd/index',
+        'pages/courseddl/index'],
+    },
     postcss: {
       pxtransform: {
         enable: true,
