@@ -38,6 +38,6 @@ jobs:
         # uses: onichandame/python-test-action@6a1d618300de7ea0b753e50819e093a7e5a5f60b
         uses: onichandame/python-test-action@0.0.0
         with:
-          deps_list: requirements.txt
+          deps_list: backend/app/requirements.txt
           test_dir:: backend/
           pattern: test/*.py
