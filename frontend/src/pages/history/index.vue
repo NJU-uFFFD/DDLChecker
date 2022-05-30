@@ -60,8 +60,8 @@
               progress="100"
               radius="70"
               strokeWidth="10"
-              color="#cd0f0f">
-              <div style="color:#cd0f0f">
+              color="#ee1919">
+              <div style="color:#ee1919">
                 <div class="number_title">{{ overtimeNumber }}</div>
                 件
                 <div>已超时</div>
@@ -130,7 +130,7 @@
       no-footer>
       <nut-countdown
         #default
-        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#cd0f0f':'#676767'}"
+        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#ee1919':'#676767'}"
         :end-time="state.ddlDetailData.ddl_time"
         :format="state.ddlDetailData.ddl_time>state.now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />

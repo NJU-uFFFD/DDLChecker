@@ -21,7 +21,7 @@
       <nut-swipe v-for="ddl in ddls" :key="ddl">
         <nut-cell
           class="course-ddl-card"
-          :style="{color:(ddl.ddl_time<now.valueOf())?'#cd0f0f':'#676767'}"
+          :style="{color:(ddl.ddl_time<now.valueOf())?'#ee1919':'#676767'}"
           :title="ddl.title.substring(0, 20) + (ddl.title.length > 20 ? '...' : '')"
           :sub-title=formatTime(ddl.ddl_time)
           @click="showDetail(ddl)">
@@ -63,7 +63,7 @@
       v-model:visible="showDetails">
       <nut-countdown
         #default
-        :style="{display: 'flex',justifyContent:'center',color:(ddlDetailData.ddl_time<now.valueOf()&&!ddlDetailData.is_completed)?'#cd0f0f':'#676767'}"
+        :style="{display: 'flex',justifyContent:'center',color:(ddlDetailData.ddl_time<now.valueOf()&&!ddlDetailData.is_completed)?'#ee1919':'#676767'}"
         :end-time="ddlDetailData.ddl_time"
         :format="ddlDetailData.ddl_time>now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />
