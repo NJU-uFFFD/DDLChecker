@@ -8,6 +8,10 @@ function getPlatformInfo(uuid: string): string {
       "icon": "/assets/images/spoc.png",
       "name": "南大SPOC"
     },
+    "69921ef9-fe15-4731-930d-b60a644da254": {
+      "icon": "/assets/images/mooc.png",
+      "name": "中国大学MOOC"
+    },
     "00000000-0000-0000-0000-000000000000": {
       "icon": "/assets/images/hand.png",
       "name": "手动添加"

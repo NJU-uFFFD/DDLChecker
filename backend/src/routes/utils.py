@@ -43,9 +43,9 @@ def get_context_user(data_required=True):
     获取 user 和 http 请求内容
     :return: user, data(json)
     """
-    scoped_session = db.create_scoped_session()
+    # scoped_session = db.create_scoped_session()
     openid, data = get_context(data_required)
-    user = scoped_session.query(User).filter(User.openid == openid).first()
+    user = User.filter(User.openid == openid).first()
     # user = User.query.filter(User.openid == openid).first()
     # scoped_session.remove()
 
