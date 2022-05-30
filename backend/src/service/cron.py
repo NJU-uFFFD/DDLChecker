@@ -52,7 +52,7 @@ def cron_work_daily():
 
         except Exception as e:
             logging.exception(e)
-            db.session.rollback()
+            # db.session.rollback()
             account.status = "登录失败: " + str(e)
             db.session.commit()
 
@@ -123,10 +123,11 @@ def cron_work():
                 db.session.commit()
             except Exception as e:
                 logging.exception(e)
-                db.session.rollback()
+                # db.session.rollback()
 
     # 分发 DDL
-    for sub in UserSubscriptions.query.all():
+    subs = UserSubscriptions.query.all()
+    for sub in subs:
         updated = sub.last_updated
         for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid, SourceDdl.creator_id == None).all():
             if ddl.ddl_time > int(time.time() * 1000) and ddl.create_time > updated:
