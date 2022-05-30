@@ -118,9 +118,9 @@ def delete_account():
 
     account = Account.query.get(data['id'])
     if account is None:
-        return make_response(404, "Id not found(nmsl)", {})
+        return make_response(-1, "Id not found(nmsl)", {})
     if account.userid != user.id:
-        return make_response(403, "Cannot delete others' account(nmsl).", {})
+        return make_response(-1, "Cannot delete others' account(nmsl).", {})
 
     db.session.delete(account)
 

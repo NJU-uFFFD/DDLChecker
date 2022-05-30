@@ -3,6 +3,7 @@ import unittest
 from app import app
 from db import db
 from db.account import Account
+from db.course import Course
 from db.user import User
 import json
 import uuid
@@ -152,8 +153,11 @@ class TestAccount(unittest.TestCase):
 
     def test_delete_account_with_sub(self):
         with self.app.app_context():
+            cid = str(uuid.uuid4())
+            course = Course("test", cid, '68dc1014-7bfe-4ea3-a000-5734303d9f59')
             account = Account("1", '68dc1014-7bfe-4ea3-a000-5734303d9f59', aes_encrypt(json.dumps({"account": "田所浩二", "password": "nmsl"})))
-            sub = UserSubscriptions("1", str(uuid.uuid4()), '68dc1014-7bfe-4ea3-a000-5734303d9f59', True)
+            sub = UserSubscriptions("1", cid, '68dc1014-7bfe-4ea3-a000-5734303d9f59', True)
+            db.session.add(course)
             db.session.add(account)
             db.session.add(sub)
             db.session.commit()
