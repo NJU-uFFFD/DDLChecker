@@ -29,7 +29,7 @@ const config = {
   },
   framework: 'vue3',
   mini: {
-    baseLevel: 12,
+    baseLevel: 14,
     postcss: {
       pxtransform: {
         enable: true,
