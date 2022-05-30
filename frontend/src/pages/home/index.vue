@@ -84,7 +84,7 @@
       v-model:visible="state.showDetails">
       <nut-countdown
         #default
-        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#cd0f0f':'#676767'}"
+        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#ee1919':'#676767'}"
         :end-time="state.ddlDetailData.ddl_time"
         :format="state.ddlDetailData.ddl_time>state.now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />

@@ -76,18 +76,24 @@ export default {
         type: 'text',
         show: false,
         cover: false,
-      }
+      },
+      searchValue: '',
+      searching: false
     }
   },
 
   methods: {
-    fetchCourses(page, size, callback) {
+    fetchCourses(page, size, searchValue, callback) {
+      const data = {}
+      if (searchValue !== '')
+        data["key_word"] = searchValue
       const r = request({
         method: "POST",
         path: "/community/course/list",
         data: {
           page: this.page,
-          size: size
+          size: size,
+          data: data
         }
       })
 
@@ -109,8 +115,14 @@ export default {
         return
       }
 
-      this.fetchCourses(this.page, 10, (data) => {
+      this.fetchCourses(this.page, 10, this.searchValue, (data) => {
         this.courses.push.apply(this.courses, data)
+        this.page += 1
+      })
+    },
+    searchCourseOrDdl() {
+      this.fetchCourses(1, 10, this.searchValue, (d) => {
+        this.courses = d
         this.page += 1
       })
     },
@@ -151,27 +163,15 @@ export default {
     }
   },
   setup() {
-    const state = reactive({
-      searchValue: "",
-      searching: false
-    })
-
-    const searchCourseOrDdl = () => {
-      console.log("search " + state.searchValue)
-    }
-
-    return {
-      state,
-      searchCourseOrDdl
-    }
   },
   onTabItemTap() {
     // 更新内容
     this.page = 1
     this.more = true
     this.courses = []
+    this.searchValue = ''
 
-    this.fetchCourses(1, 10, (d) => {
+    this.fetchCourses(1, 10, this.searchValue, (d) => {
       this.courses = d
       this.page += 1
     })
