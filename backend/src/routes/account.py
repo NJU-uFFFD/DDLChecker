@@ -1,8 +1,11 @@
 import json
 import logging
+import time
 
 from flask import Blueprint
 from crawler.util import list_crawlers
+from db.ddl import Ddl
+from db.sourceDdl import SourceDdl
 from routes.utils import get_context_user, make_response, check_data
 from routes.rules.account_rules import *
 from db.account import Account
@@ -76,6 +79,16 @@ def add_account():
         for c in courses:
             sub = UserSubscriptions(user.id, c[1], account.platform_uuid)
             db.session.add(sub)
+
+        for sub in UserSubscriptions.query.filter(UserSubscriptions.userid == user.id).all():
+            for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid,
+                                              SourceDdl.creator_id == None).all():
+                if ddl.ddl_time > int(time.time() * 1000):
+                    to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "",
+                                 sub.course_uuid, sub.platform_uuid, ddl.id)
+                    db.session.add(to_add)
+            sub.last_updated = int(time.time() * 1000)
+        db.session.commit()
 
     db.session.add(account)
     db.session.commit()
