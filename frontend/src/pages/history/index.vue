@@ -82,6 +82,7 @@
           <AtCalendar
             :minDate="firstTime"
             :maxDate="lastTime"
+            :marks="markList"
             @day-click="changeDate"
           />
         </nut-collapse-item>
@@ -161,7 +162,8 @@ export default {
       urgentNumber: 0,
       overtimeNumber: 0,
       firstTime: new Date(),
-      lastTime: new Date()
+      lastTime: new Date(),
+      markList: []
     }
   },
   setup() {
@@ -284,6 +286,7 @@ export default {
       this.overtimeNumber = res.data.data.overtime_count
       this.firstTime = setDateStartAndEnd(new Date(res.data.data.first_time), 'start')
       this.lastTime = setDateStartAndEnd(new Date(res.data.data.last_time), 'end')
+      this.markList = res.data.data.calendar_mark
     }).catch((reason) => {
       console.error("History fetch error: " + JSON.stringify(reason))
     }).finally(() => {
