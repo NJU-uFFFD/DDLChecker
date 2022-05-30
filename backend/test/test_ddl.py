@@ -9,6 +9,7 @@ from db.course import Course
 import json
 import time
 import uuid
+import copy
 
 
 class TestDdl(unittest.TestCase):
@@ -217,8 +218,3 @@ class TestDdl(unittest.TestCase):
             self.assertIsNotNone(ddl)
             self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.tag,ddl.course_uuid,ddl.platform_uuid,ddl.is_completed),
                 (title,content,ddl_time,tag,course_uuid,platform_uuid,False))
-
-    # def test_update_nonexist_ddl(self):
-    #     with self.app.app_context():
-
-
