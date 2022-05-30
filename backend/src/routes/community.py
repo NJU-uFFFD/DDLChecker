@@ -36,9 +36,9 @@ def list_course():
     course_count = page.total
     total_pages = page.pages
     courses = [i.to_dict() for i in page.items]
+    subs = list(map(lambda x: x.course_uuid, user.subscriptions.all()))
     for i in courses:
-        i.update({"subscribed": True if i["course_uuid"] in map(lambda x: x.course_uuid,
-                                                                user.subscriptions.all()) else False})
+        i.update({"subscribed": i["course_uuid"] in subs})
 
     return make_response(0, "OK", {"courses": courses, "course_count": course_count, "total_pages": total_pages})
 
@@ -52,8 +52,9 @@ def list_ddl():
     source_ddl_count = page.total
     total_pages = page.pages
     source_ddls = [i.to_dict() for i in page.items]
+    src = list(map(lambda x: x.source_ddl_id, user.ddls.filter(Ddl.source_ddl_id != None).all()))
     for i in source_ddls:
-        i.update({"added": i["id"] in list(map(lambda x: x.source_ddl_id, user.ddls.filter(Ddl.source_ddl_id != None).all()))})
+        i.update({"added": i["id"] in src})
         i.update({"self": i["creator_id"] == user.id})
 
     return make_response(0, "OK", {"source_ddl_count": source_ddl_count, "source_ddls": source_ddls, "total_pages": total_pages})
