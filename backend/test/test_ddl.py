@@ -49,7 +49,7 @@ class TestDdl(unittest.TestCase):
                 'ddl_time': ddl_time,
                 'content': 'c'*4095,
                 'platform_uuid': platform_uuid,
-                'tag': 'gta'
+                'tag': ''
             })
             self.assertEqual(200, ret.status_code)
             ret = json.loads(ret.data.decode('utf-8'))
@@ -57,7 +57,7 @@ class TestDdl(unittest.TestCase):
             ddl = Ddl.query.get(ret['data']['id'])
             self.assertIsNotNone(ddl)
             self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.platform_uuid,ddl.tag),
-                ('t'*255,'c'*4095,ddl_time,platform_uuid,'gta'))
+                ('t'*255,'c'*4095,ddl_time,platform_uuid,''))
 
     def test_add_ddl_with_nonexist_course(self):
         with self.app.app_context():
@@ -126,7 +126,7 @@ class TestDdl(unittest.TestCase):
             ddl_time = (int(time.time())+3600)*1000
             create_time = (int(time.time()))*1000
             content = 'content'*100
-            tag = 'tag'
+            tag = ''
             course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
             platform_uuid = str(uuid.uuid4())
             ddl = Ddl(1,title,ddl_time,create_time,content,tag,course_uuid,platform_uuid)
@@ -135,7 +135,7 @@ class TestDdl(unittest.TestCase):
             title = 'newtitle'
             ddl_time = (int(time.time())+2*3600)*1000
             content = 'newcontent'*100
-            tag = 'newtag'
+            tag = ''
             course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
             platform_uuid = str(uuid.uuid4())
             ret = self.client.post('/ddl/update', headers={
@@ -166,7 +166,7 @@ class TestDdl(unittest.TestCase):
             ddl_time = (int(time.time())+3600)*1000
             create_time = (int(time.time()))*1000
             content = 'content'*100
-            tag = 'tag'
+            tag = ''
             course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
             platform_uuid = str(uuid.uuid4())
             ddl = Ddl(2,title,ddl_time,create_time,content,tag,course_uuid,platform_uuid)
@@ -195,7 +195,7 @@ class TestDdl(unittest.TestCase):
             ddl_time = (int(time.time())+3600)*1000
             create_time = (int(time.time()))*1000
             content = 'content'*100
-            tag = 'tag'
+            tag = ''
             course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
             platform_uuid = str(uuid.uuid4())
             ddl = Ddl(1,title,ddl_time,create_time,content,tag,course_uuid,platform_uuid)
@@ -218,6 +218,7 @@ class TestDdl(unittest.TestCase):
             self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.tag,ddl.course_uuid,ddl.platform_uuid,ddl.is_completed),
                 (title,content,ddl_time,tag,course_uuid,platform_uuid,False))
 
-    def test_update_nonexist_ddl(self):
-        with self.app.app_context():
+    # def test_update_nonexist_ddl(self):
+    #     with self.app.app_context():
+
 
