@@ -1,6 +1,7 @@
 <template>
   <nut-cell
     class="home-ddl-card"
+    :style="{color:(ddlData.ddl_time<now.valueOf()&&!ddlData.is_completed)?'#cd0f0f':(ddlData.tag==='紧急'&&!ddlData.is_completed)?'#ffb12a':'#676767'}"
     :title=ddlData.title
     :sub-title=ddlTime
     @click="ddlCardClick">
@@ -40,12 +41,12 @@ export default defineComponent({
   emits: ['onClick', 'onCompleteStatusChange'],
   setup({ddlData}, {emit}) {
     if (ddlData === undefined) return;
+
+    const now = new Date()
+
     const ddlCardClick = () => {
       emit("onClick", ddlData)
     };
-
-    // const ddlTime = (new Intl.DateTimeFormat("zh-CN", {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false}).format)(props.ddlData?.ddl_time);
-    // 上述用法会出现上午12:40或者24:40这种离谱的情况,太难受啦!!
 
     const ddlTime = formatTime(ddlData.ddl_time)
 
@@ -56,6 +57,7 @@ export default defineComponent({
     }
 
     return {
+      now,
       ddlCardClick,
       ddlTime,
       getPlatformInfo,
@@ -72,6 +74,7 @@ export default defineComponent({
   margin-bottom: 6px;
   align-items: center;
   margin-left: 2vw;
+  color: #676767;
   width: 96vw;
   height: 70px;
   border-radius: 10px;
@@ -84,4 +87,9 @@ export default defineComponent({
   margin-right: 20px;
 }
 
+/*以下样式对于有副标题的 Cell 没有作用*/
+.nut-cell__title {
+  width: 64vw;
+  flex: inherit;
+}
 </style>

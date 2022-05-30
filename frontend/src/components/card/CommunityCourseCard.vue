@@ -9,6 +9,19 @@
         :src="getPlatformInfo(course.platform_uuid).icon"
       />
     </template>
+    <template #link>
+      <nut-icon
+        style="position: absolute;right: 7vw"
+        name="follow"
+        size="24"
+      />
+      <nut-icon
+        style="position: absolute;right:2vw;padding-top: 4vw;padding-bottom: 4vw;padding-left: 4vw;padding-right: 4vw;"
+        :name="course.subscribed?'heart-fill':''"
+        color="#ff4e4e"
+        size="32"
+        @click.stop="subscribeCourse"/>
+    </template>
   </nut-cell>
 
 </template>
@@ -22,15 +35,22 @@ export default defineComponent({
   props: {
     course: Object
   },
-  emits: ['onClick', 'onCompleteStatusChange'],
+  emits: ['onClick', 'onSubscribeStatusChange'],
   setup({course}, {emit}) {
     if (course === undefined) return;
     const courseCardClick = () => {
       emit("onClick", course)
     };
 
+    const subscribeCourse = () => {
+      if (course === undefined) return;
+      course.subscribed = !course.subscribed
+      emit("onSubscribeStatusChange", course)
+    }
+
     return {
       courseCardClick,
+      subscribeCourse,
       getPlatformInfo,
     };
   }
@@ -47,6 +67,7 @@ export default defineComponent({
   width: 96vw;
   height: 90px;
   border-radius: 10px;
+  font-size: 18px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
@@ -54,6 +75,11 @@ export default defineComponent({
   width: 36px;
   height: 36px;
   margin-right: 16px;
+}
+
+.nut-cell__title {
+  width: 64vw;
+  flex: inherit;
 }
 
 </style>

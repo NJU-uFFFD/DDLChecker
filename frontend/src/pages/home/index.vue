@@ -78,15 +78,15 @@
 
     <!-- DDL 详情 -->
     <nut-dialog
-      :title=state.ddlDetailData.title
+      :title="(state.ddlDetailData.tag===''?'':'【'+state.ddlDetailData.tag+'】 ')+state.ddlDetailData.title"
       close-on-click-overlay
       lock-scroll
       v-model:visible="state.showDetails">
       <nut-countdown
         #default
-        style="display: flex;justify-content: center"
+        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#cd0f0f':'#676767'}"
         :end-time="state.ddlDetailData.ddl_time"
-        format="还剩 DD 天 HH 时 mm 分 ss 秒"
+        :format="state.ddlDetailData.ddl_time>state.now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />
       <nut-cell
         style="box-shadow: 0 0 0 0"
@@ -132,6 +132,13 @@
             :border="false"
           />
         </nut-cell>
+        <nut-cell>
+          <nut-radiogroup v-model="state.ddlDetailData.tag" direction="horizontal">
+            <nut-radio shape="button" label="">无Tag</nut-radio>
+            <nut-radio shape="button" label="宽松">宽松</nut-radio>
+            <nut-radio shape="button" label="紧急">紧急</nut-radio>
+          </nut-radiogroup>
+        </nut-cell>
       </nut-cell-group>
       <nut-button
         type="info"
@@ -157,7 +164,6 @@
       safe-area-inset-bottom
       v-model:visible="state.showAdd">
       <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
-        <!--TODO: 表单内容检验-->
         <nut-cell>
           <nut-input
             v-model="state.addInfo.title"
@@ -187,6 +193,13 @@
             :border="false"
             placeholder="请输入待办详情"
           />
+        </nut-cell>
+        <nut-cell>
+          <nut-radiogroup v-model="state.addInfo.tag" direction="horizontal">
+            <nut-radio shape="button" label="">无Tag</nut-radio>
+            <nut-radio shape="button" label="宽松">宽松</nut-radio>
+            <nut-radio shape="button" label="紧急">紧急</nut-radio>
+          </nut-radiogroup>
         </nut-cell>
       </nut-cell-group>
       <nut-button
@@ -256,6 +269,7 @@ import HomeDdlCard from "../../components/card/HomeDdlCard.vue";
 import {DDLData} from "../../types/DDLData";
 import {request} from "../../util/request"
 import Taro from "@tarojs/taro";
+import {Tag} from "@nutui/nutui-taro";
 
 export default {
   name: 'home',
@@ -276,13 +290,15 @@ export default {
       "more": true,
       "addInfo": {
         "title": "",
-        "content": ""
+        "content": "",
+        "tag": ""
       },
       "deleteInfo": {},
       "showDetails": false,
       "ddlDetailData": {},
       "pickerDate": new Date(),
-      "ddlEditSubmitting": false
+      "ddlEditSubmitting": false,
+      "now": new Date()
     })
 
     let toastInfo = reactive({
@@ -314,12 +330,12 @@ export default {
     })
 
     // 保存上次筛选选项于本地
-    Taro.getStorage({
-      key: "filterGroup",
-      success: (res) => {
-        menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
-      }
-    })
+    // Taro.getStorage({
+    //   key: "filterGroup",
+    //   success: (res) => {
+    //     menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
+    //   }
+    // })
 
     const onMenuChange = (group: string) => {
       if (group.indexOf('1') == -1 && group.indexOf('2') == -1)
@@ -333,10 +349,10 @@ export default {
         })[0] == '4') menu.filterCheckboxGroup.push('3')
         else menu.filterCheckboxGroup.push('4')
       menu.filterCheckboxTempGroup = menu.filterCheckboxGroup.filter(() => true)
-      Taro.setStorage({
-        key: "filterGroup",
-        data: JSON.stringify(menu.filterCheckboxTempGroup)
-      })
+      // Taro.setStorage({
+      //   key: "filterGroup",
+      //   data: JSON.stringify(menu.filterCheckboxTempGroup)
+      // })
       listRefresh()
     }
 
@@ -365,6 +381,14 @@ export default {
 
     // 添加 DDL 相关
     function submitDdl() {
+      if (state.addInfo.title.length > 32) {
+        openToast('fail', "待办标题过长!")
+        return
+      }
+      if (state.addInfo.content.length > 128) {
+        openToast('fail', "待办详情过长!")
+        return
+      }
       state.ddlAddSubmitting = true
       const r = request({
         "method": "POST",
@@ -372,7 +396,8 @@ export default {
         "data": {
           "title": state.addInfo.title || "新建待办",
           "ddl_time": state.pickerDate.getTime(),
-          "content": state.addInfo.content || "无详情"
+          "content": state.addInfo.content || "无详情",
+          "tag": state.addInfo.tag
         }
       })
 
@@ -393,7 +418,8 @@ export default {
       }).finally(() => {
         state.addInfo = {
           "title": "",
-          "content": ""
+          "content": "",
+          "tag": ""
         }
         state.pickerDate = new Date()
         state.showAdd = false
@@ -403,6 +429,14 @@ export default {
 
     //修改 DDL 相关
     function editDdl(ddlData) {
+      if (ddlData.title.length > 32) {
+        openToast('fail', "待办标题过长!")
+        return
+      }
+      if (ddlData.content.length > 128) {
+        openToast('fail', "待办详情过长!")
+        return
+      }
       state.ddlEditSubmitting = true
       const r = request({
         method: "POST",
@@ -411,7 +445,8 @@ export default {
           "id": ddlData.id,
           "title": ddlData.title,
           "ddl_time": state.pickerDate.getTime(),
-          "content": ddlData.content
+          "content": ddlData.content,
+          "tag": ddlData.tag
         }
       })
 
@@ -445,17 +480,22 @@ export default {
         filter['is_overtime'] = menu.filterCheckboxGroup.indexOf('4') != -1;
       }
 
+      let data = {
+        "page": page,
+        "size": size,
+        "filter": filter,
+        "sorter": {
+          "reversed": menu.value
+        }
+      }
+      if ((menu.filterCheckboxGroup.indexOf('6') == -1) != (menu.filterCheckboxGroup.indexOf('5') == -1)) {
+        data['tag'] = menu.filterCheckboxGroup.indexOf('6') == -1 ? '宽松' : '紧急'
+      }
+
       const r = request({
         path: "/ddl/list",
         method: "POST",
-        data: {
-          "page": page,
-          "size": size,
-          "filter": filter,
-          "sorter": {
-            "reversed": menu.value
-          }
-        }
+        data: data
       })
 
       r.then((res) => {
@@ -617,5 +657,18 @@ export default {
 
 .nut-picker-item {
   visibility: hidden;
+}
+
+.nut-radio__button {
+  height: 8vh;
+  width: 25vw;
+  font-size: 20px;
+  justify-content: center;
+  border-radius: 20px;
+  color: #676767;
+}
+
+.nut-radio__button--active {
+  color: #2c68ff;
 }
 </style>
