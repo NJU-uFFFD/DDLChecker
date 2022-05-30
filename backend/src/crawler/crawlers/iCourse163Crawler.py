@@ -1,9 +1,6 @@
 import time
 
 import requests
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
 
 from crawler.Crawler import Crawler
 
@@ -28,6 +25,10 @@ class iCourse163Crawler(Crawler):
         })
 
         from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions
+        from selenium.webdriver.support.wait import WebDriverWait
+
         with webdriver.Chrome() as driver:
 
             driver.get("https://www.icourse163.org/member/login.htm#/webLoginIndex")
@@ -42,17 +43,19 @@ class iCourse163Crawler(Crawler):
             )
             phone_login.click()
 
+            time.sleep(5)
+
             username_input = WebDriverWait(driver, 5).until(
-                expected_conditions.presence_of_element_located((By.CLASS_NAME, "j-inputtext dlemail j-nameforslide"))
+                expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'input[type="tel"]'))
             )
 
             password_input = WebDriverWait(driver, 5).until(
-                expected_conditions.presence_of_element_located((By.CLASS_NAME, "j-inputtext dlpwd"))
+                expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'input[type="password"]'))
             )
 
             username_input.sendkeys(self.login_data['account'])
             password_input.sendkeys(self.login_data['password'])
-            time.sleep(5)
+            time.sleep(5000)
 
 
 
