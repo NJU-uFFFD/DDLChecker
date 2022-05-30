@@ -2,8 +2,6 @@ import json
 import logging
 
 from flask import Blueprint
-
-from crawler import CrawlerException
 from crawler.util import list_crawlers
 from routes.utils import get_context_user, make_response, check_data
 from routes.rules.account_rules import *
