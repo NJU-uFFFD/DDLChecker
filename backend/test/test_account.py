@@ -3,12 +3,12 @@ import unittest
 from app import app
 from db import db
 from db.account import Account
-from db.ddl import Ddl
-from db.user import User
 from db.course import Course
+from db.user import User
 import json
 import uuid
 
+from db.userSubs import UserSubscriptions
 from util.encrypt import aes_encrypt
 
 
@@ -149,4 +149,65 @@ class TestAccount(unittest.TestCase):
             ret = json.loads(ret.data.decode("utf-8"))
             self.assertEqual(ret['code'], 0)
             self.assertIsNone(Account.query.filter(Account.id == 1).first())
+            self.assertIsNotNone(Account.query.filter(Account.id == 2).first())
+
+    def test_delete_account_with_sub(self):
+        with self.app.app_context():
+            cid = str(uuid.uuid4())
+            course = Course("test", cid, '68dc1014-7bfe-4ea3-a000-5734303d9f59')
+            account = Account("1", '68dc1014-7bfe-4ea3-a000-5734303d9f59', aes_encrypt(json.dumps({"account": "田所浩二", "password": "nmsl"})))
+            sub = UserSubscriptions("1", cid, '68dc1014-7bfe-4ea3-a000-5734303d9f59', True)
+            db.session.add(course)
+            db.session.add(account)
+            db.session.add(sub)
+            db.session.commit()
+            ret = self.client.post("/account/delete", headers={
+                'x-wx-source': 'test',
+                'x-wx-openid': '114514'
+            }, json={
+                "id": 1
+            })
+            self.assertEqual(ret.status_code, 200)
+            ret = json.loads(ret.data.decode("utf-8"))
+            self.assertEqual(ret['code'], 0)
+            self.assertIsNone(Account.query.filter(Account.id == 1).first())
+            self.assertEqual(UserSubscriptions.query.count(), 0)
+
+    def test_delete_others_account(self):
+        with self.app.app_context():
+            account = Account("1", '68dc1014-7bfe-4ea3-a000-5734303d9f59', aes_encrypt(json.dumps({"account": "田所浩二", "password": "nmsl"})))
+            db.session.add(account)
+            account = Account("2", '68dc1014-7bfe-4ea3-a000-5734303d9f59', aes_encrypt(json.dumps({"account": "田所浩三", "password": "nmysl"})))
+            db.session.add(account)
+            db.session.commit()
+            ret = self.client.post("/account/delete", headers={
+                'x-wx-source': 'test',
+                'x-wx-openid': '114514'
+            }, json={
+                "id": 2
+            })
+            self.assertEqual(ret.status_code, 403)
+            ret = json.loads(ret.data.decode("utf-8"))
+            self.assertEqual(ret['code'], -1)
+            self.assertIn("delete others' account", ret['msg'])
+            self.assertIsNotNone(Account.query.filter(Account.id == 1).first())
+            self.assertIsNotNone(Account.query.filter(Account.id == 2).first())
+
+    def test_delete_nonexistent_account(self):
+        with self.app.app_context():
+            account = Account("1", '68dc1014-7bfe-4ea3-a000-5734303d9f59', aes_encrypt(json.dumps({"account": "田所浩二", "password": "nmsl"})))
+            db.session.add(account)
+            account = Account("2", '68dc1014-7bfe-4ea3-a000-5734303d9f59', aes_encrypt(json.dumps({"account": "田所浩三", "password": "nmysl"})))
+            db.session.add(account)
+            db.session.commit()
+            ret = self.client.post("/account/delete", headers={
+                'x-wx-source': 'test',
+                'x-wx-openid': '114514'
+            }, json={
+                "id": 3
+            })
+            self.assertEqual(ret.status_code, 404)
+            ret = json.loads(ret.data.decode("utf-8"))
+            self.assertEqual(ret['code'], -1)
+            self.assertIsNotNone(Account.query.filter(Account.id == 1).first())
             self.assertIsNotNone(Account.query.filter(Account.id == 2).first())
