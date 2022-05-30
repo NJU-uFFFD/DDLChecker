@@ -159,7 +159,7 @@ class TestUser(unittest.TestCase):
                 'x-wx-source':'test',
                 'x-wx-openid':'114514'
                 },json={
-                'avator': 114514
+                'avatar': 114514
                 })
             self.assertEqual(400,ret.status_code)
             ret = json.loads(ret.data.decode('utf-8'))
