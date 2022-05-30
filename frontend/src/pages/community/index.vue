@@ -21,24 +21,50 @@
       @scrolltolower="listLower"
       enableBackToTop="true">
 
-      <!--      <nut-swipe v-for="course in courses" :key="course">-->
       <CommunityCourseCard
         v-for="course in courses"
         :key="course"
         :course="course"
         @onClick="openCourse(course)"
         @onSubscribeStatusChange="subscribe"/>
-      <!--        <template #right>-->
-      <!--          <nut-button-->
-      <!--            style="height:100%; border-radius: 10px;margin-right: 5px"-->
-      <!--            type="primary"-->
-      <!--            @click="subscribe(course)">-->
-      <!--            订阅-->
-      <!--          </nut-button>-->
-      <!--        </template>-->
-      <!--      </nut-swipe>-->
       <nut-divider v-if="!more">没有更多课程了捏</nut-divider>
     </scroll-view>
+
+
+    <!-- 手动添加课程的弹出层 -->
+    <nut-popup
+      position="bottom"
+      style="height:40vh;"
+      round
+      safe-area-inset-bottom
+      v-model:visible="showAdd">
+      <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+        <nut-cell>
+          <nut-input
+            v-model="addInfo.title"
+            style="height: auto;font-size: 20px;padding-left: 0;"
+            maxLength="32"
+            :border="false"
+            placeholder="新建课程"
+          />
+        </nut-cell>
+      </nut-cell-group>
+      <nut-button
+        type="info"
+        plain
+        style="height:8vh;width:40vw;left:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+        @click="showAdd = false;">
+        取消
+      </nut-button>
+      <nut-button
+        type="info"
+        style="height:8vh;width:40vw;right:6.6vw;position:fixed;bottom: 5vh;font-size: 20px"
+        @click="submitCourse"
+        :loading="courseAddSubmitting">
+        添加
+      </nut-button>
+    </nut-popup>
+
     <!-- Toast -->
     <nut-toast
       :msg="toastInfo.msg"
@@ -51,6 +77,14 @@
       :center="false"
       bottom="16%"
     />
+
+    <!-- 手动添加课程的按钮 -->
+    <nut-button
+      type="primary"
+      class="add_button"
+      style="position: fixed;height: 8vh;width: 8vh;right: 30px;bottom: 30px;border-radius:4vh;box-shadow: 0 4px 15px 0 rgba(237, 238, 241, 10)"
+      icon="uploader"
+      @click="showAdd = true"/>
 
   </view>
 </template>
@@ -77,8 +111,13 @@ export default {
         show: false,
         cover: false,
       },
+      addInfo: {
+        title: ''
+      },
       searchValue: '',
-      searching: false
+      searching: false,
+      showAdd: false,
+      courseAddSubmitting: false
     }
   },
 
@@ -160,6 +199,59 @@ export default {
       this.toastInfo.show = true
       this.toastInfo.msg = msg
       this.toastInfo.type = type
+    },
+    submitCourse() {
+      if (this.addInfo.title.length === 0) {
+        Taro.showModal({
+          title: '提示',
+          content: '添加的课程不得为空.',
+          showCancel: false
+        })
+        return
+      }
+      if (this.addInfo.title.length > 32) {
+        openToast('fail', "课程标题过长!")
+        return
+      }
+      this.courseAddSubmitting = true
+      const r = request({
+        "method": "POST",
+        "path": "/community/course/add",
+        "data": {
+          "course_name": this.addInfo.title,
+          "platform_uuid": '00000000-0000-0000-0000-000000000000'
+        }
+      })
+
+      r.then((res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          this.showAdd = false
+          this.openToast('success', "添加成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: '添加课程出错: ' + JSON.stringify(reason),
+          showCancel: false
+        })
+      }).finally(() => {
+        this.addInfo = {
+          "title": "",
+        }
+        this.showAdd = false
+        this.courseAddSubmitting = false
+        this.page = 1
+        this.searchValue = ''
+        this.fetchCourses(this.page, 10, this.searchValue, (d) => {
+          this.courses = d
+          this.page += 1
+
+        })
+      })
+
+
     }
   },
   setup() {
