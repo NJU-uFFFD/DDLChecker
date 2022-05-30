@@ -184,6 +184,7 @@ export default {
     },
     searchCourseOrDdl() {
       this.page = 1
+      this.more = false
       this.fetchCourses(this.page, 10, this.searchValue, (d) => {
         this.courses = d
         this.page += 1
@@ -268,6 +269,7 @@ export default {
         this.courseAddSubmitting = false
         this.page = 1
         this.searchValue = ''
+        this.more = true
         this.fetchCourses(this.page, 10, this.searchValue, (d) => {
           this.courses = d
           this.page += 1
