@@ -21,21 +21,36 @@
       @scrolltolower="listLower"
       enableBackToTop="true">
 
-      <nut-swipe v-for="course in courses" :key="course">
-        <CommunityCourseCard
-          :course="course"
-          @onClick="openCourse(course)"/>
-        <template #right>
-          <nut-button
-            style="height:100%; border-radius: 10px;margin-right: 5px"
-            type="primary"
-            @click="subscribe(course)">
-            订阅
-          </nut-button>
-        </template>
-      </nut-swipe>
+      <!--      <nut-swipe v-for="course in courses" :key="course">-->
+      <CommunityCourseCard
+        v-for="course in courses"
+        :key="course"
+        :course="course"
+        @onClick="openCourse(course)"
+        @onSubscribeStatusChange="subscribe"/>
+      <!--        <template #right>-->
+      <!--          <nut-button-->
+      <!--            style="height:100%; border-radius: 10px;margin-right: 5px"-->
+      <!--            type="primary"-->
+      <!--            @click="subscribe(course)">-->
+      <!--            订阅-->
+      <!--          </nut-button>-->
+      <!--        </template>-->
+      <!--      </nut-swipe>-->
       <nut-divider v-if="!more">没有更多课程了捏</nut-divider>
     </scroll-view>
+    <!-- Toast -->
+    <nut-toast
+      :msg="toastInfo.msg"
+      v-model:visible="toastInfo.show"
+      :type="toastInfo.type"
+      @closed="toastInfo.onClosed"
+      :cover="toastInfo.cover"
+      :duration="1000"
+      bg-color="rgba(0, 0, 0, 0.5)"
+      :center="false"
+      bottom="16%"
+    />
 
   </view>
 </template>
@@ -55,7 +70,13 @@ export default {
     return {
       courses: [],
       page: 1,
-      more: true
+      more: true,
+      toastInfo: {
+        msg: 'toast',
+        type: 'text',
+        show: false,
+        cover: false,
+      }
     }
   },
 
@@ -99,7 +120,34 @@ export default {
       })
     },
     subscribe(data) {
+      console.log((data.subscribed === true ? "订阅课程 ID: " : "撤销订阅课程 ID: ") + data.course_uuid + " 并更新")
+      const sPath = data.subscribed === true ? "/community/course/subscribe" : "/community/course/unsubscribe"
+      const r = request({
+        method: "POST",
+        path: sPath,
+        data: {
+          "course_uuid": data.course_uuid,
+        }
+      })
 
+      r.then((res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          this.openToast('success', data.subscribed === true ? "订阅课程成功!" : "撤销订阅成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: (data.subscribed === true ? '订阅课程出错: ' : '撤销订阅出错: ') + JSON.stringify(reason),
+          showCancel: false
+        })
+      })
+    },
+    openToast(type, msg) {
+      this.toastInfo.show = true
+      this.toastInfo.msg = msg
+      this.toastInfo.type = type
     }
   },
   setup() {

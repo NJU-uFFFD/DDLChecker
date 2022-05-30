@@ -45,8 +45,8 @@
               progress="100"
               radius="70"
               strokeWidth="10"
-              color="#e7a231">
-              <div style="color:#e7a231">
+              color="#ffb12a">
+              <div style="color:#ffb12a">
                 <div class="number_title">{{ urgentNumber }}</div>
                 件
                 <div>剩余紧急</div>
@@ -73,7 +73,6 @@
 
       <nut-cell-group
         title="选择日期以查看当日 DDL"/>
-      <!-- 下面这个双向绑定有bug,没法回收,最新测试版已经修了,就看什么时候发布正式版 -->
       <nut-collapse
         v-model:active="state.activeName"
         icon="down-arrow">
@@ -85,22 +84,12 @@
             :maxDate="lastTime"
             @day-click="changeDate"
           />
-          <!--            <nut-calendar-->
-          <!--              style="display: flex;left:2vw;width: 96%;height:50vh;overflow: hidden;border-radius: 10px"-->
-          <!--              :poppable="false"-->
-          <!--              :start-date="startDateStr"-->
-          <!--              :end-date="endDateStr"-->
-          <!--              :is-auto-back-fill="true"-->
-          <!--              :show-title="false"-->
-          <!--              :show-sub-title="false"-->
-          <!--              @choose="chooseDate"-->
-          <!--            />-->
         </nut-collapse-item>
       </nut-collapse>
 
       <nut-cell-group
         v-if="ddls.ddl_list!==undefined&&ddls.ddl_list.length!==0"
-        :title="getDateZhCNString()+' 到期的DDL'"/>
+        :title="getDateZhCNString()+' 到期的 DDL'"/>
       <HistoryDdlCard
         v-if="ddls.ddl_list!==undefined&&ddls.ddl_list.length!==0"
         v-for="data in ddls.ddl_list" :key="data"
@@ -110,7 +99,7 @@
 
       <nut-cell-group
         v-if="ddls.complete_list!==undefined&&ddls.complete_list.length!==0"
-        :title="getDateZhCNString()+' 完成的DDL'"/>
+        :title="getDateZhCNString()+' 完成的 DDL'"/>
       <HistoryDdlCard
         v-if="ddls.complete_list!==undefined&&ddls.complete_list.length!==0"
         v-for="data in ddls.complete_list" :key="data"
@@ -120,7 +109,7 @@
 
       <nut-cell-group
         v-if="ddls.create_list!==undefined&&ddls.create_list.length!==0"
-        :title="getDateZhCNString()+' 创建的DDL'"/>
+        :title="getDateZhCNString()+' 创建的 DDL'"/>
       <HistoryDdlCard
         v-if="ddls.create_list!==undefined&&ddls.create_list.length!==0"
         v-for="data in ddls.create_list" :key="data"
@@ -133,16 +122,16 @@
     </scroll-view>
 
     <nut-dialog
-      :title=state.ddlDetailData.title
+      :title="(state.ddlDetailData.tag===''?'':'【'+state.ddlDetailData.tag+'】 ')+state.ddlDetailData.title"
       close-on-click-overlay
       lock-scroll
       v-model:visible="state.showDetails"
       no-footer>
       <nut-countdown
         #default
-        style="display: flex;justify-content: center"
+        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#cd0f0f':'#676767'}"
         :end-time="state.ddlDetailData.ddl_time"
-        format="还剩 DD 天 HH 时 mm 分 ss 秒"
+        :format="state.ddlDetailData.ddl_time>state.now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />
       <nut-cell
         style="box-shadow: 0 0 0 0"
@@ -183,6 +172,7 @@ export default {
       "calendarDate": new Date(),
       "showDetails": false,
       "ddlDetailData": {},
+      "now": new Date
     })
 
     let ddls = reactive<{ ddl_list: DDLData [], create_list: DDLData[], complete_list: DDLData[] }>({
@@ -346,16 +336,5 @@ export default {
   padding: 8px 10px;
 }
 
-.nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day-active {
-  border-radius: 12px;
-}
-
-.nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day {
-  height: 50px;
-}
-
-.nut-calendar .nut-calendar-content .calendar-months-panel .calendar-month-con .calendar-month-day .calendar-curr-tip-curr {
-  bottom: 0;
-}
 
 </style>

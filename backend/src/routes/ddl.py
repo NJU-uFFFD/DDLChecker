@@ -57,7 +57,7 @@ def list_ddl():
     }
     """
 
-    scoped_session = db.create_scoped_session()
+    # scoped_session = db.create_scoped_session()
 
     user, data = get_context_user()
     check_data(ListDDLsRules, data)
@@ -106,8 +106,8 @@ def list_ddl():
 
     page = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
                                                 else Ddl.ddl_time).paginate(data['page'], data['size'])
-    session = Session.object_session(user)
-    session.close()
+    # session = Session.object_session(user)
+    # session.close()
     ddl_count = page.total
     total_pages = page.pages
     return make_response(0, "OK", {'ddl_list': page.items, 'ddl_count': ddl_count, "total_pages": total_pages})
