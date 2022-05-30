@@ -16,7 +16,7 @@ class Account(db.Model):
     fields = db.Column(db.String(4096))
     status = db.Column(db.String(256))
 
-    def __init__(self, userid, platform_uuid, fields, status="待爬取"):
+    def __init__(self, userid, platform_uuid, fields, status="未验证, 待爬取"):
         self.userid = userid
         self.platform_uuid = platform_uuid
         self.fields = fields
