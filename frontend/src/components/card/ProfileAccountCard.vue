@@ -1,13 +1,13 @@
 <template>
   <nut-cell
-    class="profile-account-card"
+    class="profile-setting-card"
     :title="accountData!=null?getPlatformInfo(accountData.platform_uuid).name:'添加账号'"
     :desc=description
     @click="cardClick">
     <template #icon>
       <img
         class="profile-site-icon"
-        :src="accountData!=null?getPlatformInfo(accountData.platform_uuid).icon:'/assets/images/add.png'"
+        :src="accountData!=null?getPlatformInfo(accountData.platform_uuid).icon:'cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/add.png'"
       />
     </template>
   </nut-cell>
@@ -40,7 +40,7 @@ export default defineComponent({
 </script>
 
 <style>
-.profile-account-card {
+.profile-setting-card {
   align-items: center;
   margin-left: 10px;
   margin-top: 0;

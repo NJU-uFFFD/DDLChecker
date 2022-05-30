@@ -10,11 +10,13 @@ class User(db.Model):
     username: str
     account_add_times: int
     avatar: int
+    last_login: int
     id = db.Column(db.Integer, primary_key=True)
     openid = db.Column(db.String(150), unique=True)
     username = db.Column(db.String(100))
     account_add_times = db.Column(db.Integer)
     avatar = db.Column(db.Integer)
+    last_login = db.Column(db.BigInteger)
     source_course_created = db.relationship("Course", backref="creator", lazy="dynamic")
     source_ddls_created = db.relationship("SourceDdl", backref="creator", lazy='dynamic')
     ddls = db.relationship('Ddl', backref='user', lazy='dynamic')

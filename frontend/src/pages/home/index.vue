@@ -226,6 +226,7 @@
       @confirm="({selectedValue : t}) =>state.pickerDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4])"
       :min-date="getMinDate()"
     />
+
     <!--  删除 DDL 相关  -->
     <nut-dialog
       title="删除 DDL"
@@ -515,7 +516,7 @@ export default {
       if (state.refreshing) return
       state.refreshing = true
       console.log("ddl refresh.")
-      state.offset = 1
+      state.offset = 2
       state.more = true
       fetchDdls(1, 10, (list: DDLData[]) => {
         ddls.ddl_list = list
@@ -531,8 +532,8 @@ export default {
       // 滑动到底部, 获取新的 ddl
       fetchDdls(state.offset, 10, (list) => {
         ddls.ddl_list.push.apply(ddls.ddl_list, list)
+        state.offset += 1
       })
-      state.offset += 1
     }
 
     // 获取 DDL 时间下限

@@ -2,7 +2,7 @@
   <nut-cell
     class="history-ddl-card"
     :style="{color:(ddlData.ddl_time<now.valueOf()&&!ddlData.is_completed)?'#ee1919':(ddlData.tag==='紧急'&&!ddlData.is_completed)?'#ffb12a':'#676767'}"
-    :title="ddlData.title.substring(0, 20) + (ddlData.title.length > 20 ? '...' : '')"
+    :title="ddlData.title.substring(0, 30) + (ddlData.title.length > 30 ? '...' : '')"
     @click="ddlCardClick">
     <template #icon>
       <img
