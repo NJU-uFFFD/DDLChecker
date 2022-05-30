@@ -67,9 +67,10 @@ class iCourse163Crawler(Crawler):
                 expected_conditions.presence_of_element_located((By.ID, "submitBtn"))
             )
 
+            time.sleep(1)
             submit_btn.click()
 
-            for _ in range(1, 7):
+            for _ in range(0, 12):
                 time.sleep(1)
                 if driver.current_url == "https://www.icourse163.org/":
                     break
@@ -117,7 +118,7 @@ class iCourse163Crawler(Crawler):
 
     def fetch_course(self) -> list:
         t = self.__fetch_course()
-        print(t)
+        # print(t)
         temp = []
         for i in t:
             temp.append((i['name'], str(uuid.uuid5(uuid.UUID(ICOURSE163_UUID), str(i['termPanel']['fromTermId'])))))
@@ -125,6 +126,7 @@ class iCourse163Crawler(Crawler):
 
     def fetch_ddl(self) -> list:
         courses = self.__fetch_course()
+        print(courses)
         temp = []
         for c in courses:
             r = self.session.post("https://www.icourse163.org/web/j/courseBean.getLastLearnedMocTermDto.rpc", params={

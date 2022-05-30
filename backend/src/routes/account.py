@@ -77,7 +77,6 @@ def add_account():
             sub = UserSubscriptions(user.id, c[1], account.platform_uuid)
             db.session.add(sub)
 
-
     db.session.add(account)
     db.session.commit()
 
