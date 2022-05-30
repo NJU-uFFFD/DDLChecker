@@ -21,7 +21,7 @@
       <nut-swipe v-for="ddl in ddls" :key="ddl">
         <nut-cell
           class="course-ddl-card"
-          :style="{color:(ddl.ddl_time<now.valueOf())?'#cd0f0f':(ddl.tag==='紧急')?'#ffb12a':'#676767'}"
+          :style="{color:(ddl.ddl_time<now.valueOf())?'#cd0f0f':'#676767'}"
           :title=ddl.title
           :sub-title=formatTime(ddl.ddl_time)
           @click="showDetail(ddl)">
@@ -57,7 +57,7 @@
 
 
     <nut-dialog
-      :title="(ddlDetailData.tag===''?'':'【'+ddlDetailData.tag+'】 ')+ddlDetailData.title"
+      :title="ddlDetailData.title"
       close-on-click-overlay
       lock-scroll
       v-model:visible="showDetails">
@@ -434,9 +434,15 @@ export default {
   align-items: center;
   margin-left: 2vw;
   width: 96vw;
-  height: 70px;
+  height: 80px;
   border-radius: 10px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
+}
+
+.nut-cell__title {
+  width: 64vw;
+  flex: inherit;
+  line-height: 20px;
 }
 
 .course-ddl-site-icon {
