@@ -20,6 +20,9 @@ function getPlatformInfo(uuid: string): string {
   return table[uuid] || {"icon": "/assets/images/hand.png", "name": "手动添加"}
 }
 
+function getAvatarUrl(avatar: number): string {
+  return `/assets/images/avatar${avatar}.png`
+}
 
 function formatTime(timestamp: number): string {
   const weekdayZhCN = {"0": "日", "1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六"}
@@ -31,4 +34,4 @@ function formatTime(timestamp: number): string {
           ${t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`)
 }
 
-export {getPlatformInfo, formatTime}
+export {getPlatformInfo, getAvatarUrl, formatTime}

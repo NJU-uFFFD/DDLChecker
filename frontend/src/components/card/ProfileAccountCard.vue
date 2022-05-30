@@ -1,6 +1,6 @@
 <template>
   <nut-cell
-    class="profile-account-card"
+    class="profile-setting-card"
     :title="accountData!=null?getPlatformInfo(accountData.platform_uuid).name:'添加账号'"
     :desc=description
     @click="cardClick">
@@ -40,7 +40,7 @@ export default defineComponent({
 </script>
 
 <style>
-.profile-account-card {
+.profile-setting-card {
   align-items: center;
   margin-left: 10px;
   margin-top: 0;
