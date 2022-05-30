@@ -25,4 +25,4 @@ class User(db.Model):
         self.username = username
         self.openid = openid
         self.account_add_times = account_add_times
-        self.avatar = random.randint(1, 10)
+        self.avatar = random.randint(1, 30)
