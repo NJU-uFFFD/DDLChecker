@@ -44,7 +44,7 @@
               v-for="i in 30" :key="i">
               <nut-avatar
                 size="large"
-                :icon="`/assets/images/avatar${i}.png`"
+                :icon="`cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/avatar${i}.png`"
                 @active-avatar="state.avatar=i;state.profileDetail.avatar=i;changeProfile(state.profileDetail)"
               />
             </nut-grid-item>
