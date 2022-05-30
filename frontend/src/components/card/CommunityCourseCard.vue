@@ -1,7 +1,7 @@
 <template>
   <nut-cell
     class="community-course-card"
-    :title=course.course_name
+    :title="course.course_name.substring(0, 45) + (course.course_name.length > 45 ? '...' : '')"
     @click="courseCardClick">
     <template #icon>
       <img
@@ -67,7 +67,7 @@ export default defineComponent({
   width: 96vw;
   height: 90px;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: 16px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
 
@@ -80,6 +80,7 @@ export default defineComponent({
 .nut-cell__title {
   width: 64vw;
   flex: inherit;
+  line-height: 22px;
 }
 
 </style>

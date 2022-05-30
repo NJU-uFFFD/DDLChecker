@@ -466,7 +466,4 @@ export default {
   margin-top: 15px;
 }
 
-.nut-cell-group {
-  height: 30px;
-}
 </style>
