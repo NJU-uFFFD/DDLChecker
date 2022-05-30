@@ -61,6 +61,7 @@ def add_account():
             crawler.login(data['fields'])
             courses = crawler.fetch_course()
             logging.info(courses)
+            account.status = "已验证, 待爬取"
         except Exception as e:
             logging.exception(e)
             return make_response(-1, str(e), {})
@@ -75,6 +76,7 @@ def add_account():
         for c in courses:
             sub = UserSubscriptions(user.id, c[1], account.platform_uuid)
             db.session.add(sub)
+
 
     db.session.add(account)
     db.session.commit()
