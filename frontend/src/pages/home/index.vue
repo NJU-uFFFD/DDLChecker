@@ -54,7 +54,7 @@
       <nut-swipe v-for="data in ddl_list" :key="data">
         <HomeDdlCard
           :ddlData="data"
-          @onClick="state.ddlDetailData = data; state.showDetails = true"
+          @onClick="state.ddlDetailData = data; state.pickerDate = new Date(state.ddlDetailData.ddl_time); state.showDetails = true"
           @onCompleteStatusChange="completeDdl"/>
         <template #right>
           <nut-button
