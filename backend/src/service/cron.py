@@ -108,7 +108,7 @@ def cron_work():
                         if ddl['course_uuid'] in already_done:
                             continue
 
-                        t = SourceDdl(ddl['course_uuid'], c.platform_uuid, ddl['title'], ddl['content'], "[]",
+                        t = SourceDdl(ddl['course_uuid'], c.platform_uuid, ddl['title'], ddl['content'], "",
                                       ddl['ddl_time'], ddl['create_time'])
                         db.session.add(t)
                 already_done.add(course_uuid)
@@ -122,8 +122,8 @@ def cron_work():
     for sub in UserSubscriptions.query.all():
         updated = sub.last_updated
         for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid, SourceDdl.creator_id == None).all():
-            if ddl.ddl_time > int(time.time() * 1000) and ddl.ddl_time > updated:
-                to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "[]",
+            if ddl.ddl_time > int(time.time() * 1000) and ddl.create_time > updated:
+                to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "",
                              sub.course_uuid, sub.platform_uuid, ddl.id)
                 db.session.add(to_add)
         sub.last_updated = now_time

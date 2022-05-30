@@ -118,7 +118,7 @@ def subscribe_course():
 
     for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid, SourceDdl.creator_id == None).all():
         if ddl.ddl_time > now_time:
-            to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "[]",
+            to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "",
                                  sub.course_uuid, sub.platform_uuid, ddl.id)
             db.session.add(to_add)
 
