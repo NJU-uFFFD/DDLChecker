@@ -59,10 +59,9 @@ def stat():
             first_time = int(time.time() * 1000)
             last_time = int(time.time() * 1000)
 
-
-        calendar_mark_list = []
-        for s in calendar_mark_set:
-            calendar_mark_list.append({"value": s})
+    calendar_mark_list = []
+    for s in calendar_mark_set:
+        calendar_mark_list.append({"value": s})
 
     return make_response(0, "OK", {"completed_count": completed_count, "urgent_count": urgent_count,
                                    "overtime_count": overtime_count, "completed_rate": complete_rate,
