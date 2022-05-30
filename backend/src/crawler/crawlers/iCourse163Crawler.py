@@ -143,7 +143,7 @@ class iCourse163Crawler(Crawler):
                             "course_uuid": str(uuid.uuid5(uuid.UUID(ICOURSE163_UUID), str(c['termPanel']['fromTermId']))),
                             "create_time": j['test']['releaseTime'],
                             "ddl_time": j['test']['deadline'],
-                            "title": j['name'],
+                            "title": i['name'] + j['name'],
                             "content": "来自中国大学 MOOC 的 `" + c['name'] + "` 课程 " + i['name']
                         })
                     except Exception as e:
@@ -156,7 +156,7 @@ class iCourse163Crawler(Crawler):
                         "course_uuid": str(uuid.uuid5(uuid.UUID(ICOURSE163_UUID), str(c['termPanel']['fromTermId']))),
                         "create_time": i['releaseTime'],
                         "ddl_time": i['deadline'],
-                        "title": i['description'] + i['name'],
+                        "title": c['name'] + i['name'],
                         "content": "来自中国大学 MOOC 的 `" + c['name'] + "` 课程: " + i['description']
                     })
                 except Exception as e:
