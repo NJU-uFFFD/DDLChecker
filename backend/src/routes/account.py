@@ -37,7 +37,10 @@ def add_account():
     user, data = get_context_user()
     check_data(AddAccountRules, data)
 
-    if user.account_add_times >= 50:
+    user.account_add_times += 1
+    db.session.commit()
+
+    if user.account_add_times >= 30:
         return make_response(-1, "Reaching add account times limitation", {})
 
     # 检查 account 是否存在
@@ -76,8 +79,6 @@ def add_account():
             db.session.add(sub)
 
     db.session.add(account)
-    user.account_add_times += 1
-
     db.session.commit()
 
     return make_response(0, "OK", {"id": account.id})
