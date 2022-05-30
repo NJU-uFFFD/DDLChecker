@@ -22,7 +22,7 @@
         <nut-cell
           class="course-ddl-card"
           :style="{color:(ddl.ddl_time<now.valueOf())?'#cd0f0f':(ddl.tag==='紧急')?'#ffb12a':'#676767'}"
-          :title=ddl.title
+          :title="ddl.title.substring(0, 20) + (ddl.title.length > 20 ? '...' : '')"
           :sub-title=formatTime(ddl.ddl_time)
           @click="showDetail(ddl)">
           <template #icon>

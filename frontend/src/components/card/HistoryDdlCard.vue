@@ -63,7 +63,7 @@ export default {
   margin-left: 2vw;
   color: #676767;
   width: 96vw;
-  height: 50px;
+  height: 60px;
   border-radius: 10px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
