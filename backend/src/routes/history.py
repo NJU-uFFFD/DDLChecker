@@ -15,7 +15,7 @@ def stat():
     ddls = user.ddls.filter().all()
     completed_count = user.ddls.filter(Ddl.is_completed == True).count()
     ddl_count = user.ddls.filter().count()
-    urgent_count = user.ddls.filter(Ddl.tag == "紧急").count()
+    urgent_count = user.ddls.filter(Ddl.tag == "紧急", Ddl.is_completed == False).count()
     overtime_count = user.ddls.filter(Ddl.ddl_time < round(time.time() * 1000), Ddl.is_completed == False).count()
 
     complete_rate = 1 if ddl_count == 0 else completed_count / ddl_count

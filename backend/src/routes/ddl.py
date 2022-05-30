@@ -24,7 +24,7 @@ def add_ddl():
     if 'course_uuid' in data and Course.query.get(data['course_uuid']) is None:
         return make_response(-1, "Course does not exist", {}, 400)
 
-    new_ddl = Ddl(user.id, data['title'], data['ddl_time'], int(time.time() * 1000), data['content'], data.get('tag'),
+    new_ddl = Ddl(user.id, data['title'], data['ddl_time'], int(time.time() * 1000), data['content'], data.get('tag') or "",
                   data.get('course_uuid'), data.get('platform_uuid'))
     db.session.add(new_ddl)
     db.session.commit()
@@ -45,7 +45,7 @@ def list_ddl():
                 "content" -> str (len 1 - 4096),
                 "ddl_time" -> int(不得在30天前),
                 "create_time" -> int
-                "tag" -> str(len 1 - 4096),
+                "tag" -> str,
                 "course_uuid" -> str
                 "platform_uuid" -> str
                 "is_completed" -> bool

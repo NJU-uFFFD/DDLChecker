@@ -90,7 +90,7 @@ def add_ddl():
     if SourceDdl.query.filter(SourceDdl.title == data['title'], SourceDdl.ddl_time == data['ddl_time']).count() >= 1:
         return make_response(-1, "Ddl already existed! (nmsl)", {})
 
-    ddl = SourceDdl(data["course_uuid"], Course.query.get(data["course_uuid"]).platform_uuid, data["title"], data["content"], data["tag"],
+    ddl = SourceDdl(data["course_uuid"], Course.query.get(data["course_uuid"]).platform_uuid, data["title"], data["content"], "",
                     data["ddl_time"], time.time() * 1000, creator_id=user.id)
     db.session.add(ddl)
 
