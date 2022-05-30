@@ -1,4 +1,5 @@
 import random
+import time
 
 from flask import Blueprint
 from db.user import User
@@ -23,8 +24,12 @@ def register():
     if user is None:
         new_user = True
         user = User(openid, data.get('username') or "用户" + str(random.randint(100000000, 999999999)))
+        user.last_login = int(time.time() * 1000)
         db.session.add(user)
         db.session.commit()
+
+    user.last_login = int(time.time() * 1000)
+    db.session.commit()
 
     return make_response(0, "OK", {"userid": user.id, "username": user.username, "new": new_user})
 
