@@ -127,7 +127,7 @@
             style="height: auto;font-size: 20px;max-height: 40vh;padding-left: 0;padding-bottom: 0"
             type="textarea"
             show-word-limit
-            rows="6"
+            rows="4"
             maxLength="128"
             :border="false"
           />

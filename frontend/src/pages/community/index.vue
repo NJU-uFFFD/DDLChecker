@@ -2,7 +2,7 @@
   <view class="page">
     <nut-searchbar
       style="position: relative; z-index: 1; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)"
-      v-model="state.searchValue"
+      v-model="searchValue"
       placeholder="请输入社区课程及DDL"
       clearable
       max-length="32"
@@ -84,17 +84,16 @@ export default {
 
   methods: {
     fetchCourses(page, size, searchValue, callback) {
-      const data = {}
+      const data = {
+        page: this.page,
+        size: size,
+      }
       if (searchValue !== '')
         data["key_word"] = searchValue
       const r = request({
         method: "POST",
         path: "/community/course/list",
-        data: {
-          page: this.page,
-          size: size,
-          data: data
-        }
+        data: data
       })
 
       r.then((res) => {
@@ -121,7 +120,8 @@ export default {
       })
     },
     searchCourseOrDdl() {
-      this.fetchCourses(1, 10, this.searchValue, (d) => {
+      this.page = 1
+      this.fetchCourses(this.page, 10, this.searchValue, (d) => {
         this.courses = d
         this.page += 1
       })
