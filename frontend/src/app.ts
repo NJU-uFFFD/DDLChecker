@@ -54,7 +54,7 @@ const App = createApp({
         if (res.data.data.new) {
           Taro.showModal({
             title: 'DDLChecker 删档内测绝赞开催中！',
-            content: "Tips: DDL 等卡片都可以右滑哦~",
+            content: "Tips: DDL 等卡片都可以左滑哦~",
             showCancel: false
           })
         }
