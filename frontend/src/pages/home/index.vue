@@ -84,9 +84,9 @@
       v-model:visible="state.showDetails">
       <nut-countdown
         #default
-        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#ee1919':'#676767'}"
+        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<now.valueOf()&&!state.ddlDetailData.is_completed)?'#ee1919':'#676767'}"
         :end-time="state.ddlDetailData.ddl_time"
-        :format="state.ddlDetailData.ddl_time>state.now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
+        :format="state.ddlDetailData.ddl_time>now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />
       <nut-cell
         style="box-shadow: 0 0 0 0"
@@ -277,6 +277,11 @@ export default {
   components: {
     HomeDdlCard,
   },
+  data() {
+    return {
+      now: new Date()
+    }
+  },
   setup() {
     let ddls = reactive<{ ddl_list: DDLData [] }>({ddl_list: []});
 
@@ -298,8 +303,7 @@ export default {
       "showDetails": false,
       "ddlDetailData": {},
       "pickerDate": new Date(),
-      "ddlEditSubmitting": false,
-      "now": new Date()
+      "ddlEditSubmitting": false
     })
 
     let toastInfo = reactive({
@@ -637,6 +641,9 @@ export default {
       editDdl,
       setNotification
     }
+  },
+  onTabItemTap() {
+    this.now = new Date()
   }
 }
 </script>
