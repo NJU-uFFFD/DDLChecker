@@ -73,6 +73,7 @@ if __name__ == '__main__':
     # print(c.fetch_ddl())
     import crawler.crawlers.iCourse163Crawler
     c = crawler.crawlers.iCourse163Crawler.iCourse163Crawler()
-    c.login({"account": "18351614795", "password": "Dlx030314"})
-    # print(c.fetch_ddl())
+    c.login({"account": "13952420797", "password": "x3LY5NuixIcj"})
+    print(c.fetch_course())
+    print(c.fetch_ddl())
 
