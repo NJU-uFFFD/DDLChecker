@@ -4,16 +4,92 @@
       :scroll-y="true"
       style="height: 100vh;">
 
-      <ProfileCard
-        :nickname=nickname
-        :avatarUrl=avatarUrl>
-      </ProfileCard>
+      <nut-cell
+        class="profile-profile-card"
+        :title=state.username>
+        <template #icon>
+          <nut-avatar
+            class="profile-avatar"
+            size="large"
+            :icon="state.avatarUrl"
+            @active-avatar="state.showChangeAvatar=true;state.profileDetail.avatar=state.avatar"/>
+        </template>
+        <template #link>
+          <nut-icon
+            style="position: absolute;right:5vw;padding: 5vw 5vw;"
+            name="edit"
+            size="20"
+            @click.stop="state.showChangeUsername=true;state.profileDetail.username=state.username;"/>
+        </template>
+      </nut-cell>
+
+      <!-- 修改头像的弹出层 -->
+      <nut-popup
+        position="top"
+        style="height:60vh;"
+        round
+        safe-area-inset-bottom
+        v-model:visible="state.showChangeAvatar">
+        <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+          <nut-cell>
+            <nut-input
+              style="height: auto;font-size: 20px;padding-left: 0;"
+              disabled
+              placeholder="更换头像"
+              :border="false"
+            />
+          </nut-cell>
+          <nut-grid :column-num="5" :border="false">
+            <nut-grid-item
+              v-for="i in 30" :key="i">
+              <nut-avatar
+                size="large"
+                :icon="`/assets/images/avatar${i}.png`"
+                @active-avatar="state.avatar=i;state.profileDetail.avatar=i;changeProfile(state.profileDetail)"
+              />
+            </nut-grid-item>
+          </nut-grid>
+        </nut-cell-group>
+      </nut-popup>
+
+      <!-- 修改用户名的弹出层 -->
+      <nut-popup
+        position="top"
+        style="height:40vh;"
+        round
+        safe-area-inset-bottom
+        v-model:visible="state.showChangeUsername">
+        <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+          <nut-cell>
+            <nut-input
+              v-model="state.profileDetail.username"
+              style="height: auto;font-size: 20px;padding-left: 0;"
+              maxLength="10"
+              :border="false"
+            />
+          </nut-cell>
+        </nut-cell-group>
+        <nut-button
+          type="info"
+          plain
+          style="height:8vh;width:40vw;left:6.6vw;position:fixed;top: 28vh;font-size: 20px"
+          @click="state.showChangeUsername = false">
+          取消
+        </nut-button>
+        <nut-button
+          type="info"
+          style="height:8vh;width:40vw;right:6.6vw;position:fixed;top: 28vh;font-size: 20px"
+          @click="changeProfile(state.profileDetail)"
+          :loading="state.profileChangeSubmitting">
+          修改
+        </nut-button>
+      </nut-popup>
 
 
       <nut-cell-group
         title="账号管理"/>
       <nut-swipe v-for="data in account_list" :key="data.id">
-        <AccountCard :accountData="data"/>
+        <AccountCard :accountData="data" :description="data.status"/>
         <template #right>
           <nut-button
             style="height:100%; border-radius: 10px"
@@ -43,6 +119,8 @@
 
       <nut-cell-group
         title="设置"/>
+      <SettingCard settingTitle="夜间模式 (绝赞施工中…)"/>
+      <SettingCard settingTitle="定时任务 (绝赞施工中…)"/>
     </scroll-view>
 
     <!-- Toast -->
@@ -64,15 +142,16 @@
 import Taro from '@tarojs/taro';
 import {ref, reactive, toRefs} from 'vue'
 import AccountCard from "../../components/card/ProfileAccountCard.vue";
-import ProfileCard from "../../components/card/ProfileProfileCard.vue";
+import SettingCard from "../../components/card/ProfileSettingCard.vue";
 import {AccountData} from "../../types/AccountData";
 import {request} from "../../util/request";
+import {getAvatarUrl} from "../../util/ui";
 
 export default {
   name: 'profile',
   components: {
-    ProfileCard,
-    AccountCard
+    AccountCard,
+    SettingCard
   },
   data() {
     return {
@@ -80,11 +159,19 @@ export default {
     }
   },
   setup() {
-    const nickname = ref('Test Username')
-    const avatarUrl = ref('../../assets/images/test_avatar.png')
     const state = reactive({
       "deleteInfo": {},
       "showDelete": false,
+      "username": '',
+      "avatar": 0,
+      "avatarUrl": '',
+      "showChangeUsername": false,
+      "showChangeAvatar": false,
+      "profileDetail": {
+        "username": '',
+        "avatar": 0
+      },
+      "profileChangeSubmitting": false
     })
 
     let toastInfo = reactive({
@@ -96,6 +183,62 @@ export default {
       bottom: '',
       center: true,
     })
+
+    function changeProfile(profile) {
+      if (profile.username.length > 10) {
+        openToast('fail', "用户名过长!")
+        return
+      }
+      const data = {}
+      if (profile.username != '')
+        data['username'] = profile.username
+      if (profile.avatar != 0)
+        data['avatar'] = profile.avatar
+
+      state.profileChangeSubmitting = true
+      const r = request({
+        path: "/user/profile/edit",
+        method: "POST",
+        data: data
+      })
+      r.then((res) => {
+        if (res.statusCode == 200 && res.data.code == 0) {
+          openToast('success', "修改成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        console.error("Profile edit error: " + JSON.stringify(reason))
+      }).finally(() => {
+        fetchProfile()
+        state.profileDetail = {
+          username: profile.username,
+          avatar: profile.avatar
+        }
+        state.profileChangeSubmitting = false
+        state.showChangeUsername = false
+        state.showChangeAvatar = false
+      })
+
+    }
+
+    function fetchProfile() {
+      const r = request({
+        path: "/user/profile",
+        method: "POST",
+      })
+      r.then((res) => {
+        if (res.statusCode == 200 && res.data.code == 0) {
+          state.username = res.data.data.username
+          state.avatar = res.data.data.avatar
+          state.avatarUrl = getAvatarUrl(state.avatar)
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        console.error("Profile fetch error: " + JSON.stringify(reason))
+      })
+    }
 
 
     function addAccount() {
@@ -141,15 +284,15 @@ export default {
       toastInfo.center = center
     }
 
+    fetchProfile()
+
     return {
-      nickname,
-      avatarUrl,
       addAccount,
       deleteAccount,
       state,
       toastInfo,
       openToast,
-      console
+      changeProfile
     }
   },
   beforeMount() {
@@ -189,6 +332,21 @@ export default {
 
 .nut-cell-group {
   height: 30px;
+}
+
+.profile-profile-card {
+  align-items: center;
+  border-radius: 0;
+  box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
+  font-size: 20px;
+}
+
+.profile-avatar {
+  margin-right: 20px;
+}
+
+.nut-grid-item__content {
+  padding: 0 0;
 }
 
 </style>
