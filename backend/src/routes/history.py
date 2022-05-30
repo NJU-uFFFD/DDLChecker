@@ -20,6 +20,8 @@ def stat():
 
     complete_rate = 1 if ddl_count == 0 else completed_count / ddl_count
 
+    calendar_mark_set = set()
+
     average_complete_time_percentage = 0
 
     first_time = int(time.time() * 1000)
@@ -28,6 +30,11 @@ def stat():
         total_time = 0
         total_complete_time = 0
         for i in ddls:
+
+            calendar_mark_set.add(time.strftime("%Y/%m/%d", time.localtime(i.create_time // 1000)))
+            if i.ddl_time is not None: calendar_mark_set.add(time.strftime("%Y/%m/%d", time.localtime(i.ddl_time // 1000)))
+            if i.complete_time is not None: calendar_mark_set.add(time.strftime("%Y/%m/%d", time.localtime(i.complete_time // 1000)))
+
             if i.ddl_time - i.create_time > 0:
                 total_time += (i.ddl_time - i.create_time)
                 if i.is_completed:
@@ -52,7 +59,12 @@ def stat():
             first_time = int(time.time() * 1000)
             last_time = int(time.time() * 1000)
 
+
+        calendar_mark_list = []
+        for s in calendar_mark_set:
+            calendar_mark_list.append({"value": s})
+
     return make_response(0, "OK", {"completed_count": completed_count, "urgent_count": urgent_count,
                                    "overtime_count": overtime_count, "completed_rate": complete_rate,
                                    "average_complete_time_percentage": average_complete_time_percentage,
-                                   "first_time": first_time, "last_time": last_time})
+                                   "first_time": first_time, "last_time": last_time, "calendar_mark": calendar_mark_list})
