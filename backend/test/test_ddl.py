@@ -161,6 +161,46 @@ class TestDdl(unittest.TestCase):
                 (title,content,ddl_time,tag,course_uuid,platform_uuid,True))
             self.assertEqual(True,abs(ddl.complete_time-int(time.time())*1000)<30000)
 
+    def test_revert(self):
+        with self.app.app_context():
+            title = 'title'
+            ddl_time = (int(time.time())+3600)*1000
+            create_time = (int(time.time()))*1000
+            content = 'content'*100
+            tag = ''
+            course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
+            platform_uuid = str(uuid.uuid4())
+            ddl = Ddl(1,title,ddl_time,create_time,content,tag,course_uuid,platform_uuid, is_completed=True, complete_time=10)
+            db.session.add(ddl)
+            db.session.commit()
+            title = 'newtitle'
+            ddl_time = (int(time.time())+2*3600)*1000
+            content = 'newcontent'*100
+            tag = ''
+            course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
+            platform_uuid = str(uuid.uuid4())
+            ret = self.client.post('/ddl/update', headers={
+                'x-wx-source': 'test',
+                'x-wx-openid': '114514'
+            }, json={
+                'id': ddl.id,
+                'title': title,
+                'ddl_time': ddl_time,
+                'content': content,
+                'tag': tag,
+                'course_uuid': course_uuid,
+                'platform_uuid': platform_uuid,
+                'is_completed': False
+            })
+            self.assertEqual(200, ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(0, ret['code'])
+            ddl = Ddl.query.get(ret['data']['id'])
+            self.assertIsNotNone(ddl)
+            self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.tag,ddl.course_uuid,ddl.platform_uuid,ddl.is_completed),
+                (title,content,ddl_time,tag,course_uuid,platform_uuid,False))
+            self.assertIsNone(ddl.complete_time)
+
     def test_update_others(self):
         with self.app.app_context():
             title = 'title'
@@ -218,3 +258,55 @@ class TestDdl(unittest.TestCase):
             self.assertIsNotNone(ddl)
             self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.tag,ddl.course_uuid,ddl.platform_uuid,ddl.is_completed),
                 (title,content,ddl_time,tag,course_uuid,platform_uuid,False))
+
+    def test_update_nonexist_course(self):
+        with self.app.app_context():
+            title = 'title'
+            ddl_time = (int(time.time())+3600)*1000
+            create_time = (int(time.time()))*1000
+            content = 'content'*100
+            tag = ''
+            course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
+            platform_uuid = str(uuid.uuid4())
+            ddl = Ddl(1,title,ddl_time,create_time,content,tag,course_uuid,platform_uuid)
+            db.session.add(ddl)
+            db.session.commit()
+            ret = self.client.post('/ddl/update', headers={
+                'x-wx-source': 'test',
+                'x-wx-openid': '114514'
+            }, json={
+                'id': ddl.id,
+                'course_uuid': str(uuid.uuid4())
+            })
+            self.assertEqual(400, ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(-1, ret['code'])
+            ddl = Ddl.query.get(ddl.id)
+            self.assertIsNotNone(ddl)
+            self.assertEqual((ddl.title,ddl.content,ddl.ddl_time,ddl.tag,ddl.course_uuid,ddl.platform_uuid,ddl.is_completed),
+                (title,content,ddl_time,tag,course_uuid,platform_uuid,False))
+
+    def test_delete_ddl(self):
+        with self.app.app_context():
+            title = 'title'
+            ddl_time = (int(time.time())+3600)*1000
+            create_time = (int(time.time()))*1000
+            content = 'content'*100
+            tag = ''
+            course_uuid = '797fe34b-3741-4d59-a1e6-4dbcd0e54892'
+            platform_uuid = str(uuid.uuid4())
+            ddl = Ddl(1,title,ddl_time,create_time,content,tag,course_uuid,platform_uuid)
+            db.session.add(ddl)
+            db.session.commit()
+            ret = self.client.post('/ddl/update', headers={
+                'x-wx-source': 'test',
+                'x-wx-openid': '114514'
+            }, json={
+                'id': ddl.id,
+                'is_deleted': True
+            })
+            self.assertEqual(200, ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(0, ret['code'])
+            ddl = Ddl.query.get(ddl.id)
+            self.assertIsNone(ddl)

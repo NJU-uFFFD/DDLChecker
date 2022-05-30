@@ -30,7 +30,8 @@ import {
   Collapse,
   CollapseItem,
   Radio,
-  RadioGroup
+  RadioGroup,
+  Switch
 } from "@nutui/nutui-taro"
 import './app.scss'
 import Taro from "@tarojs/taro"
@@ -49,12 +50,11 @@ const App = createApp({
     console.log(r)
 
     r.then((res) => {
-      console.log(res)
       try {
         if (res.data.data.new) {
           Taro.showModal({
-            title: '新用户注册',
-            content: 'TODO: 新手指引',
+            title: 'DDLChecker 删档内测绝赞开催中！',
+            content: "Tips: DDL 等卡片都可以左滑哦~",
             showCancel: false
           })
         }
@@ -112,5 +112,6 @@ App.use(Button)
   .use(CollapseItem)
   .use(Radio)
   .use(RadioGroup)
+  .use(Switch)
 
 export default App

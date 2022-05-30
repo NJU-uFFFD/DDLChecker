@@ -13,7 +13,7 @@
         <template #icon>
           <img
             class="course-ddl-site-icon"
-            src="/assets/images/add.png"
+            src="cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/add.png"
           />
         </template>
       </nut-cell>
@@ -22,7 +22,7 @@
         <nut-cell
           class="course-ddl-card"
           :style="{color:(ddl.ddl_time<now.valueOf())?'#ee1919':'#676767'}"
-          :title="ddl.title.substring(0, 20) + (ddl.title.length > 20 ? '...' : '')"
+          :title="ddl.title.substring(0, 30) + (ddl.title.length > 30 ? '...' : '')"
           :sub-title=formatTime(ddl.ddl_time)
           @click="showDetail(ddl)">
           <template #icon>

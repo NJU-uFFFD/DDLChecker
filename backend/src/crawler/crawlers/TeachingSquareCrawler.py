@@ -80,22 +80,22 @@ class TeachingSquareCrawler(Crawler):
             if r['status'] != 1:
                 raise UnknownCrawlerException("非成功返回值: " + json.dumps(r))
             for work in r['message']['list']:
-                if work['step'] == '未完成':
-                    r = requests.get(
-                        f"https://teaching.applysquare.com/Api/Work/getHomeworkInfo/token/{self.token}?homework_id={work['content']}&uid={self.uid}&cid={course['cid']}").json()
+                # if work['step'] == '未完成':
+                r = requests.get(
+                    f"https://teaching.applysquare.com/Api/Work/getHomeworkInfo/token/{self.token}?homework_id={work['content']}&uid={self.uid}&cid={course['cid']}").json()
 
-                    content = "未获取到内容, 请到教学立方上查看."
-                    try:
-                        content = html2text.html2text(r['message']['question_list'][0]['content'])
-                    except:
-                        logging.info("获取具体内容出错: " + json.dumps(r))
+                content = "未获取到内容, 请到教学立方上查看."
+                try:
+                    content = html2text.html2text(r['message']['question_list'][0]['content'])
+                except:
+                    logging.info("获取具体内容出错: " + json.dumps(r))
 
-                    temp.append({"platform_uuid": TEACHING_SQUARE_CRAWLER_UUID,
-                                 "course_uuid": str(uuid.uuid5(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid'])),
-                                 "create_time": int(work['publish_at']) * 1000,
-                                 "ddl_time": int(
-                                     time.mktime(time.strptime(work['submit_at'], '%Y-%m-%d %H:%M')) * 1000),
-                                 "title": work['homework_title'],
-                                 "content": content})
+                temp.append({"platform_uuid": TEACHING_SQUARE_CRAWLER_UUID,
+                             "course_uuid": str(uuid.uuid5(uuid.UUID(TEACHING_SQUARE_CRAWLER_UUID), course['cid'])),
+                             "create_time": int(work['publish_at']) * 1000,
+                             "ddl_time": int(
+                                 time.mktime(time.strptime(work['submit_at'], '%Y-%m-%d %H:%M')) * 1000),
+                             "title": work['homework_title'],
+                             "content": content})
 
         return temp
