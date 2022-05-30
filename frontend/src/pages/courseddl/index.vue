@@ -129,13 +129,6 @@
             placeholder="请输入待办详情"
           />
         </nut-cell>
-        <nut-cell>
-          <nut-radiogroup v-model="addInfo.tag" direction="horizontal">
-            <nut-radio shape="button" label="">无Tag</nut-radio>
-            <nut-radio shape="button" label="宽松">宽松</nut-radio>
-            <nut-radio shape="button" label="紧急">紧急</nut-radio>
-          </nut-radiogroup>
-        </nut-cell>
       </nut-cell-group>
       <nut-button
         type="info"
@@ -209,8 +202,7 @@ export default {
         title: "",
         content: "",
         pickerDate: new Date(),
-        datePickerShow: false,
-        tag: ""
+        datePickerShow: false
       },
       ddlAddSubmitting: false,
       toastInfo: {
@@ -334,7 +326,6 @@ export default {
           course_uuid: this.course_uuid,
           title: this.addInfo.title,
           content: this.addInfo.content,
-          tag: this.addInfo.tag,
           ddl_time: this.addInfo.pickerDate.getTime()
         }
       })
@@ -343,7 +334,12 @@ export default {
         if (res.statusCode === 200 && res.data.code === 0) {
           this.showAdd = false
           this.openToast('success', "添加成功!")
-
+          this.addInfo = {
+            title: "",
+            content: "",
+            pickerDate: new Date(),
+            datePickerShow: false
+          }
           this.refreshList()
         } else {
           throw JSON.stringify(res)

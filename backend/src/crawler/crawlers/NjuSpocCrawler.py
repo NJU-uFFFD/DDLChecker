@@ -193,6 +193,6 @@ class NjuSpocCrawler(Crawler):
                              "create_time": current_time,
                              "ddl_time": int(time.mktime(time.strptime(date, '%Y-%m-%d %H:%M')) * 1000),
                              "title": title,
-                             "content": "来自 SPOC 的 DDL"})
+                             "content": "来自 SPOC `" + i[0] + "` 的 DDL"})
 
         return temp

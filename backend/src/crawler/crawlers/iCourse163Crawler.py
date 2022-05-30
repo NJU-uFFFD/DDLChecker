@@ -1,9 +1,10 @@
+import logging
 import time
+import uuid
 
 import requests
 
 from crawler.Crawler import Crawler
-
 
 ICOURSE163_UUID = "69921ef9-fe15-4731-930d-b60a644da254"
 
@@ -30,7 +31,6 @@ class iCourse163Crawler(Crawler):
         from selenium.webdriver.support.wait import WebDriverWait
 
         with webdriver.Chrome() as driver:
-
             driver.get("https://www.icourse163.org/member/login.htm#/webLoginIndex")
 
             back_btn = WebDriverWait(driver, 5).until(
@@ -43,34 +43,126 @@ class iCourse163Crawler(Crawler):
             )
             phone_login.click()
 
-            time.sleep(5)
+            # time.sleep(5)
+
+            login_frame = WebDriverWait(driver, 5).until(
+                expected_conditions.presence_of_element_located(
+                    (By.XPATH, '//div[@class="ux-login-set-container"]/iframe'))
+            )
+
+            driver.switch_to.frame(login_frame)
 
             username_input = WebDriverWait(driver, 5).until(
-                expected_conditions.presence_of_element_located((By.XPATH, '//*[@type="tel"]'))
+                expected_conditions.presence_of_element_located((By.XPATH, '//input[@placeholder="请输入手机号"]'))
             )
 
             password_input = WebDriverWait(driver, 5).until(
-                expected_conditions.presence_of_element_located((By.XPATH, '//*[@type="password"]'))
+                expected_conditions.presence_of_element_located((By.XPATH, '//input[@placeholder="请输入密码"]'))
             )
 
-            username_input.sendkeys(self.login_data['account'])
-            password_input.sendkeys(self.login_data['password'])
-            time.sleep(5000)
+            username_input.send_keys(self.login_data['account'])
+            password_input.send_keys(self.login_data['password'])
 
+            submit_btn = WebDriverWait(driver, 5).until(
+                expected_conditions.presence_of_element_located((By.ID, "submitBtn"))
+            )
 
+            submit_btn.click()
 
+            for _ in range(1, 7):
+                time.sleep(1)
+                if driver.current_url == "https://www.icourse163.org/":
+                    break
+            else:
+                logging.info(driver.current_url)
+                assert False, "登录失败! 可能是网络问题或需要验证码."
 
+            cookies = driver.get_cookies()
+            temp = {}
 
+            for ck in cookies:
+                temp[ck['name']] = ck['value']
 
+            self.session.cookies = requests.utils.cookiejar_from_dict(temp)
 
+        r = self.session.post("https://www.icourse163.org/web/j/learnerCourseRpcBean.getMyLearnedCoursePanelList.rpc",
+                              params={
+                                  "csrfKey": self.session.cookies.get("NTESSTUDYSI")
+                              }, data={
+                "type": 30,
+                "p": 1,
+                "psize": 1,
+                "courseType": 1
+            })
 
+        assert r.json()['code'] == 0, "Cookie 无效."
 
     def login(self, login_data: dict):
         self.login_data = login_data
         self.renew_session_if_expired()
 
+    def __fetch_course(self) -> list:
+        # 暂定只爬取 SPOC, 因为 MOOC 好像不计分
+        r = self.session.post("https://www.icourse163.org/web/j/learnerCourseRpcBean.getMyLearnedCoursePanelList.rpc",
+                              params={
+                                  "csrfKey": self.session.cookies.get("NTESSTUDYSI")
+                              }, data={
+                "type": 30,
+                "p": 1,
+                "psize": 60,
+                "courseType": 2
+            })
+
+        return r.json()['result']['result']
+
     def fetch_course(self) -> list:
-        return []
+        t = self.__fetch_course()
+        print(t)
+        temp = []
+        for i in t:
+            temp.append((i['name'], str(uuid.uuid5(uuid.UUID(ICOURSE163_UUID), str(i['termPanel']['fromTermId'])))))
+        return temp
 
     def fetch_ddl(self) -> list:
-        return []
+        courses = self.__fetch_course()
+        temp = []
+        for c in courses:
+            r = self.session.post("https://www.icourse163.org/web/j/courseBean.getLastLearnedMocTermDto.rpc", params={
+                "csrfKey": self.session.cookies.get("NTESSTUDYSI")
+            }, data={
+                "termId": c['termPanel']['fromTermId']
+            })
+
+            r = r.json()['result']['mocTermDto']
+
+            for i in r['chapters']:
+                for j in (i['homeworks'] or []) + (i['quizs'] or []):
+                    try:
+                        temp.append({
+                            "platform_uuid": ICOURSE163_UUID,
+                            "course_uuid": str(uuid.uuid5(uuid.UUID(ICOURSE163_UUID), str(c['termPanel']['fromTermId']))),
+                            "create_time": j['test']['releaseTime'],
+                            "ddl_time": j['test']['deadline'],
+                            "title": j['name'],
+                            "content": "来自中国大学 MOOC 的 `" + c['name'] + "` 课程 " + i['name']
+                        })
+                    except Exception as e:
+                        logging.error(e)
+
+            for i in r['exams']:
+                try:
+                    temp.append({
+                        "platform_uuid": ICOURSE163_UUID,
+                        "course_uuid": str(uuid.uuid5(uuid.UUID(ICOURSE163_UUID), str(c['termPanel']['fromTermId']))),
+                        "create_time": i['releaseTime'],
+                        "ddl_time": i['deadline'],
+                        "title": i['description'] + i['name'],
+                        "content": "来自中国大学 MOOC 的 `" + c['name'] + "` 课程: " + i['description']
+                    })
+                except Exception as e:
+                    logging.error(e)
+
+        now = int(time.time() * 1000)
+        temp = [i for i in temp if i['ddl_time'] > now]
+
+        return temp

@@ -61,7 +61,7 @@ def invoke():
 
 
 if __name__ == '__main__':
-    # app.run()
+    app.run()
 
     # import crawler.crawlers.TeachingSquareCrawler
     # c = crawler.crawlers.TeachingSquareCrawler.TeachingSquareCrawler()
@@ -71,8 +71,9 @@ if __name__ == '__main__':
     # c = crawler.crawlers.NjuSpocCrawler.NjuSpocCrawler()
     # c.login({"account": "211250076", "password": "Lyc_20030125"})
     # print(c.fetch_ddl())
-    import crawler.crawlers.iCourse163Crawler
-    c = crawler.crawlers.iCourse163Crawler.iCourse163Crawler()
-    c.login({"account": "18351614795", "password": "Dlx030314"})
+    # import crawler.crawlers.iCourse163Crawler
+    # c = crawler.crawlers.iCourse163Crawler.iCourse163Crawler()
+    # c.login({"account": "13952420797", "password": "x3LY5NuixIcj"})
+    # print(c.fetch_course())
     # print(c.fetch_ddl())
 
