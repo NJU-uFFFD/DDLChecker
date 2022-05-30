@@ -79,30 +79,30 @@ def list_ddl():
     if 'ddl_time_range' in data:
         if 'start' in data['ddl_time_range'] and 'end' in data['ddl_time_range']:
             if data['ddl_time_range']['start'] > data['ddl_time_range']['end']:
-                return make_response(400, "Invalid time range.(nmsl)", {})
+                return make_response(-1, "Invalid time range.(nmsl)", {}, 400)
             else:
                 filter_list.append(data['ddl_time_range']['start'] <= Ddl.ddl_time)
                 filter_list.append(data['ddl_time_range']['end'] >= Ddl.ddl_time)
         else:
-            return make_response(-1, "missing start or end.", {})
+            return make_response(-1, "missing start or end.", {}, 400)
     if 'create_time_range' in data:
         if 'start' in data['create_time_range'] and 'end' in data['create_time_range']:
             if data['create_time_range']['start'] > data['create_time_range']['end']:
-                return make_response(400, "Invalid time range.(nmsl)", {})
+                return make_response(-1, "Invalid time range.(nmsl)", {}, 400)
             else:
                 filter_list.append(data['create_time_range']['start'] <= Ddl.create_time)
                 filter_list.append(data['create_time_range']['end'] >= Ddl.create_time)
         else:
-            return make_response(-1, "missing start or end.", {})
+            return make_response(-1, "missing start or end.", {}, 400)
     if 'complete_time_range' in data:
         if 'start' in data['complete_time_range'] and 'end' in data['complete_time_range']:
             if data['complete_time_range']['start'] > data['complete_time_range']['end']:
-                return make_response(400, "Invalid time range.(nmsl)", {})
+                return make_response(-1, "Invalid time range.(nmsl)", {}, 400)
             else:
                 filter_list.append(data['complete_time_range']['start'] <= Ddl.complete_time)
                 filter_list.append(data['complete_time_range']['end'] >= Ddl.complete_time)
         else:
-            return make_response(-1, "missing start or end.", {})
+            return make_response(-1, "missing start or end.", {}, 400)
 
     page = user.ddls.filter(*filter_list).order_by(Ddl.ddl_time.desc() if 'sorter' in data and 'reversed' in data['sorter'] and data['sorter']['reversed']
                                                 else Ddl.ddl_time).paginate(data['page'], data['size'])
