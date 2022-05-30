@@ -198,10 +198,18 @@ def delete_course():
         return make_response(-1, "Course not found.(nmsl)", {})
 
     if course.creator_id != user.id:
-        return make_response(-1, "Can only delete course created by your own", {})
+        return make_response(-1, "Cannot delete course when there're ddls in it.(nmsl)", {})
 
     if course.source_ddls.count() > 0:
         return make_response(-1, "Others have already created ddls in the course you created.", {})
+
+    if course.subscriptions.filter(UserSubscriptions.userid != user.id).count() > 0:
+        return make_response(-1, "Other have already subscribed the course created by you.", {})
+
+    user_sub = user.subscriptions.filter(UserSubscriptions.course_uuid == course.course_uuid).first()
+
+    if user_sub is not None:
+        db.session.delete(user_sub)
 
     db.session.delete(course)
 
