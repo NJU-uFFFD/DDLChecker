@@ -18,9 +18,7 @@ class TestDdlList(unittest.TestCase):
         self.app = app
         self.client = self.app.test_client()
         with self.app.app_context():
-            db.drop_all()
             db.create_all()
-            db.session.expire_on_commit = False
             user = User('114514', '田所浩二')
             db.session.add(user)
             db.session.commit()
