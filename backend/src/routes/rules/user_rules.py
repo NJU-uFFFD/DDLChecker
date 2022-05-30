@@ -11,11 +11,11 @@ class RegisterRules(Schema):
 class ChangeProfileRules(Schema):
     """
         "username" -> str(len 1 - 100)
-        "avatar" -> int(1 - 10)
+        "avatar" -> int(1 - 30)
     """
 
     username = fields.Str(required=False, validate=validate.Length(min=1, max=100))
-    avatar = fields.Integer(required=False, strict=True, validate=validate.Range(min=1, max=10))
+    avatar = fields.Integer(required=False, strict=True, validate=validate.Range(min=1, max=30))
 
 
 class UsernameRules(Schema):
