@@ -7,10 +7,10 @@ from db.ddl import Ddl
 from db.user import User
 from db.course import Course
 import json
-import time
 import uuid
 
 from util.encrypt import aes_encrypt
+
 
 class TestAccount(unittest.TestCase):
 
@@ -139,7 +139,7 @@ class TestAccount(unittest.TestCase):
             account = Account("2", '68dc1014-7bfe-4ea3-a000-5734303d9f59', aes_encrypt(json.dumps({"account": "田所浩三", "password": "nmysl"})))
             db.session.add(account)
             db.session.commit()
-            ret = self.client.post("/account/list", headers={
+            ret = self.client.post("/account/delete", headers={
                 'x-wx-source': 'test',
                 'x-wx-openid': '114514'
             }, json={
