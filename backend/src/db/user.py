@@ -1,7 +1,6 @@
-from sqlalchemy.orm import backref
-
 from db import db
 from dataclasses import dataclass
+import random
 
 
 @dataclass
@@ -10,10 +9,12 @@ class User(db.Model):
     openid: str
     username: str
     account_add_times: int
+    avatar: int
     id = db.Column(db.Integer, primary_key=True)
     openid = db.Column(db.String(150), unique=True)
     username = db.Column(db.String(100))
     account_add_times = db.Column(db.Integer)
+    avatar = db.Column(db.Integer)
     source_course_created = db.relationship("Course", backref="creator", lazy="dynamic")
     source_ddls_created = db.relationship("SourceDdl", backref="creator", lazy='dynamic')
     ddls = db.relationship('Ddl', backref='user', lazy='dynamic')
@@ -24,3 +25,4 @@ class User(db.Model):
         self.username = username
         self.openid = openid
         self.account_add_times = account_add_times
+        self.avatar = random.randint(1, 10)

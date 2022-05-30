@@ -106,7 +106,7 @@ class TestUser(unittest.TestCase):
             user = User('114514', '田所浩二')
             db.session.add(user)
             db.session.commit()
-            ret = self.client.post('/user/rename', headers={
+            ret = self.client.post('/user/profile/edit', headers={
                 'x-wx-source': 'test',
                 'x-wx-openid': '114514'
             }, json={
@@ -122,7 +122,7 @@ class TestUser(unittest.TestCase):
             user = User('114514', '田所浩二')
             db.session.add(user)
             db.session.commit()
-            ret = self.client.post('/user/rename',headers={
+            ret = self.client.post('/user/profile/edit', headers={
                 'x-wx-source':'test',
                 'x-wx-openid':'114514'
                 },json={
@@ -132,4 +132,37 @@ class TestUser(unittest.TestCase):
             ret = json.loads(ret.data.decode('utf-8'))
             self.assertEqual(-1,ret['code'])
             self.assertEqual(user.username,'田所浩二')
+
+    def test_change_avatar(self):
+        with self.app.app_context():
+            user = User('114514', '田所浩二')
+            db.session.add(user)
+            db.session.commit()
+            ret = self.client.post('/user/profile/edit', headers={
+                'x-wx-source':'test',
+                'x-wx-openid':'114514'
+                },json={
+                'avatar':6
+                })
+            self.assertEqual(200,ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(0,ret['code'])
+            self.assertEqual(user.avatar,6)
+
+    def test_change_avatar_with_invalid_number(self):
+        with self.app.app_context():
+            user = User('114514', '田所浩二')
+            avatar_num = user.avatar
+            db.session.add(user)
+            db.session.commit()
+            ret = self.client.post('/user/profile/edit', headers={
+                'x-wx-source':'test',
+                'x-wx-openid':'114514'
+                },json={
+                'avator': 114514
+                })
+            self.assertEqual(400,ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(-1,ret['code'])
+            self.assertEqual(user.avatar, avatar_num)
 
