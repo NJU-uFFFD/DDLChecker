@@ -45,19 +45,12 @@ def stat():
 
         # if user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first() is not None:
         #     first_time_compare_list.append()
-        try:
-            first_time = min(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first(), 'ddl_time', 1919810810810810810810),
-                             safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first(), 'create_time', 1919810810810810810810),
-                             safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first(), 'complete_time', 1919810810810810810810))
-            last_time = max(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time.desc()).first(), 'ddl_time', -114514),
-                            safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time.desc()).first(), 'create_time', -114514),
-                            safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time.desc()).first(), 'complete_time', -114514))
-            assert first_time != 1919810810810810810810, "nmsl"
-            assert last_time != -114514, "nmsl"
-        except (TypeError, AttributeError) as e:
-            logging.error(e)
-            first_time = int(time.time() * 1000)
-            last_time = int(time.time() * 1000)
+        first_time = min(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time).first(), 'ddl_time', 1919810810810810810810),
+                         safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time).first(), 'create_time', 1919810810810810810810),
+                         safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time).first(), 'complete_time', 1919810810810810810810))
+        last_time = max(safe(user.ddls.filter(Ddl.ddl_time != None).order_by(Ddl.ddl_time.desc()).first(), 'ddl_time', -114514),
+                        safe(user.ddls.filter(Ddl.create_time != None).order_by(Ddl.create_time.desc()).first(), 'create_time', -114514),
+                        safe(user.ddls.filter(Ddl.complete_time != None).order_by(Ddl.complete_time.desc()).first(), 'complete_time', -114514))
 
     calendar_mark_list = []
     for s in calendar_mark_set:
