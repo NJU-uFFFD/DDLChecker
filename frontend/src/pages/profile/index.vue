@@ -26,20 +26,17 @@
       <!-- 修改头像的弹出层 -->
       <nut-popup
         position="top"
-        style="height:60vh;"
+        style="height:70vh;"
         round
         safe-area-inset-bottom
         v-model:visible="state.showChangeAvatar">
-        <nut-cell-group style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
-          <nut-cell>
-            <nut-input
-              style="height: auto;font-size: 20px;padding-left: 0;"
-              disabled
-              placeholder="更换头像"
-              :border="false"
-            />
-          </nut-cell>
-          <nut-grid :column-num="5" :border="false">
+        <nut-cell-group
+          title="更换头像"
+          style="position:relative;top:2vh;width:90vw;left:5vw;box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1)">
+          <nut-grid
+            :column-num="5"
+            :border="false"
+            gutter="3">
             <nut-grid-item
               v-for="i in 30" :key="i">
               <nut-avatar
