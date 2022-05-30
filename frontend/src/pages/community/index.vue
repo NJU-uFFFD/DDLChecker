@@ -20,13 +20,20 @@
       style="height: 94vh;"
       @scrolltolower="listLower"
       enableBackToTop="true">
-
-      <CommunityCourseCard
-        v-for="course in courses"
-        :key="course"
-        :course="course"
-        @onClick="openCourse(course)"
-        @onSubscribeStatusChange="subscribe"/>
+      <nut-swipe v-for="course in courses" :key="course">
+        <CommunityCourseCard
+          :course="course"
+          @onClick="openCourse(course)"
+          @onSubscribeStatusChange="subscribe"/>
+        <template #right>
+          <nut-button
+            style="height:100%; border-radius: 10px;margin-right: 5px"
+            type="danger"
+            @click="showDelete=true;deleteInfo=course">
+            删除
+          </nut-button>
+        </template>
+      </nut-swipe>
       <nut-divider v-if="!more">没有更多课程了捏</nut-divider>
     </scroll-view>
 
@@ -65,6 +72,20 @@
       </nut-button>
     </nut-popup>
 
+    <!--  删除课程相关  -->
+    <nut-dialog
+      title="删除课程"
+      content="无法删除非本人创建的课程哦~"
+      close-on-click-overlay
+      lock-scroll
+      v-model:visible="showDelete">
+      <template #footer>
+        <nut-button plain type="danger" @click="showDelete = false">取消</nut-button>
+        <nut-button type="danger" @click="deleteCourse(deleteInfo)">删除</nut-button>
+      </template>
+    </nut-dialog>
+
+
     <!-- Toast -->
     <nut-toast
       :msg="toastInfo.msg"
@@ -94,6 +115,7 @@ import {reactive, ref} from 'vue'
 import Taro from "@tarojs/taro";
 import {request} from "../../util/request";
 import CommunityCourseCard from "../../components/card/CommunityCourseCard.vue";
+import {DDLData} from "../../types/DDLData";
 
 export default {
   name: "community",
@@ -117,7 +139,9 @@ export default {
       searchValue: '',
       searching: false,
       showAdd: false,
-      courseAddSubmitting: false
+      courseAddSubmitting: false,
+      deleteInfo: '',
+      showDelete: false
     }
   },
 
@@ -247,12 +271,42 @@ export default {
         this.fetchCourses(this.page, 10, this.searchValue, (d) => {
           this.courses = d
           this.page += 1
-
         })
       })
+    },
+    deleteCourse(course) {
+      this.showDelete = false
+      console.log("删除课程: " + course.course_name)
+      const r = request({
+        method: "POST",
+        path: "/community/course/delete",
+        data: {
+          "course_uuid": course.course_uuid
+        }
+      })
 
-
+      r.then((res) => {
+        if (res.statusCode === 200 && res.data.code === 0) {
+          this.openToast('success', "删除成功!")
+        } else {
+          throw JSON.stringify(res)
+        }
+      }).catch((reason) => {
+        Taro.showModal({
+          title: '错误',
+          content: '删除课程出错: ' + JSON.stringify(reason),
+          showCancel: false
+        })
+      }).finally(() => {
+        this.page = 1
+        this.searchValue = ''
+        this.fetchCourses(this.page, 10, this.searchValue, (d) => {
+          this.courses = d
+          this.page += 1
+        })
+      })
     }
+
   },
   setup() {
   },
