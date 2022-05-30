@@ -1,25 +1,28 @@
 function getPlatformInfo(uuid: string): string {
   const table = {
     "f15684f5-d870-4a9d-b859-e7eec3c6e3b5": {
-      "icon": "/assets/images/jxlf.png",
+      "icon": "cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/jxlf.png",
       "name": "教学立方"
     },
     "68dc1014-7bfe-4ea3-a000-5734303d9f59": {
-      "icon": "/assets/images/spoc.png",
+      "icon": "cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/spoc.png",
       "name": "南大SPOC"
     },
     "69921ef9-fe15-4731-930d-b60a644da254": {
-      "icon": "/assets/images/mooc.png",
+      "icon": "cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/mooc.png",
       "name": "中国大学MOOC"
     },
     "00000000-0000-0000-0000-000000000000": {
-      "icon": "/assets/images/hand.png",
+      "icon": "cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/hand.png",
       "name": "手动添加"
     }
   }
-  return table[uuid] || {"icon": "/assets/images/hand.png", "name": "手动添加"}
+  return table[uuid] || {"icon": "cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/hand.png", "name": "手动添加"}
 }
 
+function getAvatarUrl(avatar: number): string {
+  return `cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/avatar${avatar}.png`
+}
 
 function formatTime(timestamp: number): string {
   const weekdayZhCN = {"0": "日", "1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六"}
@@ -31,4 +34,4 @@ function formatTime(timestamp: number): string {
           ${t.getMinutes() > 9 ? t.getMinutes() : "0" + t.getMinutes()}`)
 }
 
-export {getPlatformInfo, formatTime}
+export {getPlatformInfo, getAvatarUrl, formatTime}
