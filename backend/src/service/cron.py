@@ -112,6 +112,7 @@ def cron_work():
                                       ddl['ddl_time'], ddl['create_time'])
                         db.session.add(t)
                 already_done.add(course_uuid)
+                logging.info(already_done)
 
             db.session.commit()
         except Exception as e:

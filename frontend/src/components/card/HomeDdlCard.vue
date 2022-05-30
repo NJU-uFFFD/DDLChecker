@@ -2,7 +2,7 @@
   <nut-cell
     class="home-ddl-card"
     :style="{color:(ddlData.ddl_time<now.valueOf()&&!ddlData.is_completed)?'#cd0f0f':(ddlData.tag==='紧急'&&!ddlData.is_completed)?'#ffb12a':'#676767'}"
-    :title=ddlData.title
+    :title="ddlData.title.substring(0, 20) + (ddlData.title.length > 20 ? '...' : '')"
     :sub-title=ddlTime
     @click="ddlCardClick">
     <template #icon>
@@ -76,7 +76,7 @@ export default defineComponent({
   margin-left: 2vw;
   color: #676767;
   width: 96vw;
-  height: 70px;
+  height: 80px;
   border-radius: 10px;
   box-shadow: 0 3px 14px 0 rgba(237, 238, 241, 1);
 }
