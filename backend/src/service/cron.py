@@ -80,6 +80,8 @@ def cron_work():
             lucky_account = random.choice(c.subscriptions.all()).user.accounts.filter(
                 Account.platform_uuid == c.platform_uuid).first()
 
+            tmp = lucky_account.courses.all()
+
             fields = json.loads(aes_decrypt(lucky_account.fields))
             crawler.login(fields)
 
@@ -111,10 +113,9 @@ def cron_work():
                         t = SourceDdl(ddl['course_uuid'], c.platform_uuid, ddl['title'], ddl['content'], "",
                                       ddl['ddl_time'], ddl['create_time'])
                         db.session.add(t)
-                already_done.add(course_uuid)
-                logging.info(already_done)
 
             db.session.commit()
+            already_done = already_done.union(set(tmp))
         except Exception as e:
             logging.exception(e)
             db.session.rollback()
