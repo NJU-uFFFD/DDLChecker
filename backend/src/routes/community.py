@@ -67,7 +67,7 @@ def add_course():
 
     if Course.query.filter(
             Course.course_uuid == str(uuid.uuid5(uuid.UUID(data["platform_uuid"]), data["course_name"]))).count() != 0:
-        return make_response(-1, "Course already exists, change another name.(nmsl)", {})
+        return make_response(-1, "Course already exists, change another name.(nmsl)", {}, 400)
 
     course = Course(data["course_name"], str(uuid.uuid5(uuid.UUID(data["platform_uuid"]), data["course_name"])),
                     data["platform_uuid"], creator_id=user.id)
@@ -107,12 +107,12 @@ def subscribe_course():
 
     course = Course.query.filter(Course.course_uuid == data["course_uuid"]).first()
     if course is None:
-        return make_response(-1, "Course not exists(nmsl).", {})
+        return make_response(-1, "Course not exists(nmsl).", {}, 400)
 
     sub = UserSubscriptions(user.id, data["course_uuid"], course.platform_uuid)
 
     if user.subscriptions.filter(UserSubscriptions.course_uuid == data['course_uuid']).first() is not None:
-        return make_response(-1, "Subscription already exists.(nmsl)", {})
+        return make_response(-1, "Subscription already exists.(nmsl)", {}, 400)
 
     now_time = int(time.time() * 1000)
 
@@ -138,7 +138,7 @@ def unsubscribe_course():
     sub = user.subscriptions.filter(UserSubscriptions.course_uuid == data['course_uuid'],
                                     UserSubscriptions.userid == user.id).first()
     if sub is None:
-        return make_response(-1, "Subscription not exists.(What's wrong with you?)(nmsl)", {})
+        return make_response(-1, "Subscription not exists.(What's wrong with you?)(nmsl)", {}, 400)
 
     db.session.delete(sub)
     db.session.commit()

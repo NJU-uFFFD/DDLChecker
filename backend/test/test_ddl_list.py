@@ -18,9 +18,7 @@ class TestDdlList(unittest.TestCase):
         self.app = app
         self.client = self.app.test_client()
         with self.app.app_context():
-            db.drop_all()
             db.create_all()
-            db.session.expire_on_commit = False
             user = User('114514', '田所浩二')
             db.session.add(user)
             db.session.commit()
@@ -110,17 +108,18 @@ class TestDdlList(unittest.TestCase):
                 'page': 1,
                 'size': 50,
                 'filter': {
-                    'is_completed': True
+                    'is_completed': True,
+                    'is_overtime': False
                 }
             })
             self.assertEqual(200, ret.status_code)
             ret = json.loads(ret.data.decode('utf-8'))
             self.assertEqual(0, ret['code'])
-            self.assertEqual(15,ret['data']['ddl_count'])
+            self.assertEqual(8,ret['data']['ddl_count'])
             dlist = ret['data']['ddl_list']
-            for i in range(15):
+            for i in range(8):
                 a = dlist[i]
-                b = self.ddls[i*2+1]
+                b = self.ddls[i*2+15]
                 self.assertEqual((a['id'],a['ddl_time']),(b[0],b[1]))
 
     def test_list_ddl_with_more_filters(self):
@@ -197,3 +196,19 @@ class TestDdlList(unittest.TestCase):
                 b = self.ddls[i]
                 a = dlist[0]
                 self.assertEqual((a['id'],a['ddl_time']),(b[0],b[1]))
+
+    def test_list_ddl_with_bad_time_ranges(self):
+        with self.app.app_context():
+            for i in ('ddl_time_range','create_time_range','complete_time_range'):
+                for j in ({'start':100000000},{'end':10000000},{},{'start':2,'end':1}):
+                    ret = self.client.post('/ddl/list', headers={
+                        'x-wx-source': 'test',
+                        'x-wx-openid': '114514'
+                    }, json={
+                        'page': 1,
+                        'size': 50,
+                        i: j
+                    })
+                    self.assertEqual(400, ret.status_code)
+                    ret = json.loads(ret.data.decode('utf-8'))
+                    self.assertEqual(-1, ret['code'])
