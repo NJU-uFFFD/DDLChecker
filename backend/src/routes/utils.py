@@ -50,7 +50,7 @@ def get_context_user(data_required=True):
     # scoped_session.remove()
 
     if not user:
-        abort(make_response(status=-1, msg="Unauthorized or not registered.", return_data={}), 403)
+        abort(make_response(status=-1, msg="Unauthorized or not registered.", return_data={},http_status_code=403))
 
     return user, data
 
