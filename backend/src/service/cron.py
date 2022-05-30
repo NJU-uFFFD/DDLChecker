@@ -61,7 +61,7 @@ def cron_work():
 
     now_time = int(time.time() * 1000)
 
-    for c in Course.query.all():
+    for c in Course.query.filter(Course.creator_id == None).all():
         try:
             print(c)
             if c.course_uuid in already_done:
@@ -79,8 +79,6 @@ def cron_work():
             # 找一个幸运用户的账号爬数据
             lucky_account = random.choice(c.subscriptions.all()).user.accounts.filter(
                 Account.platform_uuid == c.platform_uuid).first()
-
-            tmp = lucky_account.courses.all()
 
             fields = json.loads(aes_decrypt(lucky_account.fields))
             crawler.login(fields)
@@ -113,9 +111,10 @@ def cron_work():
                         t = SourceDdl(ddl['course_uuid'], c.platform_uuid, ddl['title'], ddl['content'], "",
                                       ddl['ddl_time'], ddl['create_time'])
                         db.session.add(t)
+                already_done.add(course_uuid)
+                logging.info(already_done)
 
             db.session.commit()
-            already_done = already_done.union(set(tmp))
         except Exception as e:
             logging.exception(e)
             db.session.rollback()
