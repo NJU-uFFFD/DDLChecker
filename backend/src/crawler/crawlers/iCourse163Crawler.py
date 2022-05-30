@@ -46,11 +46,11 @@ class iCourse163Crawler(Crawler):
             time.sleep(5)
 
             username_input = WebDriverWait(driver, 5).until(
-                expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'input[type="tel"]'))
+                expected_conditions.presence_of_element_located((By.XPATH, '//*[@type="tel"]'))
             )
 
             password_input = WebDriverWait(driver, 5).until(
-                expected_conditions.presence_of_element_located((By.CSS_SELECTOR, 'input[type="password"]'))
+                expected_conditions.presence_of_element_located((By.XPATH, '//*[@type="password"]'))
             )
 
             username_input.sendkeys(self.login_data['account'])

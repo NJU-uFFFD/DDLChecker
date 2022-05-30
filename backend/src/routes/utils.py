@@ -45,7 +45,7 @@ def get_context_user(data_required=True):
     """
     # scoped_session = db.create_scoped_session()
     openid, data = get_context(data_required)
-    user = User.filter(User.openid == openid).first()
+    user = User.query.filter(User.openid == openid).first()
     # user = User.query.filter(User.openid == openid).first()
     # scoped_session.remove()
 
