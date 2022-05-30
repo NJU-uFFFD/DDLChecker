@@ -77,7 +77,6 @@ def add_account():
             sub = UserSubscriptions(user.id, c[1], account.platform_uuid)
             db.session.add(sub)
 
-
     db.session.add(account)
     db.session.commit()
 
@@ -119,9 +118,9 @@ def delete_account():
 
     account = Account.query.get(data['id'])
     if account is None:
-        return make_response(404, "Id not found(nmsl)", {})
+        return make_response(-1, "Id not found(nmsl)", {}, 404)
     if account.userid != user.id:
-        return make_response(403, "Cannot delete others' account(nmsl).", {})
+        return make_response(-1, "Cannot delete others' account(nmsl).", {}, 403)
 
     db.session.delete(account)
 
