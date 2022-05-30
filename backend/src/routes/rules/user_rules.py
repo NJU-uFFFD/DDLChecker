@@ -8,12 +8,14 @@ class RegisterRules(Schema):
     username = fields.Str(required=False, validate=validate.Length(min=1, max=100))
 
 
-class RenameRules(Schema):
+class ChangeProfileRules(Schema):
     """
         "username" -> str(len 1 - 100)
+        "avatar" -> int(1 - 10)
     """
 
     username = fields.Str(required=False, validate=validate.Length(min=1, max=100))
+    avatar = fields.Integer(required=False, strict=True, validate=validate.Range(min=1, max=10))
 
 
 class UsernameRules(Schema):
@@ -22,4 +24,6 @@ class UsernameRules(Schema):
     """
 
     id = fields.Integer(required=True, validate=validate.Range(min=1))
+
+
 

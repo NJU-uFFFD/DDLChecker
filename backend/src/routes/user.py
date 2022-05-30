@@ -29,17 +29,21 @@ def register():
     return make_response(0, "OK", {"userid": user.id, "username": user.username, "new": new_user})
 
 
-@bp.route("/rename", methods=["GET", "POST"])
+@bp.route("/profile/edit", methods=["GET", "POST"])
 def rename():
     """
-    用户改名
+    用户更改个人资料
     :return:make_response()
     """
 
-    user, data = get_context_user(RenameRules)
-    check_data(RenameRules, data)
+    user, data = get_context_user()
+    check_data(ChangeProfileRules, data)
 
-    user.username = data["username"]
+    if 'username' in data:
+        user.username = data["username"]
+    if 'avatar' in data:
+        user.avatar = data['avatar']
+
     db.session.commit()
 
     return make_response(0, "OK", {"id": user.id})
@@ -52,7 +56,7 @@ def username():
     :return: make_response()
     """
 
-    user, data = get_context()
+    user, data = get_context_user()
     check_data(UsernameRules, data)
 
     find_user = User.query.get(data["id"])
@@ -61,3 +65,15 @@ def username():
         return make_response(-1, "User not found(nmsl).", {})
 
     return make_response(0, "OK", {"username": find_user.username})
+
+
+@bp.route("/profile", methods=["GET", "POST"])
+def profile():
+    """
+    我的界面返回当前用户信息
+    ：return: make_response()
+    """
+
+    user, data = get_context_user(data_required=False)
+
+    return make_response(0, "OK", {"username": user.username, "id": user.id, "avatar": user.avatar})
