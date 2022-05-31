@@ -5,7 +5,7 @@ COPY ./src /app
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
 
-RUN Deps="libmysql-dev" \
+RUN Deps="libmysqlclient-dev" \
     && mv /etc/apt/sources.list /etc/apt/sources.list.bak \
     && echo "deb http://mirrors.cloud.tencent.com/debian/ buster main non-free contrib" > /etc/apt/sources.list \
     && apt-get update \
