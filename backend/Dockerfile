@@ -5,7 +5,7 @@ COPY ./src /app
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
 
-RUN apt update && apt install -y libmysqlclient-dev && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y libmariadb-dev && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
 
