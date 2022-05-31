@@ -19,10 +19,15 @@ class ListCourseRulesForCommunity(Schema):
         "page" -> int
         "size" -> int
         "key_word" -> str
+        "filter" -> dict
+            "is_subscribed" -> bool
+        "platform_uuid" -> str
     """
     page = fields.Integer(required=True, strict=True, validate=validate.Range(min=1))
     size = fields.Integer(required=True, strict=True, validate=validate.Range(min=1, max=20))
     key_word = fields.String(required=False, validate=validate.Length(min=1, max=32))
+    filter = fields.Dict(required=False, keys=fields.String(required=True, validate=validate.OneOf(["is_subscribed"])), values=fields.Boolean(required=True))
+    platform_uuid = fields.UUID(required=False)
 
 
 class AddCourseRulesForCommunity(Schema):

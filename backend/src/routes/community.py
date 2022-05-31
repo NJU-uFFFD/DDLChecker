@@ -26,15 +26,24 @@ def list_course():
     user, data = get_context_user()
     check_data(ListCourseRulesForCommunity, data)
 
+    subs = list(map(lambda x: x.course_uuid, user.subscriptions.all()))
+
     filter_list = []
     if "key_word" in data:
         filter_list.append(Course.course_name.contains(data["key_word"]))
+
+    if "filter" in data:
+        if "is_subscribed" in data["filter"] and data['filter']['is_subscribed']:
+            filter_list.append(Course.course_uuid.in_(subs))
+
+    if "platform_uuid" in data:
+        filter_list.append(Course.platform_uuid == data["platform_uuid"])
 
     page = Course.query.filter(*filter_list).paginate(data["page"], data["size"])
     course_count = page.total
     total_pages = page.pages
     courses = [i.to_dict() for i in page.items]
-    subs = list(map(lambda x: x.course_uuid, user.subscriptions.all()))
+
     for i in courses:
         i.update({"subscribed": i["course_uuid"] in subs})
 
