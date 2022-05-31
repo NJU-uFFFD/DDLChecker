@@ -27,7 +27,7 @@
           @onSubscribeStatusChange="subscribe"/>
         <template #right>
           <nut-button
-            style="height:100%; border-radius: 10px;margin-right: 5px"
+            style="height:100%; border-radius: 10px"
             type="danger"
             @click="showDelete=true;deleteInfo=course">
             删除

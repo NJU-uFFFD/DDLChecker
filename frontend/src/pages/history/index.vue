@@ -130,9 +130,9 @@
       no-footer>
       <nut-countdown
         #default
-        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<state.now.valueOf()&&!state.ddlDetailData.is_completed)?'#ee1919':'#676767'}"
+        :style="{display: 'flex',justifyContent:'center',color:(state.ddlDetailData.ddl_time<now.valueOf()&&!state.ddlDetailData.is_completed)?'#ee1919':'#676767'}"
         :end-time="state.ddlDetailData.ddl_time"
-        :format="state.ddlDetailData.ddl_time>state.now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
+        :format="state.ddlDetailData.ddl_time>now.valueOf()?'还剩 DD 天 HH 时 mm 分 ss 秒':'已超时'"
       />
       <nut-cell
         style="box-shadow: 0 0 0 0"
@@ -163,7 +163,8 @@ export default {
       overtimeNumber: 0,
       firstTime: new Date(),
       lastTime: new Date(),
-      markList: []
+      markList: [],
+      now: new Date
     }
   },
   setup() {
@@ -173,8 +174,7 @@ export default {
       "activeName": [],
       "calendarDate": new Date(),
       "showDetails": false,
-      "ddlDetailData": {},
-      "now": new Date
+      "ddlDetailData": {}
     })
 
     let ddls = reactive<{ ddl_list: DDLData [], create_list: DDLData[], complete_list: DDLData[] }>({
@@ -268,6 +268,7 @@ export default {
     }
   },
   onTabItemTap() {
+    this.now = new Date()
     const setDateStartAndEnd = (date: Date, mode: string) => {
       date.setHours(mode == 'start' ? 0 : 23)
       date.setMinutes(mode == 'start' ? 0 : 59)
