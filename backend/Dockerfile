@@ -5,7 +5,15 @@ COPY ./src /app
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
 
-RUN apt update && apt install -y libmariadb-dev && rm -rf /var/lib/apt/lists/*
+RUN Deps="libmariadb-dev" \
+    && mv /etc/apt/sources.list /etc/apt/sources.list.bak \
+    && echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free" > /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get install $Deps --no-install-recommends --no-install-suggests -y  \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /etc/apt/sources.list \
+    && mv /etc/apt/sources.list.bak /etc/apt/sources.list
 
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
 
