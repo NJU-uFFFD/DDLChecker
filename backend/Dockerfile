@@ -7,7 +7,7 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shangh
 
 RUN Deps="libmariadb-dev" \
     && mv /etc/apt/sources.list /etc/apt/sources.list.bak \
-    && echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free" > /etc/apt/sources.list \
+    && echo "deb http://mirrors.cloud.tencent.com/debian/ buster main non-free contrib" > /etc/apt/sources.list \
     && apt-get update \
     && apt-get install $Deps --no-install-recommends --no-install-suggests -y  \
     && apt-get clean \
