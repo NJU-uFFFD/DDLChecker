@@ -5,7 +5,7 @@ COPY ./src /app
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
 
-RUN Deps="libmariadb-dev python3-dev" \
+RUN Deps="libmariadb-dev python3-dev gcc" \
     && sed -i s@/deb.debian.org/@/mirrors.cloud.tencent.com/@g /etc/apt/sources.list \
     && apt-get update \
     && apt-get install $Deps --no-install-recommends --no-install-suggests -y  \
