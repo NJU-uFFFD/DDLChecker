@@ -3,9 +3,7 @@ import time
 import uuid
 
 
-from flask import Blueprint, jsonify
-from flask_sqlalchemy import Pagination
-from sqlalchemy.orm import Query
+from flask import Blueprint
 
 from db import db
 from routes.rules.community_rules import AddCourseRulesForCommunity, AddDDLRulesForCommunity, SubscribeCourseRules, \
@@ -198,7 +196,7 @@ def delete_course():
         return make_response(-1, "Course not found.(nmsl)", {})
 
     if course.creator_id != user.id:
-        return make_response(-1, "Cannot delete course when there're ddls in it.(nmsl)", {})
+        return make_response(-1, "Can only delete courses created by your own.", {})
 
     if course.source_ddls.count() > 0:
         return make_response(-1, "Others have already created ddls in the course you created.", {})
