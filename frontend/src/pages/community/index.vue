@@ -1,5 +1,6 @@
 <template>
   <view class="page">
+    <!-- 搜索栏 -->
     <nut-searchbar
       style="position: relative; z-index: 1; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)"
       v-model="searchValue"
@@ -14,6 +15,37 @@
           name="search2"/>
       </template>
     </nut-searchbar>
+
+    <!-- 筛选菜单 -->
+    <!--    <nut-menu-->
+    <!--      style="position: relative; z-index: 200; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)">-->
+    <!--      <nut-menu-item title="筛选">-->
+    <!--        <div style="display: flex; flex: 1; justify-content: space-between; align-items: center">-->
+    <!--          <nut-checkboxgroup-->
+    <!--            v-model="menu.filterCheckboxGroup"-->
+    <!--            ref="filterGroup"-->
+    <!--            @change="onMenuChange"-->
+    <!--            style="display: flex;flex-flow: wrap">-->
+    <!--            <nut-checkbox-->
+    <!--              v-for="item in menu.filterCheckboxSource"-->
+    <!--              :key="item.label"-->
+    <!--              :label="item.label"-->
+    <!--              icon-size="24"-->
+    <!--              style="display: flex; height: 6vh; width:25vw">{{ item.value }}-->
+    <!--            </nut-checkbox>-->
+    <!--          </nut-checkboxgroup>-->
+    <!--          <div style="width: 60vw">-->
+    <!--            <nut-button-->
+    <!--              type="primary"-->
+    <!--              @click="filterToggleAll(true)"-->
+    <!--              style="width:30vw; height: 5vh;margin-top: 2vh">-->
+    <!--              全选-->
+    <!--            </nut-button>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </nut-menu-item>-->
+    <!--    </nut-menu>-->
+
 
     <scroll-view
       :scroll-y="true"
@@ -34,7 +66,7 @@
           </nut-button>
         </template>
       </nut-swipe>
-      <nut-divider v-if="!more">没有更多课程了捏</nut-divider>
+      <nut-divider style="margin: 30px 0" v-if="!more">没有更多课程了捏</nut-divider>
     </scroll-view>
 
 
@@ -147,12 +179,21 @@ export default {
 
   methods: {
     fetchCourses(page, size, searchValue, callback) {
-      const data = {
-        page: this.page,
-        size: size,
+      let filter = {}
+
+      let data = {
+        "page": this.page,
+        "size": size
       }
+
       if (searchValue !== '')
         data["key_word"] = searchValue
+
+      // if (filter !== {})
+      //   data["filter"] = filter
+      //
+      // data["platform_uuid"] = "00000000-0000-0000-0000-000000000000"
+
       const r = request({
         method: "POST",
         path: "/community/course/list",

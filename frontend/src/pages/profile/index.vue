@@ -36,7 +36,7 @@
           <nut-grid
             :column-num="5"
             :border="false"
-            gutter="4">
+            gutter="2">
             <nut-grid-item
               v-for="i in 30" :key="i">
               <nut-avatar
