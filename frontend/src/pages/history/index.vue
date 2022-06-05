@@ -2,7 +2,7 @@
   <view class="page">
     <scroll-view
       :scroll-y="true"
-      style="height: 96vh;">
+      style="height: 100vh;">
       <nut-cell-group
         title="Dashboard"/>
       <nut-grid

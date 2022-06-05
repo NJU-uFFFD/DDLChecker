@@ -2,12 +2,15 @@
   <view class="page">
     <!-- 搜索栏 -->
     <nut-searchbar
-      style="position: relative; z-index: 1; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)"
+      style="position: relative; z-index: 200; "
       v-model="searchValue"
       placeholder="请输入社区课程及DDL"
       clearable
       max-length="32"
-      @search="searchCourseOrDdl">
+      @change="listRefresh"
+      @blur="listRefresh"
+      @search="listRefresh"
+      @clear="listRefresh">
       <template
         v-slot:leftin>
         <nut-icon
@@ -17,40 +20,38 @@
     </nut-searchbar>
 
     <!-- 筛选菜单 -->
-    <!--    <nut-menu-->
-    <!--      style="position: relative; z-index: 200; box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)">-->
-    <!--      <nut-menu-item title="筛选">-->
-    <!--        <div style="display: flex; flex: 1; justify-content: space-between; align-items: center">-->
-    <!--          <nut-checkboxgroup-->
-    <!--            v-model="menu.filterCheckboxGroup"-->
-    <!--            ref="filterGroup"-->
-    <!--            @change="onMenuChange"-->
-    <!--            style="display: flex;flex-flow: wrap">-->
-    <!--            <nut-checkbox-->
-    <!--              v-for="item in menu.filterCheckboxSource"-->
-    <!--              :key="item.label"-->
-    <!--              :label="item.label"-->
-    <!--              icon-size="24"-->
-    <!--              style="display: flex; height: 6vh; width:25vw">{{ item.value }}-->
-    <!--            </nut-checkbox>-->
-    <!--          </nut-checkboxgroup>-->
-    <!--          <div style="width: 60vw">-->
-    <!--            <nut-button-->
-    <!--              type="primary"-->
-    <!--              @click="filterToggleAll(true)"-->
-    <!--              style="width:30vw; height: 5vh;margin-top: 2vh">-->
-    <!--              全选-->
-    <!--            </nut-button>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      </nut-menu-item>-->
-    <!--    </nut-menu>-->
+    <nut-menu
+      style="position: relative; z-index: 100;box-shadow: 0 4px 16px 0 rgba(237, 238, 241, 1)">
+      <nut-menu-item title="筛选平台">
+        <div style="display: flex; flex: 1; justify-content: space-between; align-items: center">
+          <nut-checkboxgroup
+            v-model="menu.filterCheckboxGroup"
+            ref="filterGroup"
+            @change="listRefresh">
+            <nut-checkbox
+              v-for="item in menu.filterCheckboxSource"
+              :key="item.label"
+              :label="item.label"
+              icon-size="24"
+              style="display: flex; height: 6vh; width:50vw">{{ item.value }}
+            </nut-checkbox>
+          </nut-checkboxgroup>
+        </div>
+      </nut-menu-item>
+      <nut-menu-item
+        v-model="menu.value"
+        @change="listRefresh"
+        :options="menu.options"/>
+    </nut-menu>
 
 
     <scroll-view
+      :refresher-triggered="refreshing"
       :scroll-y="true"
-      style="height: 94vh;"
+      style="height: 85vh;"
       @scrolltolower="listLower"
+      @refresherrefresh="listRefresh"
+      refresherEnabled="true"
       enableBackToTop="true">
       <nut-swipe v-for="course in courses" :key="course">
         <CommunityCourseCard
@@ -173,26 +174,50 @@ export default {
       showAdd: false,
       courseAddSubmitting: false,
       deleteInfo: '',
-      showDelete: false
+      showDelete: false,
+      refreshing: false,
+      menu: {
+        options: [
+          {text: '全部', value: false},
+          {text: '已订阅', value: true},
+        ],
+        value: false,
+        filterCheckboxGroup: ['1', '2', '3', '4'],
+        filterCheckboxSource: [
+          {label: '1', value: '教学立方'},
+          {label: '2', value: '南大SPOC'},
+          {label: '3', value: '中国大学MOOC'},
+          {label: '4', value: '手动添加'},
+        ]
+      },
+      filterGroup: null
     }
   },
 
   methods: {
     fetchCourses(page, size, searchValue, callback) {
       let filter = {}
+      if (this.menu.value) filter["is_subscribed"] = true
+
+      let platform_uuids = []
+      if (this.menu.filterCheckboxGroup.indexOf('1') === -1)
+        platform_uuids.push('f15684f5-d870-4a9d-b859-e7eec3c6e3b5')
+      if (this.menu.filterCheckboxGroup.indexOf('2') === -1)
+        platform_uuids.push('68dc1014-7bfe-4ea3-a000-5734303d9f59')
+      if (this.menu.filterCheckboxGroup.indexOf('3') === -1)
+        platform_uuids.push('69921ef9-fe15-4731-930d-b60a644da254')
+      if (this.menu.filterCheckboxGroup.indexOf('4') === -1)
+        platform_uuids.push('00000000-0000-0000-0000-000000000000')
 
       let data = {
-        "page": this.page,
-        "size": size
+        page: this.page,
+        size: size,
+        filter: filter,
+        platform_uuids: platform_uuids
       }
 
-      if (searchValue !== '')
-        data["key_word"] = searchValue
-
-      // if (filter !== {})
-      //   data["filter"] = filter
-      //
-      // data["platform_uuid"] = "00000000-0000-0000-0000-000000000000"
+      if (this.searchValue !== '')
+        data["key_word"] = this.searchValue
 
       const r = request({
         method: "POST",
@@ -211,6 +236,8 @@ export default {
         }
       }).catch((reason) => {
         console.error(reason)
+      }).finally(() => {
+        this.refreshing = false
       })
     },
     listLower() {
@@ -223,7 +250,9 @@ export default {
         this.page += 1
       })
     },
-    searchCourseOrDdl() {
+    listRefresh() {
+      if (this.refreshing) return
+      this.refreshing = true
       this.page = 1
       this.more = true
       this.fetchCourses(this.page, 10, this.searchValue, (d) => {
