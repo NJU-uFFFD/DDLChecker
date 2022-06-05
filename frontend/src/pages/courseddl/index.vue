@@ -52,7 +52,7 @@
         </template>
       </nut-swipe>
 
-      <nut-divider v-if="!more">没有更多 DDL 了捏</nut-divider>
+      <nut-divider style="margin: 30px 0" v-if="!more">没有更多 DDL 了捏</nut-divider>
     </scroll-view>
 
 
