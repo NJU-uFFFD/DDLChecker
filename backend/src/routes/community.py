@@ -36,8 +36,10 @@ def list_course():
         if "is_subscribed" in data["filter"] and data['filter']['is_subscribed']:
             filter_list.append(Course.course_uuid.in_(subs))
 
-    if "platform_uuid" in data:
-        filter_list.append(Course.platform_uuid == data["platform_uuid"])
+    if "platform_uuids" in data:
+        for platform_uuid in data["platform_uuids"]:
+            # 反向传值
+            filter_list.append(Course.platform_uuid != platform_uuid)
 
     page = Course.query.filter(*filter_list).paginate(data["page"], data["size"])
     course_count = page.total
