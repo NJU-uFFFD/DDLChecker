@@ -12,7 +12,7 @@
       @search="listRefresh"
       @clear="listRefresh">
       <template
-        v-slot:leftin>
+        #leftin>
         <nut-icon
           size="14"
           name="search2"/>
