@@ -4,7 +4,7 @@
     <nut-searchbar
       style="position: relative; z-index: 200; "
       v-model="searchValue"
-      placeholder="请输入社区课程及DDL"
+      placeholder="请输入社区课程名称或关键词"
       clearable
       max-length="32"
       @change="listRefresh"
