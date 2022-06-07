@@ -7,7 +7,7 @@
     <template #icon>
       <img
         class="profile-site-icon"
-        :src="accountData!=null?getPlatformInfo(accountData.platform_uuid).icon:'cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/add.png'"
+        :src="accountData!=null?getPlatformInfo(accountData.platform_uuid).icon:'/assets/images/add.png'"
       />
     </template>
   </nut-cell>

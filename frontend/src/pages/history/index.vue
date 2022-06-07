@@ -2,7 +2,7 @@
   <view class="page">
     <scroll-view
       :scroll-y="true"
-      style="height: 96vh;">
+      style="height: 100vh;">
       <nut-cell-group
         title="Dashboard"/>
       <nut-grid
@@ -118,7 +118,7 @@
         @onClick="state.ddlDetailData = data; state.showDetails = true"
       />
 
-      <nut-divider>没有更多 DDL 了捏</nut-divider>
+      <nut-divider style="margin: 30px 0">没有更多 DDL 了捏</nut-divider>
 
     </scroll-view>
 
@@ -326,6 +326,10 @@ export default {
 
 .nut-grid-item__content--surround {
   border-radius: 20px;
+}
+
+.nut-grid-item__content {
+  padding: 16px 0;
 }
 
 .nut-circleprogress-text {
