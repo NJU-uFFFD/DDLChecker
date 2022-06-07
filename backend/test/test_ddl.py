@@ -16,6 +16,7 @@ class TestDdl(unittest.TestCase):
 
     def setUp(self):
         self.app = app
+        assert 'tencent' not in app.config['SQLALCHEMY_DATABASE_URI'] #再删库我是傻逼
         self.client = self.app.test_client()
         with self.app.app_context():
             # db.drop_all()
