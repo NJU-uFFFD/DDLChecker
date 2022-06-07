@@ -71,7 +71,8 @@ def cron_work():
             try:
                 print(c)
                 if c.course_uuid in already_done:
-                    continue
+                    logging.info("already done, pass.")
+                    break
 
                 # 查找爬虫对象
                 crawler_obj = None
@@ -133,16 +134,22 @@ def cron_work():
                 logging.exception(e)
                 # db.session.rollback()
 
+    logging.info(">>> crawler done!")
+
     # 分发 DDL
     subs = UserSubscriptions.query.all()
     for sub in subs:
+        # logging.info(sub)
         updated = sub.last_updated
         for ddl in SourceDdl.query.filter(SourceDdl.course_uuid == sub.course_uuid, SourceDdl.creator_id == None).all():
             if ddl.ddl_time > int(time.time() * 1000) and ddl.create_time > updated:
                 to_add = Ddl(sub.userid, ddl.title, ddl.ddl_time, ddl.create_time, ddl.content, "",
                              sub.course_uuid, sub.platform_uuid, ddl.id)
+                # logging.info("adding ddl: " + str(ddl))
                 db.session.add(to_add)
         sub.last_updated = now_time
     db.session.commit()
+
+    logging.info(">>> distribution done!")
 
     return "success"
