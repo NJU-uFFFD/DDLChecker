@@ -73,7 +73,7 @@
 
       </nut-swipe>
 
-      <nut-divider v-if="!state.more">没有更多 DDL 了捏</nut-divider>
+      <nut-divider style="margin: 30px 0" v-if="!state.more">没有更多 DDL 了捏</nut-divider>
     </scroll-view>
 
     <!-- DDL 详情 -->
@@ -334,9 +334,9 @@ export default {
       ]
     })
 
-    // 保存上次筛选选项于本地
+    // 获取本地上次筛选选项
     // Taro.getStorage({
-    //   key: "filterGroup",
+    //   key: "homeFilterGroup",
     //   success: (res) => {
     //     menu.filterCheckboxTempGroup = menu.filterCheckboxGroup = JSON.parse(res.data)
     //   }
@@ -354,8 +354,9 @@ export default {
         })[0] == '4') menu.filterCheckboxGroup.push('3')
         else menu.filterCheckboxGroup.push('4')
       menu.filterCheckboxTempGroup = menu.filterCheckboxGroup.filter(() => true)
+      // 保存筛选于本地
       // Taro.setStorage({
-      //   key: "filterGroup",
+      //   key: "homeFilterGroup",
       //   data: JSON.stringify(menu.filterCheckboxTempGroup)
       // })
       listRefresh()

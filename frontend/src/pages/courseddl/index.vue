@@ -13,7 +13,7 @@
         <template #icon>
           <img
             class="course-ddl-site-icon"
-            src="cloud://prod-8gf8jswafda304f9.7072-prod-8gf8jswafda304f9-1311194591/images/add.png"
+            src="/assets/images/add.png"
           />
         </template>
       </nut-cell>
@@ -52,7 +52,7 @@
         </template>
       </nut-swipe>
 
-      <nut-divider v-if="!more">没有更多 DDL 了捏</nut-divider>
+      <nut-divider style="margin: 30px 0" v-if="!more">没有更多 DDL 了捏</nut-divider>
     </scroll-view>
 
 
