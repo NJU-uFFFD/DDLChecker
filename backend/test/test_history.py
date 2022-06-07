@@ -16,6 +16,7 @@ class TestHistory(unittest.TestCase):
     ddls = []
     def setUp(self):
         self.app = app
+        assert 'tencent' not in app.config['SQLALCHEMY_DATABASE_URI'] #再删库我是傻逼
         self.client = self.app.test_client()
         self.average_complete_time_percentage = 0
         self.total_time = 0
