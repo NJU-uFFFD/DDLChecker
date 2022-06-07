@@ -245,6 +245,10 @@ export default {
         return
       }
 
+      if (this.refreshing) {
+        return
+      }
+
       this.fetchCourses(this.page, 10, this.searchValue, (data) => {
         this.courses.push.apply(this.courses, data)
         this.page += 1
