@@ -7,6 +7,7 @@ from db.ddl import Ddl
 from db.user import User
 from db.course import Course
 from db.userSubs import UserSubscriptions
+from db.sourceDdl import SourceDdl
 import json
 import time
 import uuid
@@ -194,3 +195,71 @@ class TestCommiunity(unittest.TestCase):
             self.assertEqual(400, ret.status_code)
             ret = json.loads(ret.data.decode('utf-8'))
             self.assertEqual(-1, ret['code'])
+
+    def test_delete_course(self):
+        with self.app.app_context():
+            platform_uuid = str(uuid.uuid4())
+            course = Course('C-PL',str(uuid.uuid5(uuid.UUID(platform_uuid),'C-PL')),platform_uuid,creator_id=1)
+            db.session.add(course)
+            db.session.commit()
+            ret = self.client.post('/community/course/delete', headers={
+                    'x-wx-source': 'test',
+                    'x-wx-openid': '114514'
+                }, json={
+                    'course_uuid': (course.course_uuid)
+                })
+            self.assertEqual(200, ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(0, ret['code'])
+            course = Course.query.count()
+            self.assertEqual(course, 0)
+
+    def test_add_ddl(self):
+        with self.app.app_context():
+            platform_uuid = str(uuid.uuid4())
+            course = Course('C-PL',str(uuid.uuid5(uuid.UUID(platform_uuid),'C-PL')),platform_uuid,creator_id=1)
+            db.session.add(course)
+            db.session.commit()
+            ddl_time = int(time.time())*1000
+            ret = self.client.post('/community/ddl/add', headers={
+                    'x-wx-source': 'test',
+                    'x-wx-openid': '114514'
+                }, json={
+                    'course_uuid': course.course_uuid,
+                    'title': 'title',
+                    'content': 'content',
+                    'ddl_time': ddl_time,
+                })
+            self.assertEqual(200, ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(0, ret['code'])
+            ret = ret['data']
+            ddl = SourceDdl.query.get(ret['id'])
+            self.assertIsNotNone(ddl)
+            self.assertEqual(ddl.course_uuid,course.course_uuid)
+            self.assertEqual(ddl.platform_uuid,course.platform_uuid)
+            self.assertEqual(ddl.title,'title')
+            self.assertEqual(ddl.content,'content')
+            self.assertEqual(ddl.ddl_time,ddl_time)
+            self.assertEqual(ddl.creator_id,1)
+
+    def test_delete_ddl(self):
+        with self.app.app_context():
+            platform_uuid = str(uuid.uuid4())
+            course = Course('C-PL',str(uuid.uuid5(uuid.UUID(platform_uuid),'C-PL')),platform_uuid,creator_id=1)
+            db.session.add(course)
+            db.session.commit()
+            source_ddl = SourceDdl(course.course_uuid,platform_uuid,'title','content',
+                None,int(time.time())*1000,int(time.time())*1000,1)
+            db.session.add(source_ddl)
+            db.session.commit()
+            ret = self.client.post('/community/ddl/delete', headers={
+                    'x-wx-source': 'test',
+                    'x-wx-openid': '114514'
+                }, json={
+                    'id': source_ddl.id
+                })
+            self.assertEqual(200, ret.status_code)
+            ret = json.loads(ret.data.decode('utf-8'))
+            self.assertEqual(0, ret['code'])
+            self.assertEqual(SourceDdl.query.count(), 0)
