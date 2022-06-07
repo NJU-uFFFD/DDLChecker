@@ -43,7 +43,8 @@ def cron_work_daily():
             db.session.commit()
 
             for c in courses:
-                if not UserSubscriptions.query.filter(UserSubscriptions.userid == account.userid, UserSubscriptions.course_uuid == c[1]).first():
+                if not UserSubscriptions.query.filter(UserSubscriptions.userid == account.userid,
+                                                      UserSubscriptions.course_uuid == c[1]).first():
                     sub = UserSubscriptions(account.userid, c[1], account.platform_uuid)
                     db.session.add(sub)
 
@@ -103,7 +104,8 @@ def cron_work():
                         logging.warning("course uuid not found, pass: " + course_uuid)
                         continue
 
-                    newest_ddl = SourceDdl.query.filter(SourceDdl.course_uuid == course_uuid, SourceDdl.creator_id == None).order_by(
+                    newest_ddl = SourceDdl.query.filter(SourceDdl.course_uuid == course_uuid,
+                                                        SourceDdl.creator_id == None).order_by(
                         SourceDdl.create_time.desc()).first()
 
                     newest = -1
@@ -113,6 +115,12 @@ def cron_work():
                     for ddl in ddls:
                         if ddl['create_time'] > newest and ddl['course_uuid'] == course_uuid:
                             if ddl['course_uuid'] in already_done:
+                                continue
+
+                            if SourceDdl.query.filter(SourceDdl.ddl_time == ddl['ddl_time'],
+                                                      SourceDdl.course_uuid == ddl['course_uuid'],
+                                                      SourceDdl.title == ddl['title'],
+                                                      SourceDdl.content == ddl['content']).count() > 0:
                                 continue
 
                             t = SourceDdl(ddl['course_uuid'], c.platform_uuid, ddl['title'], ddl['content'], "",
