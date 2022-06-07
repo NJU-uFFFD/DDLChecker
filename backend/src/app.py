@@ -64,7 +64,6 @@ def invoke():
 
 if __name__ == '__main__':
     app.run()
-
     # import crawler.crawlers.TeachingSquareCrawler
     # c = crawler.crawlers.TeachingSquareCrawler.TeachingSquareCrawler()
     # c.login({"account": "18015503001", "password": "98324364xue"})

@@ -14,4 +14,4 @@ RUN Deps="libmariadb-dev python3-dev gcc" \
 
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:80", "app:app"]
+CMD ["gunicorn", "app:app"]
