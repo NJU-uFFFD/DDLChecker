@@ -2,7 +2,7 @@
 
 队名: `���` (可读作 `\uFFFD` `锟斤拷`  `乱码` etc.) 
 
-队员:  杜凌霄 (队长)  黄梓彦  凌翊宸  李薛成
+队员:  LeoDu (队长)  BobHuang  Lyc8503  Sakiyary
 
 Github Organization: [NJU-EL2022-uFFFD](https://github.com/NJU-EL2022-uFFFD) (仓库已设置 `private`, 在比赛完赛前不会开源)
 
